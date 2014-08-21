@@ -19,7 +19,27 @@ elseif (file_exists(APPLICATION_PATH . '/../tools/env/env'))
 }
 else
 {
-    define('APPLICATION_ENV', 'production');
+	// If environment not set then use the host name
+	$host = !empty($_SERVER['HTTP_HOST'])? $_SERVER['HTTP_HOST']: null;
+	$environment = null;
+	
+	switch($host)
+	{
+		case 'takenote.localhost':
+			$environment = "development";
+			break;
+			
+		case 'test-takenotetyping.co.uk':
+			$environment = 'testing';
+			break;
+			
+		case 'live.test-takenotetyping.co.uk':
+		case 'portal.takenotetyping.com':
+		default:
+			$environment = 'production';
+	}
+	
+	define('APPLICATION_ENV', $environment);
 }
 
 // Ensure library/ is on include_path

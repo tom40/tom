@@ -1,7 +1,12 @@
+# TEMPORARY FIX: Force dev - START
+SetEnv APP_ENVIRONMENT development
+# TEMPORARY FIX: END
+
+# TEMPORARY FIX: Not permitted on host - START
+#php_value error_reporting 30711
+# TEMPORARY FIX: END
 
 RewriteEngine On
-
-RewriteRule /change-log.html change-log.html
  
 RewriteRule ^\.htaccess$ - [F]
  
@@ -15,3 +20,5 @@ RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^.*$ - [NC,L]
  
 RewriteRule ^public/.*$ /public/index.php [NC,L]
+
+RewriteRule /change-log.html change-log.html
