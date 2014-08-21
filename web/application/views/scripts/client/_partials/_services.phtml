@@ -1,0 +1,16 @@
+<?php
+foreach ( $this->services as $service )
+{
+    $checked = '';
+    if ( null !== $this->data && $this->data->hasAdditionalService( $service->id ) )
+    {
+        $checked = ' checked="checked"';
+    }
+    ?>
+    <p class="operative-search">
+        <input type="checkbox" name="additional_services[]" value="<?php echo $service->id;?>"<?php echo $checked;?> />
+        <?php echo $service->name; ?>
+    </p>
+<?php
+}
+?>

@@ -1,0 +1,59 @@
+<?php echo $this->partial('/_partials/email/_defaultHeader.phtml',
+    array(
+            'appName' => $this->appName,
+            'title'   => 'A proofreader has pressed the panic button!'
+         )
+    );
+?>
+A problem has been logged with the following transcript, please login to the portal.
+<br />
+	<table class="data" style="font-family:helvetica, arial, sans-serif;color:#333;font-size:12px;line-height:18px;margin:0 0 15px;">
+ 		<tr class="first">
+        	<td class="field">
+            	<label for="name">Job ID:</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php echo $this->data['audio_job_id']; ?></span>
+            </td>
+		</tr>
+		<tr>
+        	<td class="field">
+            	<label for="name">File name:</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php echo $this->data['file_name']; ?></span>
+            </td>
+		</tr>
+		<tr>
+        	<td class="field">
+            	<label for="name">Proofreader name:</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php echo $this->data['proofreader_name']?></span>
+            </td>
+		</tr>
+		<tr>
+        	<td class="field">
+            	<label for="name">Deadline:</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php echo date('g.ia d.m.y', $this->data['due_date_unix']); ?></span>
+            </td>
+		</tr>
+		<tr>
+        	<td class="field">
+            	<label for="name">Problem flagged:</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php echo $this->escape($this->data['panic_comment']) ?></span>
+            </td>
+		</tr>
+	</table>
+<?php echo $this->partial('/_partials/email/_defaultFooter.phtml',
+    array(
+            'appName' => $this->appName,
+            'appUrl' => $this->appUrl,
+            'showThanksMessage' => true
+        )
+    );
+?>

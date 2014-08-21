@@ -1,0 +1,13 @@
+<h1>Select A Typist</h1>
+<p>Audio File: <?php echo $this->audioJob['file_name']; ?></p>
+<p>This file is assigned to more than one typist, please select a typist to generate a report for:</p>
+<?php if (!empty($this->typists)): ?>
+    <?php foreach($this->typists as $typist): ?>
+        <p>
+        <?php echo $this->getTypistReportImage($typist['user_id'], $this->audioJob['id']); ?>
+        <a href="<?php echo $this->url(array('controller' => 'report', 'action' => 'update', 'tid' => $typist['user_id'], 'ajid' => $this->audioJob['id']), null, true); ?>">
+            <?php echo $typist['typist_name']; ?>
+        </a>
+        </p>
+    <?php endforeach; ?>
+<?php endif; ?>

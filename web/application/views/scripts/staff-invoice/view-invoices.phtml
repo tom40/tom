@@ -1,0 +1,197 @@
+<h1>View Invoices</h1>
+<?php
+if ( is_array( $this->transitions ) && count( $this->transitions ) > 0 )
+{
+?>
+<div class="invoice-status-forms">
+    <h2 id="change-invoice">Change Invoice Status</h2>
+    <?php
+    foreach ( $this->transitions as $text => $id )
+    {
+    ?>
+    <form method="POST" class="bulk-status-update-form" action="/en/default/staff-invoice/transition-multiple-invoices">
+        <input type="hidden" value="<?php echo $id ;?>" name="status_id" />
+        <input type="hidden" value="<?php echo $this->currentStatus ;?>" name="current_status_id" />
+        <input class="btn" type="submit" value="<?php echo $text; ?>" />
+    </form>
+<?php
+    }
+    ?>
+</div>
+<?php
+}
+?>
+
+<div id="container" class="view-invoice-table">
+    <table class="index not-fixed-height" id="tbl_invoices">
+        <thead>
+        <th>ID</th>
+        <th>Typist</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Date Generated</th>
+        <th>Status</th>
+        <th>Accepted</th>
+        <th>Paid</th>
+        <th>Amount Due</th>
+        <th>PDF</th>
+        </thead>
+        <tbody>
+
+        <?php
+        foreach ( $this->invoices as $invoice )
+        {
+            ?>
+            <tr>
+                <td>
+                    <?php echo $invoice->id;?>
+                    <?php
+                    if ( !empty( $this->transitions ) )
+                    {
+                        ?>
+                        <br />
+                        <input class="bulk-status-update" type="checkbox" name="check-<?php echo $this->escape( $invoice->id )?>" value="<?php echo $this->escape( $invoice->id )?>">
+                    <?php
+                    }
+                    ?>
+                </td>
+                <td><a href="/en/default/staff-invoice/view-invoice/id/<?php echo $invoice->id; ?>" title="View Invoice"><?php echo $invoice->staff_name;?></a></td>
+                <td><?php echo date( 'd/m/Y', strtotime( $invoice->date_start ) );?></td>
+                <td><?php echo date( 'd/m/Y', strtotime( $invoice->date_end ) );?></td>
+                <td><?php echo date( 'd/m/y H:i:s', strtotime( $invoice->created_date ) );?></td>
+                <td><?php echo $invoice->getStatusName();?></td>
+                <td><?php echo ( !empty( $invoice->accepted_date ) ) ? date( 'd/m/y H:i:s', strtotime( $invoice->accepted_date ) ) : '-';?></td>
+                <td><?php echo ( !empty( $invoice->paid_date ) ) ? date( 'd/m/y H:i:s', strtotime( $invoice->paid_date ) ) : '-';?></td>
+                <td>&pound;<?php echo number_format( $invoice->getTotalAmountDue(), 2 );?></td>
+                <td>
+                    <a href="/en/default/staff-invoice/download-invoice/id/<?php echo $invoice->id; ?>/generate/1" title="View Invoice PDF">
+                        <img alt="Generate Invoice" src="<?php echo $this->baseUrl() .'/images/icons/pdf.png' ?>" />
+                    </a>
+                </td>
+            </tr>
+        <?php
+        }
+        ?>
+        <tfoot id="footer-search">
+        <tr>
+            <th>&nbsp;</th>
+            <th><input type="text" name="search_name" value="Search user name" class="search_init" /></th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+        </tr>
+        </tfoot>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    var asInitVals = new Array();
+    var oTable;
+    $(document).ready(function()
+    {
+
+        $( 'body' ).on( 'submit', '.bulk-status-update-form', function()
+        {
+            if ( $( this ).find( 'input[name="invoice-id[]"]' ).length == 0 )
+            {
+                alert( 'No invoices have been selected for updating' );
+                return false;
+            }
+        });
+
+        $( 'body' ).on( 'change', '.bulk-status-update', function()
+        {
+            var form    = $( '.bulk-status-update-form' );
+            var inputId = 'input-' + $( this ).attr( 'name' );
+
+            if ( $( this ).is( ':checked' ) )
+            {
+                form.append( '<input type="hidden" name="invoice-id[]" value="' + $( this ).val() + '" id="' + inputId + '" />' );
+            }
+            else
+            {
+                form.remove( '#' + inputId );
+            }
+        })
+
+        oTable = $('#tbl_invoices').dataTable({
+            "bJQueryUI": true,
+            "sPaginationType": "full_numbers",
+            "bPaginate": false,
+            "bStateSave": true,
+            "fnStateSave": function (oSettings, oData)
+            {
+                try
+                {
+                    localStorage.setItem( 'DataTables_' + window.location.pathname, JSON.stringify( oData ) );
+                }
+                catch( e )
+                {
+                    return false;
+                }
+            },
+            "fnStateLoad": function (oSettings)
+            {
+                try
+                {
+                    var storedData = localStorage.getItem( 'DataTables_' + window.location.pathname );
+                    if ( typeof storedData === 'string' )
+                    {
+                        return JSON.parse( storedData );
+                    }
+                }
+                catch( e )
+                {
+                    return false;
+                }
+            },
+            "oLanguage": {
+                "sSearch": "Search all columns:",
+                "sEmptyTable": "No invoices available"
+            }
+        });
+
+        $("tfoot input").keyup( function () {
+            /* Filter on the column (the index) of this element */
+            // note: add +1 to the index.value as there is no input in col 0 so the index of the text input doesn't match the index of the column being queried
+            oTable.fnFilter(this.value, $("tfoot input").index(this)+1);
+        } );
+
+        $("tfoot input").keyup( function () {
+            /* Filter on the column (the index) of this element */
+            // note: add +1 to the index.value as there is no input in col 0 so the index of the text input doesn't match the index of the column being queried
+            oTable.fnFilter(this.value, $("tfoot input").index(this)+1);
+        } );
+
+
+        /*
+         * Support functions to provide a little bit of 'user friendlyness' to the textboxes in
+         * the footer
+         */
+        $("tfoot input").each( function (i) {
+            asInitVals[i] = this.value;
+        } );
+
+        $("tfoot input").focus( function () {
+            if ( this.className == "search_init" )
+            {
+                this.className = "";
+                this.value = "";
+            }
+        } );
+
+        $("tfoot input").blur( function (i) {
+            if ( this.value == "" )
+            {
+                this.className = "search_init";
+                this.value = asInitVals[$("tfoot input").index(this)];
+            }
+        } );
+    })
+</script>

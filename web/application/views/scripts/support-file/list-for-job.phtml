@@ -1,0 +1,50 @@
+<div id="job-list-support-container" style="width:100%">
+	
+	<table class="index" id="job-list-support-tbl_supportjobs">
+		<thead>
+			<tr>
+				<th style="width:40px">ID</th>
+				<th>File name</th>
+				<th style="width:100px">Size</th>
+				<th style="width:60px">&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php echo $this->partialLoop('support-file/_listForJobRow.phtml', $this->supportFiles); ?>
+		</tbody>
+		<tfoot>
+			<tr>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th> 
+			</tr>
+		</tfoot>
+	</table>
+</div>
+<script>
+var supportJobTable;
+
+var asInitVals = new Array();
+$(document).ready(function() {
+	
+	$('#job-list-support-tabs').tabs();
+	
+    supportJobTable = $('#job-list-support-tbl_supportjobs').dataTable({
+        "bJQueryUI": true,
+	    "bAutoWidth": false,
+//        "sPaginationType": "full_numbers",
+        "bPaginate": false,
+//        "bStateSave": true,
+        "oLanguage": {
+            "sSearch": "Search all columns:",
+            "sEmptyTable": "No support documents available"
+        },
+        "aaSorting" : [[0, "asc"]],
+        "aoColumnDefs": [ 
+             			{ "sType"	 : "numeric", "aTargets": [ 0 ] }
+             	    ]
+    });
+} );
+
+</script>

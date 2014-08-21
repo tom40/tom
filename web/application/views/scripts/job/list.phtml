@@ -1,0 +1,537 @@
+<h1 class="page-title"><?php echo $this->filter ?> Projects</h1>
+
+<div id="table-utility">
+	<div id="utility-links">
+		<a href="#" onclick="alert('refresh page')" class="no-icon">
+			Refresh list
+		</a>
+		<a href="#" onclick="archive();return false;" class="no-icon">
+			Delete project
+		</a>
+	</div>
+</div>
+
+
+<div id="job-list-dialog-priority" style="display: none">
+	<table class="index">
+	<?php foreach($this->jobPriorities as $priority):?>
+		<tr>
+			<td><img src="<?php echo $this->baseUrl() .'/images/icons/flag_' . $priority['flag_colour'] . '.png' ?>" /></td>
+			<td><a href="#" onclick="processPriority(<?php echo($this->escape($priority['key']))?>);return false;"><?php echo($this->escape($priority['value']))?></a></td>
+		</tr>
+	<?php endforeach;?>
+		<tr>
+			<td>&nbsp;</td>
+			<td><a href="#" onclick="processPriority(0);">None</a></td>
+		</tr>
+	</table>
+</div>
+
+<div id="job-list-dialog-due-date" style="display: none">
+	<div class="ui-state-default ui-widget-content ui-widget-header">
+		<h3>
+			Select a Due Date
+		</h3>
+	</div>
+	<div class="popup-content">
+		<span class="view">
+			<input type="text" name="job-list-audio_due_date" id="job-list-client_due_date" value="" class="text ui-widget-content ui-corner-all" />
+		</span>
+		<br /><br />
+		<a href="#" onclick="processDueDate();return false;" class="button-img">
+			<img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/submit_button.png'?>" title="Save">
+		</a>
+	</div>
+</div>
+
+<div id="job-list-dialog-status" style="display: none">
+	<div class="ui-state-default ui-widget-content ui-widget-header">
+		<h3>
+			Select a Status
+		</h3>
+	</div>
+
+	<table class="index">
+	<?php foreach($this->jobStatuses as $status):?>
+		<tr>
+			<td><a href="#" onclick="processStatus(<?php echo($this->escape($status['key']))?>, '<?php echo($this->escape($status['value']))?>');return false;"><?php echo($this->escape($status['value']))?></a></td>
+		</tr>
+	<?php endforeach;?>
+	</table>
+</div>
+
+<div id="container">
+	<table class="index" id="tbl_jobs">
+		<thead>
+			<tr>
+				<th>ID</th><!-- 0 -->
+				<th>&nbsp;</th><!-- 1 -->
+				<th style="width:20px;">&nbsp;</th><!-- 2 -->
+				<th style="width:40px; text-align:center"><!-- 3 -->
+					<img style="height:12px; width:12px;" src="<?php echo $this->baseUrl() .'/images/icons/flag_blue.png'?>" title="Job priority">
+					<?php if($this->canEdit):?>
+					<img id="priority-multi-select" style="height:12px; width:12px;" src="<?php echo $this->baseUrl() .'/images/icons/script_lightning.png'?>" title="Quick edit priority">
+					<?php endif;?>
+				</th>
+				<th>&nbsp;</th><!-- 4 -->
+                <th style="width:90px"><!-- 5 -->
+					Project Start
+					<?php if($this->canEdit):?>
+					<img style="height:12px; width:12px;" src="<?php echo $this->baseUrl() .'/images/icons/script_lightning.png'?>" title="Quick edit client start date">
+					<?php endif;?>
+				</th>
+				<th style="width:90px"><!-- 6 -->
+					Project Due
+					<?php if($this->canEdit):?>
+					<img id="due-date-multi-select" style="height:12px; width:12px;" src="<?php echo $this->baseUrl() .'/images/icons/script_lightning.png'?>" title="Quick edit client due date">
+					<?php endif;?>
+				</th>
+				<th>&nbsp;</th><!-- 7 -->
+				<th style="width:160px"><!-- 8 -->
+					Status
+				</th>
+				<th>Client</th>
+                <th>PO Number/Invoice Ref</th>
+				<th>Project Title</th>
+				<th style="width:30px">Files due</th>
+				<th style="width:60px">Files received</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php
+            foreach ($this->jobs as $job)
+            {
+                $job['filter'] = $this->filter;
+                echo $this->partial('job/_jobRow.phtml', $job);
+            }
+            ?>
+		</tbody>
+		<tfoot id="footer-search">
+			<tr>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+                <th>&nbsp;</th>
+				<th><input type="text" name="search_status" value="Search status" class="search_init ui-widget-content ui-corner-all" /></th>
+				<th><input type="text" name="search_client" value="Search client" class="search_init ui-widget-content ui-corner-all" /></th>
+                <th>&nbsp;</th>
+				<th><input type="text" name="search_title" value="Search job title" class="search_init ui-widget-content ui-corner-all" /></th>
+				<th>&nbsp;</th>
+                <th>&nbsp;</th>
+			</tr>
+		</tfoot>
+	</table>
+</div>
+<script>
+var asInitVals = new Array();
+var gl_job_id = null;
+var gl_job_id_array = null;
+var jobTable;
+
+$(document).ready(function() {
+	$('#job-list-dialog-priority').dialog({
+		autoOpen: false,
+		title: 'Select due date',
+        closeOnEscape: false,
+		modal: true,
+		width: 400,
+		height: 400
+	});
+
+	$('#job-list-dialog-status').dialog({
+		autoOpen: false,
+		title: 'Select status',
+        closeOnEscape: false,
+		modal: true,
+		width: 400,
+		height: 400
+	});
+
+	$('#job-list-dialog-due-date').dialog({
+		autoOpen: false,
+		title: 'Select due date',
+        closeOnEscape: false,
+		modal: true,
+		width: 400,
+		height: 400,
+		beforeClose: function(event, ui) {AnyTime.noPicker("job-list-client_due_date")}
+	});
+
+    jobTable = $('#tbl_jobs').dataTable({
+    	"iDisplayLength": 50,
+        "bJQueryUI": true,
+	    "bAutoWidth": false,
+        "bPaginate": false,
+        "sPaginationType": "full_numbers",
+        "bStateSave": true,
+        "oLanguage": {
+            "sSearch": "Search all columns:",
+            "sEmptyTable": "No projects available"
+        },
+        <?php
+            if ( true !== $this->suppressInitSort )
+            {
+        ?>
+        "aaSorting" : [[5, "asc"]],
+        <?php
+            }
+        ?>
+        "aoColumnDefs": [
+             			{ "iDataSort": 1		, "aTargets": [ 0 ] },
+             			{ "bVisible" : false	, "aTargets": [ 1,4,7 ] },
+             			{ "sType"	 : "numeric", "aTargets": [ 1 ] },
+                        { "sType"	 : "numeric", "aTargets": [ 4 ] },
+                        { "sType"	 : "numeric", "aTargets": [ 7 ] },
+             			{ "bSortable": false	, "aTargets": [ 2 ] }
+             	    ]
+    });
+
+
+    $("tfoot input").keyup( function () {
+        /* Filter on the column (the index) of this element */
+        // note: add +7 to the index.value as there is no input in col 0 so the index of the text input doesn't match the index of the column being queried
+
+
+        switch ($("tfoot input").index(this)) {
+	    	case 0:
+	    		var indexAdj = 8;
+	        	break;
+	    	case 1:
+	    		var indexAdj = 8;
+	        	break;
+	    	case 2:
+	    		var indexAdj = 8;
+	        	break;
+	    }
+
+        jobTable.fnFilter(this.value, $("tfoot input").index(this)+indexAdj);
+
+    } );
+
+
+    /*
+     * Support functions to provide a little bit of 'user friendlyness' to the textboxes in
+     * the footer
+     */
+    $("tfoot input").each( function (i) {
+        asInitVals[i] = this.value;
+    } );
+
+    $("tfoot input").focus( function () {
+        if ( this.className == "search_init ui-widget-content ui-corner-all" )
+        {
+            this.className = "";
+            this.value = "";
+        }
+    } );
+
+    $("tfoot input").blur( function (i) {
+        if ( this.value == "" )
+        {
+            this.className = "search_init ui-widget-content ui-corner-all";
+            this.value = asInitVals[$("tfoot input").index(this)];
+        }
+    } );
+
+    $('#priority-multi-select').click( function() {
+    	gl_job_id_array = $('input', jobTable.fnGetNodes()).serializeArray();
+    	$('#job-list-dialog-priority').dialog('open');
+    	return false;
+	} );
+
+    $('#due-date-multi-select').click( function() {
+    	gl_job_id_array = $('input', jobTable.fnGetNodes()).serializeArray();
+    	showDueDate();
+    	return false;
+	} );
+
+    $('#status-multi-select').click( function() {
+    	gl_job_id_array = $('input', jobTable.fnGetNodes()).serializeArray();
+    	$('#job-list-dialog-status').dialog('open');
+    	return false;
+	} );
+} );
+
+function stopBubble(event) {
+   	if (event){
+   		event.stopPropagation();
+   	} else{
+   		window.event.cancelBubble = true;
+  	}
+}
+
+function showPriority(job_id)
+{
+	// set the multi job_id variable to null since we are using a single job id
+	gl_job_id_array = null
+	gl_job_id = job_id;
+
+	$('#job-list-dialog-priority').dialog('open');
+}
+
+function processPriority(priority_id)
+{
+	if (gl_job_id == null && gl_job_id_array == null) {
+		alert ('Audio job id(s) could not be found - please reload the page and try again');
+		$('#job-list-dialog-priority').dialog('close');
+		return false;
+	}
+
+	var url ="<?php echo $this->url(array('controller' => 'job', 'action' => 'update-priority'), null, true); ?>";
+
+	if (gl_job_id_array != null) {
+		formData = gl_job_id_array;
+		formData.push({'name' : 'use_multiple_job_ids', 'value' : true });
+	} else {
+		formData = [{'name' : 'job_id', 'value' : gl_job_id }];
+		formData.push({'name' : 'use_multiple_job_ids', 'value' : false });
+	}
+
+	formData.push({'name' : 'priority_id', 'value' : priority_id });
+
+	//$('#job-list-dialog-priority').dialog('close');
+	//return false;
+
+	$.ajax({
+		type: "POST",
+	  	url: url,
+	  	data: formData,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg ) {
+		if (msg.status == "ok") {
+			if (gl_job_id_array != null) {
+				// loop through the selected audio job ids and set the status element
+				for ( var index=0; index<gl_job_id_array.length; index++ ) {
+					if (gl_job_id_array[index].name.substr(0,6) == "check-") {
+						$("#job-list-priority-" + gl_job_id_array[index].value).html(msg.html[gl_job_id_array[index].value]);
+					}
+				}
+			} else {
+				$("#job-list-priority-" + gl_job_id).html(msg.html[gl_job_id]);
+			}
+			$('#job-list-dialog-priority').dialog('close');
+		}
+	});
+}
+
+function showDueDate(job_id, date_time)
+{
+	// set the multi job_id variable to null since we are using a single job id
+	if (job_id !== undefined) {
+		gl_job_id_array = null
+		gl_job_id = job_id;
+	}
+
+	//due_date = $("#due-date-value-" + job_id).html();
+	if (date_time !== undefined) {
+		$("#job-list-client_due_date").val(date_time);
+	}
+	var rangeDemoFormat = "%Y-%m-%d %H:%i:00";
+	var earliest = "<?php echo date('Y-m-d H:00:00') ?>";
+	$("#job-list-client_due_date").AnyTime_picker({
+		format:rangeDemoFormat,
+		placement: "inline",
+		hideInput:true,
+		earliest: earliest,
+		firstDOW: 1
+	});
+	$( "#job-list-dialog-due-date-btn_save" ).button();
+	$('#job-list-dialog-due-date').dialog('open');
+}
+
+function processDueDate()
+{
+	if (gl_job_id == null && gl_job_id_array == null) {
+		alert ('Job id(s) could not be found - please reload the page and try again');
+		$('#job-list-dialog-due-date').dialog('close');
+		return false;
+	}
+
+	var url ="<?php echo $this->url(array('controller' => 'job', 'action' => 'update-due-date'), null, true); ?>";
+
+	if (gl_job_id_array != null) {
+		formData = gl_job_id_array;
+		formData.push({'name' : 'use_multiple_job_ids', 'value' : true });
+	} else {
+		formData = [{'name' : 'job_id', 'value' : gl_job_id }];
+		formData.push({'name' : 'use_multiple_job_ids', 'value' : false });
+	}
+
+	due_date = $("#job-list-client_due_date").val();
+	formData.push({'name' : 'due_date', 'value' : due_date });
+
+	$.ajax({
+		type: "POST",
+	  	url: url,
+	  	data: formData,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg ) {
+		if (msg.status == "ok") {
+			if (gl_job_id_array != null) {
+				// loop through the selected audio job ids and set the status element
+				for ( var index=0; index<gl_job_id_array.length; index++ ) {
+					if (gl_job_id_array[index].name.substr(0,6) == "check-") {
+						var cell = $("#job-list-due-date-" + gl_job_id_array[index].value);
+						cell.html(msg.html[gl_job_id_array[index].value]);
+//						// need to set parent row bg colour
+						cell.closest('tr').css("background-color",msg.css_bgcolor[gl_job_id_array[index].value]);
+					}
+				}
+			} else {
+				var cell = $("#job-list-due-date-" + gl_job_id);
+				cell.html(msg.html[gl_job_id]);
+//				// need to set parent row bg colour
+				cell.closest('tr').css("background-color", msg.css_bgcolor[gl_job_id]);
+			}
+			$('#job-list-dialog-due-date').dialog('close');
+		}
+	});
+}
+
+/**
+ * Reloads the page, here as problems arising in Chrome
+ *
+ * @return void
+ */
+function _reloadPage()
+{
+    window.location.reload();
+}
+
+function _confirmEdit( idString )
+{
+    var idArray = idString.split( '-' );
+    if ( idArray.length > 1 )
+    {
+        var conf = confirm('Are you sure you want to amend ' + idArray.length + ' projects (' + idString +')');
+        return conf;
+    }
+    return true;
+}
+
+function _getJobIds( jobId )
+{
+    if ( jobId !== 'undefined' )
+    {
+        $( 'input[name="check-' + jobId + '"]' ).attr( 'checked', 'checked' );
+    }
+    gl_job_id_array = $('input', jobTable.fnGetNodes()).serializeArray();
+
+    var jobIdArray = [];
+    $( gl_job_id_array ).each( function( key, element )
+    {
+        jobIdArray[key] = element.value;
+    });
+
+    var idString = jobIdArray.join( '-' );
+
+    if ( idString.length > 0 )
+    {
+        return idString;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+function showStatus(job_id)
+{
+	// set the multi job_id variable to null since we are using a single job id
+	_getJobIds( job_id );
+	gl_job_id = job_id;
+
+	$('#job-list-dialog-status').dialog('open');
+}
+
+function processStatus(status_id, status)
+{
+
+    var jobIdString = _getJobIds();
+
+	if (gl_job_id == null && gl_job_id_array == null) {
+		alert ('Audio job id(s) could not be found - please reload the page and try again');
+		$('#job-list-dialog-status').dialog('close');
+		return false;
+	}
+
+    if (!_confirmEdit( jobIdString ))
+    {
+        return false;
+    }
+
+	var url ="<?php echo $this->url(array('controller' => 'job', 'action' => 'update-status'), null, true); ?>";
+    url += '/job_id/' + jobIdString;
+
+	var formData = [];
+
+	formData.push({'name' : 'status_id', 'value' : status_id });
+
+	$.ajax({
+		type: "POST",
+	  	url: url,
+	  	data: formData,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg ) {
+		if (msg.status == "ok") {
+			$('#job-list-dialog-status').dialog('close');
+            _reloadPage();
+		} else {
+			alert(msg.message);
+		}
+	});
+}
+
+function archive() {
+    gl_job_id_array = $('input', jobTable.fnGetNodes()).serializeArray();
+
+	if (gl_job_id == null && gl_job_id_array == null) {
+		alert ('Project id(s) could not be found - please reload the page and try again');
+		return false;
+	}
+
+	if (gl_job_id_array.length == 0) {
+		alert("No project selected");
+		return false;
+	}
+
+	if (gl_job_id_array.length > 1) {
+		alert("It is only possible to delete one project at a time");
+		return false;
+	}
+
+	var id = gl_job_id_array[0].value;
+
+	if (confirm("Confirm deletion of project ID " + id + "?\n\nTHIS OPERATION CANNOT BE UNDONE")) {
+		// do nothing - continue
+	} else {
+		return false;
+	}
+
+	var url ="<?php echo $this->url(array('controller' => 'job', 'action' => 'archive'), null, true); ?>"
+	url += "/id/" + id;
+
+	$.ajax({
+		type: "GET",
+	  	url: url,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg ) {
+		if (msg.status == "ok") {
+			ns = $("#tr-" + gl_job_id_array[0].value)[0];
+			jobTable.fnDeleteRow(ns);
+			alert("Project deleted");
+		} else {
+			alert("Project could not be deleted");
+		}
+
+	});
+}
+</script>

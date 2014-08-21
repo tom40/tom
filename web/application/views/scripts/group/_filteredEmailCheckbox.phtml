@@ -1,0 +1,18 @@
+<?php if (!empty($this->data)): ?>
+<h2><?php echo $this->title; ?> (<?php echo count($this->data); ?>)</h2>
+
+<table>
+    <?php foreach($this->data as $user): ?>
+    <tr>
+        <td>
+        <?php if (!$this->selectAll): ?>
+            <input class="auto-check" type="checkbox" name="<?php echo $this->checkboxName; ?>[]" <?php if(in_array($user['email'], $this->selected)): ?>checked="checked"<?php endif; ?> value="<?php echo $user['email']; ?>"/>
+        <?php else: ?>
+            <input class="auto-check" type="checkbox" name="<?php echo $this->checkboxName; ?>[]" checked="checked" value="<?php echo $user['email']; ?>"/>
+        <?php endif; ?>
+        </td>
+        <td><?php echo $user['user_name']; ?> (<?php echo $user['email']; ?>)</td>
+    </tr>
+    <?php endforeach; ?>
+</table>
+<?php endif; ?>

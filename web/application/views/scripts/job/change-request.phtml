@@ -1,0 +1,53 @@
+<div class="ui-state-default ui-widget-content ui-widget-header">
+	<h3 style="padding:5px">Change request for Job ID: <?php echo $this->job['id']?>
+		<span style="color: #A8A8A8; font-size: 75%">
+		<?php if (strlen($this->job['title']) > 50) {
+			echo substr($this->job['title'], 0, 50) . '...';
+		} else {
+			echo $this->job['title'];
+		}?>
+		</span>
+	</h3>
+</div>
+
+<?php
+$this->form->setAction($this->url());
+?>
+
+<div>
+    <p class="validateTips">Form fields marked with * are required.</p>
+    <form id="formJobChangeRequest" method="<?php echo $this->form->getMethod(); ?>" action="<?php echo $this->form->getAction(); ?>">
+    	<?php echo $this->form->job_id; ?>
+        <table class="data">
+        	<tr class="first">
+                <td class="field">
+                    <label for="name">Change request:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->change_request; ?></span>
+                </td>
+            </tr>
+		    <tr>
+                <td>
+                    &nbsp;
+                </td>
+                <td>
+                    <?php //echo $this->form->submit; ?>
+                    <a href="#" onclick="processChangeRequest();return false;" class="button-img">
+                    	<img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/submit_button.png'?>" title="Save job">
+                    </a>
+                    <a href="#" onclick="$('#job-dialog-change-request').dialog('close'); return false;" class="button-img">
+				    	<img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/cancel_button.png'?>" title="Cancel job">
+				    </a>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script>
+	$(function() {
+		$( "#btn_save" ).button();
+		$( "#btn_cancel" ).button();
+	});
+</script>

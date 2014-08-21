@@ -1,0 +1,22 @@
+<div id="shift-calendar">
+
+	<h1>Shiftbooker</h1>
+	<?php $this->headLink()->prependStylesheet($this->baseUrl() . '/js/fullcalendar/fullcalendar.css'); ?>
+	<?php $this->headLink()->prependStylesheet($this->baseUrl() . '/js/fullcalendar/fullcalendar.print.css'); ?>
+	<?php $this->headScript()->appendFile( '/js/fullcalendar/fullcalendar.min.js', 'text/javascript'); ?>
+	<div id='loading' style='display:block'>loading...</div>
+
+
+	<?php if (isset($this->dualUserTypeSelect) && !empty($this->dualUserTypeSelect)): ?>
+		<form method="post" id="user-type-dropdown">
+			<select name="usertype">
+				<option value="typist" <?php if ('typist' == $this->userType): ?>selected="selected"<?php endif; ?>>Typist</option>
+				<option value="proofreader" <?php if ('proofreader' == $this->userType): ?>selected="selected"<?php endif; ?>>Proofreader</option>
+			</select>
+			<input type="submit" value="Display" />
+		</form>
+	<?php endif; ?>
+
+    <?php echo $this->partial('/user-shift-booker/_calendar.phtml', array('userType' => $this->userType, 'userId' => null)); ?>
+
+</div>

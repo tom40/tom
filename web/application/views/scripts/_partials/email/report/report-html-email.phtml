@@ -1,0 +1,21 @@
+<?php echo $this->partial('/_partials/email/_defaultHeader.phtml',
+    array(
+            'appName' => $this->appName,
+            'title'   => $this->appName . ' Report'
+        )
+    );
+?>
+    Your proofreaders report for the following transcript is now ready to view - <a href="<?php echo $this->reportUrl; ?>"> <?php echo $this->projectName; ?> - <?php echo $this->fileName; ?></a>. Please login to the portal at your convenience using this link.
+
+    <br/>
+    <br/>
+    Thankyou<br/>
+    The Take Note Team
+    <br />
+<?php echo $this->partial('/_partials/email/_defaultFooter.phtml',
+    array(
+            'appName' => $this->appName,
+            'appUrl' => $this->appUrl
+        )
+    );
+?>

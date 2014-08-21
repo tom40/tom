@@ -1,0 +1,184 @@
+<?php
+$class = '';
+
+if ($this->isLead)
+{
+    $class = 'lead-audio-job ';
+}
+
+if ($this->lead_id > '0')
+{
+    $class .= ' child-audio-job';
+}
+?>
+<tr class="<?php echo $class; ?> 
+	<?php  if ($this->status_id == 1): ?>
+
+	<?php endif;?>
+	<?php if (!is_null($this->due_date_unix) && $this->due_date_unix <= time()) : ?>
+		overdue
+	<?php endif;?>
+
+	<?php if (!$this->current) : ?>
+		background-color: #D3D3D3;
+	<?php endif;?>
+
+	">
+	<td> <!-- 0 -->
+		<div>
+			<?php echo $this->audio_job_id; ?>
+            <br />
+            <a href="#" onclick="doPanic(<?php echo $this->id; ?>);return false;">
+                <img src="<?php echo $this->baseUrl(); ?>/images/panic_icon.png" title="Panic button - help I'm a typist get me out of here!"/>
+            </a>
+		</div>
+	</td>
+	<td>
+		<div>
+			<?php echo $this->audio_job_id; ?>
+		<div>
+	</td><!-- 1 --><!--  for sorting -->
+	<td>
+		<div><!-- 2 -->
+			<span id="job-list-audio-status-<?php echo $this->escape($this->audio_job_id); ?>">
+				<a href="#" onclick="showStatus(<?php echo $this->escape($this->audio_job_id); ?>, true); return false;"><?php echo $this->escape($this->status); ?></a>
+			</span>
+		</div>
+	</td>
+    <td> <!-- 3 -->
+    	<div>
+			<?php echo wordwrap($this->file_name, 35, '<br />', true);?>
+            <?php if( !is_null($this->internal_comments) && $this->internal_comments != '' ): ?>
+                <span class="job-comments">
+		<img src="<?php echo $this->baseUrl() .'/images/comment_icon.png'?>" title="Comments exist for this job" />
+		<span class="hidden-comments">
+            <?php
+            if ( !empty( $this->internal_comments ) )
+            {
+                ?>
+                <h2>Internal Comments</h2>
+                <p>
+                    <?php echo $this->internal_comments; ?>
+                </p>
+            <?php
+            }
+            ?>
+		</span>
+	</span>
+            <?php endif;?>
+    	</div>
+    </td>
+    <td><!-- 6 -->
+		<div>
+			<span style="font-size: 100%;">
+                <?php
+                echo $this->transcription_type;
+                if ( !empty( $this->service_id ) )
+                {
+                    echo '<br />' . $this->speaker_numbers . ' SPEAKERS' . '<br />' . $this->additional_services;
+                }
+                ?>
+			</span>
+		</div>
+    </td>
+	<td> <!-- 4 -->
+   		<div>
+			<span id="job-list-audio-typist-<?php echo $this->escape($this->audio_job_id); ?>">
+			<?php echo $this->partial('audio-job/typist-list-cell-staff.phtml', array(
+				'data' => array(
+					'typist_name'			=> $this->typist_name,
+					'typist_due_date'		=> $this->due_date_unix,
+					'accepted'				=> $this->accepted,
+					'downloaded'			=> $this->downloaded,
+					'audio_jobs_typists_id' => $this->id,
+					'id'					=> $this->audio_job_id)
+				)
+			); ?>
+			</span>
+		</div>
+	</td>
+	<td><!-- 5 -->
+		<div>
+			<span id="job-list-typist-date-<?php echo $this->escape($this->audio_job_id); ?>">
+
+				<?php echo $this->partial('audio-job/typist-due-date-list-cell-staff.phtml', array(
+					'data' => array(
+						'due_date_unix'			=> $this->due_date_unix,
+						'due_days'				=> $this->due_days,
+						'due_hours'				=> $this->due_hours,
+						'id'					=> $this->audio_job_id)
+					)
+				); ?>
+			</span>
+		</div>
+	</td>
+	<!-- for sorting --> <!-- 6 -->
+	<td>
+		<div>
+			<?php echo $this->due_date_unix; ?>
+		</div>
+	</td>
+	<td><!-- 7 -->
+		<div>
+			<?php if (!is_null($this->minutes_start)): ?>
+			<?php echo $this->escape(($this->minutes_end - $this->minutes_start)); ?>m
+			<?php else:?>
+			<?php echo $this->displayAudioJobLength($this->length_seconds); ?>
+			<?php endif;?>
+		</div>
+    </td>
+    <td><!-- 8 -->
+    	<div>
+			<?php if (!is_null($this->minutes_start)): ?>
+			This file is split. Please transcribe from the beginning of minute <?php echo ($this->minutes_start)?> to the beginning of minute <?php echo ($this->minutes_end)?>.
+			<?php endif;?>
+			<?php echo $this->escape($this->typist_comment) ?>
+		</div>
+    </td>
+    <td class="centre-image"> <!-- 9 -->
+    	<div>
+			<?php echo $this->partial('audio-job/sound-file-list-cell.phtml', array(
+				'data' => array(
+					'id'						=> $this->audio_job_id,
+					'link'						=> $this->link
+				)
+
+			)); ?>
+		</div>
+	</td>
+	<td class="centre-image"> <!-- 10 -->
+		<div>
+			<span id="job-list-audio-transcript-<?php echo $this->escape($this->audio_job_id); ?>">
+			<?php echo $this->partial('audio-job/transcript-list-cell.phtml', array(
+				'data' => array(
+					'typist_count' 				=> $this->typist_count,
+					'id'						=> $this->audio_job_id,
+					'transcription_file_count'	=> $this->transcription_file_count,
+					'transcription_file_id'		=> $this->transcription_file_id,
+					'canUpload'					=> $this->canUpload)
+				)
+			); ?>
+			</span>
+		</div>
+	</td>
+	<td> <!-- 11 -->
+		<div>
+			<span id="job-list-support-file-<?php echo $this->escape($this->audio_job_id); ?>">
+			<?php echo $this->partial('audio-job/support-file-list-cell.phtml', array(
+				'data' => array(
+					'support_file_count' 		=> $this->support_file_count,
+					'job_id'					=> $this->job_id)
+				)
+			); ?>
+			</span>
+		</div>
+	</td>
+    <td>
+    	<div>
+			<?php
+				$reportId = $this->getTypistReportLink($this->audio_job_id);
+				echo $this->partial('audio-job/report-typist-cell.phtml', array('reportId' => $reportId));
+			 ?>
+		</div>
+    </td>
+</tr>

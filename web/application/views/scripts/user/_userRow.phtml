@@ -1,0 +1,54 @@
+<tr id="tr-<?php echo $this->id; ?>">
+	<td>
+		<div>
+			<?php echo $this->escape($this->id); ?>
+		</div>
+	</td>
+    <td>
+    	<div>
+			<?php echo $this->escape($this->name); ?>
+    	</div>
+    </td>
+    <td>
+    	<div>
+    		<?php echo $this->escape($this->acl_group); ?>
+		</div>
+	</td>
+	<td>
+		<div>
+    		<?php echo $this->escape($this->client); ?>
+		</div>
+	</td>
+	<td>
+		<div>
+			<?php echo $this->escape($this->email); ?>
+		</div>
+	</td>
+	<td>
+		<div>
+			<?php if(!is_null($this->landline) && $this->landline != ''): ?>
+				<?php echo $this->escape($this->landline); ?>
+				<?php if(!is_null($this->mobile) && $this->mobile != ''): ?>
+				&nbsp;|&nbsp;
+				<?php endif; ?>
+			<?php endif;?>
+			<?php if(!is_null($this->mobile) && $this->mobile != ''): ?>
+				<?php echo $this->escape($this->mobile); ?> 
+			<?php endif;?>
+		</div>
+	</td>
+	<td>
+		<div>
+			<span id="list-user-actions-cell-<?php echo $this->id; ?>">
+			<?php echo $this->partial('user/list-user-actions-cell.phtml', 
+				array(
+					'data' => array(
+						'id' 			=> $this->id,
+						'active'		=> $this->active
+					)
+				)
+			); ?>
+			</span>
+		</div>
+	</td>
+</tr>

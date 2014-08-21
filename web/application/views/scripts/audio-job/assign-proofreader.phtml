@@ -1,0 +1,18 @@
+<?php
+    echo $this->partial('/_partials/_audioJobUserList.phtml',
+        array(
+                'title'          => 'Proofreader',
+                'form'           => $this->form,
+                'dueDays'        => $this->dueDays,
+                'usersOnShift'   => $this->usersOnShift,
+                'otherUsers'     => $this->otherUsers,
+                'user_id'        => $this->user_id,
+                'shiftId'        => $this->shiftId,
+                'fullFileName'   => $this->fullFileName,
+                'userView'       => '_audioJobProofreaderList.phtml',
+                'userType'       => 'proofreader',
+                'selectedDueDay' => $this->selectedDueDay,
+                'audioJobs'      => $this->audioJobs
+             )
+    );
+?>

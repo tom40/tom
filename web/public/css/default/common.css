@@ -1,0 +1,63 @@
+@CHARSET "UTF-8";
+
+/*----- FlashMessenger -----*/
+
+.flashmessenger {
+    border-top: 1px dotted #f3ce62;
+    padding:15px 15px 15px 26px;
+    margin:0;
+    position:fixed;
+    top:0;
+    left:0;
+    right:0;
+    z-index:9999;
+    display:none;
+}
+.flashmessenger p{
+	padding:6px 0 0 4px;
+    margin:0;
+    font-size:15px;
+}
+.flashmessenger.notice {
+    background: #faeecb url(../../images/icons/information.png) 10px 21px no-repeat;
+    background-color: #ecfeec;
+    border-bottom: 1px solid green;
+    color: green;
+}
+
+.flashmessenger.warning {
+    background: #faeecb url(../../images/icons/error.png) 10px 21px no-repeat;
+    background-color: #fef8ec;
+    border-bottom: 1px solid orange;
+    color: orange;
+}
+
+.flashmessenger.error {
+    background: #faeecb url(../../images/icons/exclamation.png) 10px 21px no-repeat;
+    background-color: #fef1ec;
+    border-bottom: 1px solid #cd0a0a;
+    color: red;
+}
+
+
+/*----- jQuery timepicker -----*/
+
+.ui-timepicker-div .ui-widget-header {
+    margin-bottom: 8px;
+}
+
+.ui-timepicker-div dl {
+    text-align: left;
+}
+
+.ui-timepicker-div dl dt {
+    height: 25px;
+}
+
+.ui-timepicker-div dl dd {
+    margin: -25px 0 10px 65px;
+}
+
+.ui-timepicker-div td {
+    font-size: 90%;
+}

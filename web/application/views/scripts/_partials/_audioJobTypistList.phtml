@@ -1,0 +1,100 @@
+    <h4 class="no-margin">On Shift</h4>
+    <p>
+        <?php if (1 == count($this->usersOnShift)): ?>
+            <?php echo count($this->usersOnShift); ?> typist found
+        <?php else: ?>
+            <?php echo count($this->usersOnShift); ?> typists found
+        <?php endif; ?>
+    </p>
+    <?php
+    	if (!empty($this->usersOnShift)): ?>
+        <table>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Grade</th>
+                <th>PPM</th>
+                <th>Speed</th>
+                <th>Trained In</th>
+            </tr>
+            <?php $i = 0; foreach ($this->usersOnShift as $typist): ?>
+                <tr <?php if($i % 2 == 0){echo 'class="even"';}; ?>>
+                    <td><input type="radio" name="user_id" value="<?php echo $this->escape($typist['user_id']); ?>" <?php if($this->user_id == $typist['user_id']):?>checked<?php endif;?> /></td>
+                    <td>
+                        <?php if (!empty($typist['comments'])): ?>
+                            <span class="audio-job-user-comment">
+                                <img src="<?php echo $this->baseUrl() .'/images/info_icon.png'?>"/>
+                                <span class="comment-holder" style="display:none;"><?php echo $typist['comments']; ?></span>
+                            </span>
+                        <?php endif; ?>
+                        <span class="operative-search-name" id="assign-typist-typist-name-<?php echo $this->escape($typist['user_id']); ?>"><?php echo $this->escape($typist['name']); ?></span>
+                        <span><?php echo $this->userAudioJobsForShift($typist['user_id'], $this->shiftId); ?></span>
+                    </td>
+                    <td><?php echo $typist['grade']; ?></td>
+                    <td><?php echo $this->typistPayPerMinute($typist, $this->audioJobs); ?></td>
+
+                    <td><?php echo $typist['typing_speed']; ?></td>
+                    <td class="ability-col"><?php echo $this->partial('/audio-job/_userAbilityCol.phtml', array('userId' => $typist, 'userType' => 'typist')); ?></td>
+                </tr>
+            <?php
+            	$i++;
+            	endforeach;
+            ?>
+        </table>
+
+    <?php else: ?>
+        <p>There are no typists on shift for the selected shift</p>
+    <?php endif; ?>
+
+    <h4>Other Typists</h4>
+    <p>
+        <?php if (1 == count($this->otherUsers)): ?>
+            <?php echo count($this->otherUsers); ?> typist found
+        <?php else: ?>
+            <?php echo count($this->otherUsers); ?> typists found
+        <?php endif; ?>
+    </p>
+    <?php if (!empty($this->otherUsers)): ?>
+        <table>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Grade</th>
+                <th>PPM</th>
+                <th>Speed</th>
+                <th>Trained In</th>
+            </tr>
+            <?php $i = 0; foreach ($this->otherUsers as $typist): ?>
+                <tr <?php if($i % 2 == 0){echo 'class="even"';}; ?>>
+                    <td><input type="radio" name="user_id" value="<?php echo $this->escape($typist['user_id']); ?>" <?php if($this->user_id == $typist['user_id']):?>checked<?php endif;?>  /></td>
+                    <td>
+                        <?php if (!empty($typist['comments'])): ?>
+                            <span class="audio-job-user-comment">
+                                <img src="<?php echo $this->baseUrl() .'/images/info_icon.png'?>"/>
+                                <span class="comment-holder" style="display:none;"><?php echo $typist['comments']; ?></span>
+                            </span>
+                        <?php endif; ?>
+                        <span class="operative-search-name" id="assign-typist-typist-name-<?php echo $this->escape($typist['user_id']); ?>"><?php echo $this->escape($typist['name']); ?></span>
+                        <span><?php echo $this->userAudioJobsForShift($typist['user_id'], $this->shiftId); ?></span>
+
+                    </td>
+                    <td><?php echo $typist['grade']; ?></td>
+                    <td><?php echo $this->typistPayPerMinute($typist, $this->audioJobs); ?></td>
+                    <td><?php echo $typist['typing_speed']; ?></td>
+                    <td class="ability-col"><?php echo $this->partial('/audio-job/_userAbilityCol.phtml', array('userId' => $typist, 'userType' => 'typist')); ?></td>
+                </tr>
+            <?php
+            	$i++;
+            	endforeach;
+            ?>
+        </table>
+    <?php else: ?>
+        <p>There are no other typists for the selected shift</p>
+    <?php endif; ?>
+<script type="text/javascript">
+    $(".audio-job-user-comment").tooltip({
+        bodyHandler: function() {
+            return $(this).find(".comment-holder").html();
+        }
+    });
+</script>

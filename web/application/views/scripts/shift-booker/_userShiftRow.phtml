@@ -1,0 +1,53 @@
+<tr>
+    <td width="20%">
+        <div>
+        <?php if (!empty($this->userInfo['comments'])): ?>
+            <img class="toggle-user-comments" id="<?php echo $this->userId; ?>" src="/images/icons/information.png" />
+        <?php endif; ?>
+            <a href="<?php echo $this->url(array('controller' => 'user', 'action' => 'edit', 'id' => $this->userId), null, true); ?>">
+                <span style="font-size:90%"><?php echo $this->escape($this->userInfo['name']); ?></span>
+            </a>
+            <?php echo $this->partial('/shift-booker/_userAbilityCol.phtml', array('userId' => $this->userId, 'userType' => $this->userType)); ?>
+        </div>
+
+        <div id="shiftbooker-user-detail-<?php echo $this->userId; ?>" style="clear:both; display: none;font-size:80%; margin-top:3px">
+			<p>Comments:<br /><?php echo $this->escape($this->userInfo['comments']); ?></p>
+		</div>
+    </td>
+
+    <td class="user-grade">
+    	<div>
+            <?php echo $this->escape($this->userInfo['grade']); ?>
+            <?php if (isset($this->userInfo['typing_speed']) && !empty($this->userInfo['typing_speed'])): ?>
+   				(<?php echo $this->escape($this->userInfo['typing_speed']); ?>)
+            <?php endif;?>
+		</div>
+    </td>
+
+    <?php
+    foreach($this->shiftDays as $day):
+    $bgColor = '#FFFFFF';
+
+    if (isset($this->userShifts[$day['start_day_number']]))
+    {
+        $shiftStatus = $this->getShiftStatus($day['id'], $this->userShifts[$day['start_day_number']]);
+        if ('BOOKED' == $shiftStatus)
+        {
+            $bgColor = 'class="booked"';
+        }
+        else if ('HOLIDAY' == $shiftStatus)
+        {
+            $bgColor = 'class="holiday"';
+        }
+    }
+
+    ?>
+    <td <?php echo $bgColor; ?>">
+        <div  onclick="showDeleteShift('<?php echo $this->userId; ?>', '<?php echo $day['id']; ?>', '<?php echo $this->userType; ?>')">
+            <?php if (isset($this->userShifts[$day['start_day_number']])): ?>
+				<?php echo $shiftStatus; ?>
+            <?php endif; ?>
+        </div>
+    </td>
+    <?php endforeach; ?>
+</tr>

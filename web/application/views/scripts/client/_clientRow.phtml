@@ -1,0 +1,33 @@
+<?php
+foreach ( $this->clients as $client )
+{
+?>
+<tr>
+	<td>
+		<div>
+			<?php echo $this->escape($client->id); ?>
+		</div>
+	</td>
+    <td>
+    	<div>
+			<?php echo $this->escape($client->name); ?>
+		</div>
+    </td>
+    <td>
+    	<div>
+			<?php echo $this->escape($client->telephone); ?>
+		</div>
+    </td>
+    <td>
+        <div>
+            <?php echo $this->escape( $client->getServiceGroupsString() ); ?>
+        </div>
+    </td>
+    <td>
+    	<div>
+    		<a href="<?php echo $this->url(array('controller' => 'client', 'action' => 'edit', 'id' => $client->id), null, true); ?>" class="to_person">Edit</a>
+		</div>
+	</td>
+</tr>
+<?php
+}

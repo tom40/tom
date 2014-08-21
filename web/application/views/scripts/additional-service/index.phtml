@@ -1,0 +1,95 @@
+<h1 class="page-title">Additional Services</h1>
+
+ <div id="table-utility<?php echo $this->customClass; ?>" class="no-cta">
+
+	<div id="utility-links">
+		<a href="<?php echo $this->url(array('controller' => 'additional-service', 'action' => 'create'), null, true); ?>" class="no-icon">
+			Add Service
+		</a>
+	</div>
+</div>
+
+<div id="container" style="width:100%">
+    <table class="index" id="tbl_users">
+        <thead>
+        <th style="width:20px">ID</th>
+        <th>Name</th>
+        <th>DESCRIPTION</th>
+        <th>PRICE</th>
+        <th>&nbsp;</th>
+        </thead>
+        <tbody>
+            <?php if (!empty($this->services)): ?>
+                <?php echo $this->partialLoop('additional-service/_serviceRow.phtml', $this->services); ?>
+            <?php endif; ?>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+<script>
+var asInitVals = new Array();
+var oTable;
+$(document).ready(function() {
+
+	$('.flashmessenger').delay(2000).fadeOut('slow');
+
+    oTable = $('#tbl_users').dataTable({
+        "bJQueryUI": true,
+        "sPaginationType": "full_numbers",
+        "bPaginate": false,
+        "bStateSave": true,
+        "oLanguage": {
+            "sSearch": "Search all columns:",
+            "sEmptyTable": "No services available"
+        }
+    });
+
+    $("tfoot input").keyup( function () {
+        /* Filter on the column (the index) of this element */
+        // note: add +1 to the index.value as there is no input in col 0 so the index of the text input doesn't match the index of the column being queried
+        oTable.fnFilter(this.value, $("tfoot input").index(this)+1);
+    } );
+
+
+    /*
+     * Support functions to provide a little bit of 'user friendlyness' to the textboxes in
+     * the footer
+     */
+    $("tfoot input").each( function (i) {
+        asInitVals[i] = this.value;
+    } );
+
+    $("tfoot input").focus( function () {
+        if ( this.className == "search_init" )
+        {
+            this.className = "";
+            this.value = "";
+        }
+    } );
+
+    $("tfoot input").blur( function (i) {
+        if ( this.value == "" )
+        {
+            this.className = "search_init";
+            this.value = asInitVals[$("tfoot input").index(this)];
+        }
+    } );
+
+    $(".confirmBox").click( function (i) {
+        if (confirm("Are you sure you want to perform this action?")) {
+            return true;
+        }
+
+        return false;
+    });
+} );
+
+</script>

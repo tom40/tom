@@ -1,0 +1,586 @@
+<div id="service-descriptions" style="display: none">
+    <span id="service-descriptions-container" class="view"></span>
+</div>
+
+<style>
+	div.AnyTime-win {border:1px solid #C0C0C0;background-color:transparent;font:normal normal normal xx-small/normal sans-serif;padding-bottom:0.2em;-moz-border-radius:6px;-webkit-border-radius:6px}
+</style>
+
+<h1 class="page-title">
+	Editing project ID: <?php echo $this->job['id']?>
+	<span style="color: #A8A8A8; font-size: 75%">
+		<?php if (strlen($this->job['title']) > 50) {
+			echo substr($this->job['title'], 0, 50) . '...';
+		} else {
+			echo $this->job['title'];
+		}?>
+	</span>
+</h1>
+
+<div id="table-utility<?php echo $this->customClass; ?>" class="no-cta">
+	<div id="utility-links">
+		<a href="<?php echo $this->url(array('controller' => 'job', 'action' => 'view', 'id' => $this->job['id']), null, true); ?>">
+			<img style="vertical-align:text-top; padding: 0px 0px 3px 2px" src="<?php echo $this->baseUrl() .'/images/icons/script_edit.png'?>" title="Edit this job">
+			Return to view project
+		</a>
+
+	</div>
+</div>
+
+
+
+<?php
+$this->form->setAction($this->url());
+?>
+
+<div id="edit-job">
+    <p class="validateTips">Form fields marked with * are required.</p>
+    <form id="formEditjob" method="<?php echo $this->form->getMethod(); ?>" action="<?php echo $this->form->getAction(); ?>">
+    	<?php echo $this->form->id; ?>
+        <table class="data">
+        	<tr class="first" colspan="2">
+                <td class="field">
+                    <label for="title">Project title:<span class="required">*</span></label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->title; ?></span>
+                </td>
+
+                <td class="field">
+                    <label for="clientId">Client:<span class="required">*</span></label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->client_id; ?></span>
+                </td>
+            </tr>
+            <tr >
+                <td class="field">
+                    <label for="name">Status:<span class="required">*</span></label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->status_id; ?></span>
+                </td>
+                <td class="field">
+                    <label for="name">Priority:<span class="required">*</span></label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->priority_id; ?></span>
+                </td>
+            </tr>
+        	<tr>
+        		<td class="field">
+                    <label for="name">PO number / Reference<span class="required">*</span>:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->po_number; ?></span>
+                    <div style="color:#A3A3A3;padding:5px 0 0;">(Reference for invoice)</div>
+                </td>
+                <td class="field">
+                    <label for="title">Primary contact:<span class="required">*</span></label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->primary_user_id; ?></span>
+                </td>
+			</tr>
+            <tr <?php if (empty($this->clientUsers) || count($this->clientUsers) == 1): ?>style="display:none;"<?php endif; ?> id="grant-access-holder">
+        		<td class="field"></td>
+                <td class="value"></td>
+                <td class="field">
+                    <label for="title">Grant Access to These Colleagues:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->client_colleagues; ?></span>
+                    <div id="colleagues-data">
+                        <?php if (isset($this->clientUsers)): ?>
+                            <?php echo $this->partial('/job/_clientUserColleagues.phtml',
+                                    array(
+                                        'clientUsers'         => $this->clientUsers,
+                                        'selectedClientUsers' => $this->selectedClientUsers,
+                                        'primaryUserId'       => $this->primaryUserId,
+                                        'isEditAction'        => isset($this->isEditAction) ? $this->isEditAction : false,
+                                        'jobId'               => $this->jobId
+                                    ));
+                            ?>
+                        <?php endif; ?>
+                    </div>
+                </td>
+			</tr>
+        	<tr>
+                <td class="field">
+                    <label for="name">Start date:<span class="required">*</span></label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->job_start_date; ?></span>
+                    <div style="color:#A3A3A3;padding:5px 0 0;">(Please select the start date for project. Use the cross at the top right of the popup to close it once you've selected a date)</div>
+                </td>
+                <td class="field">
+                    <label for="name">Completion date:<span class="required">*</span></label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->job_due_date; ?></span>
+                    <div style="color:#A3A3A3;padding:5px 0 0;">(Please select the final due date for project completion, you will have an opportunity to insert individual deadlines at upload stage.
+                    <br />
+                    Use the cross at the top right of the popup to close it once you've selected a date)
+                    </div>
+                </td>
+            </tr>
+            <tr>
+
+                <td class="field">
+                    <label for="name">Expected total number<br />
+                    of audio files:<span class="required">*</span></label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->estimated_audio_files; ?></span>
+
+                </td>
+
+                <td class="field">
+                    <label for="title">Additional transcript recipients:</label>
+                    <br />
+                    <span style="color:#A3A3A3">(Email addresses, comma separated)</span>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->additional_transcript_recipients; ?></span>
+                </td>
+            </tr>
+            <tr>
+
+                <td class="field">
+					&nbsp;
+                </td>
+                <td class="value">
+                    &nbsp;
+                </td>
+                <td class="field">
+                    <label for="title">Email each transcript on completion:</label>
+                </td>
+                <td class="value checkboxes">
+                    <span class="view"><?php echo $this->form->email_each_transcript_on_complete; ?></span>
+                    <span style="color:#A3A3A3">(Please tick this box if you would like each transcript to be emailed as completed, alternatively leave unchecked and we will notify you only when ALL in this project have been finished)</span>
+                </td>
+            </tr>
+            <tr>
+            	<td colspan="4">
+            		<p>
+                		Please use this section to alert our transcribers to anything specific within the project. For example technical spelling/specific formatting requirements or sections you would like to be missed out. It's always helpful for us to receive supporting documents for your project and you can upload these alongside your audio files in the next step.
+                	</p>
+                </td>
+            <tr>
+            <tr>
+
+                <td class="field">
+                    <label for="name">Client comments:</label>
+                </td>
+                <td class="value" <?php if(!$this->isAdmin):?>colspan="3"<?php endif;?>>
+                    <span class="view"><?php echo $this->form->client_comments; ?></span>
+                </td>
+
+            	<?php if($this->isAdmin):?>
+                <td class="field">
+                    <label for="name">Internal comments:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->internal_comments; ?></span>
+                </td>
+                <?php endif;?>
+            </tr>
+            <tr>
+            	<td colspan="4">
+            		<p>
+                		Please use this section to set the default number of speakers, audio quality, turnaround time and service required for the audio files in this project. Each of these settings can be changed on a per file basis when the file is uploaded or linked.
+                	</p>
+                </td>
+            <tr>
+                <?php
+                if ( empty( $this->job['transcription_type_id'] ) )
+                {
+                ?>
+            <tr>
+                <td class="field">
+                    <label for="name">Audio quality:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->audio_quality_id; ?></span>
+                </td>
+                <td class="field">
+                    <label for="name">Default Service:</label>
+                    <p class="info-link"><a href="#" onclick="showServiceDescriptions(); return false;">Service information</a></p>
+                </td>
+                <td class="value">
+                    <?php
+                    $services = '-';
+                    if ( $this->services )
+                    {
+                        $services = $this->partial( 'job/_partials/_services.phtml', 'default', array( 'services' => $this->services, 'serviceId' => $this->service->id, 'clientId' => $this->clientId ) );
+                    }
+                    ?>
+                    <span class="view" id="services_view"><?php echo $services; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="name">Default number of speakers:</label>
+                </td>
+                <td class="value">
+                    <?php
+                    $speakerNumbers = '-';
+                    if ( $this->services && $this->service )
+                    {
+                        $speakerNumbers = $this->partial( 'job/_partials/_speakerNumbers.phtml', 'default', array( 'speakerNumbers' => $this->service->getServiceSpeakerNumbers(), 'speakerNumbersId' => $this->speaker_numbers_id ) );
+                    }
+                    ?>
+                    <span class="view" id="speaker_numbers_view"><?php echo $speakerNumbers;?></span>
+                </td>
+                <td class="field">
+                    <label for="name">Default Turnaround time:</label>
+                </td>
+                <td class="value">
+                    <?php
+                    $turnaoundTimes = '-';
+                    if ( $this->services && $this->service )
+                    {
+                        $turnaroundTimes = $this->partial( 'job/_partials/_turnaroundTimes.phtml', 'default', array( 'turnaroundTimes' => $this->service->getServiceTurnaroundTimes(), 'turnaroundTimeId' => $this->turnaround_time_id ) );
+                    }
+                    ?>
+                    <span class="view" id="turnaround_times_view"><?php echo $turnaroundTimes; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="name">Default Additional Services:</label>
+                    <p class="info-link"><a href="#" onclick="showServiceDescriptions(); return false;">Service information</a></p>
+                </td>
+                <td colspan="3" class="value">
+                    <?php
+                    $modifiers = '-';
+                    if ( $this->services && $this->service )
+                    {
+                        $modifiers = $this->partial( 'job/_partials/_priceModifiers.phtml', 'default', array( 'service' => $this->service, 'modifiers' => unserialize( $this->job['modifiers'] ) ) );
+                    }
+                    ?>
+                    <span class="view" id="price_modifiers_view"><?php echo $modifiers; ?></span>
+                </td>
+            </tr>
+            <?php
+            }
+            else
+            {
+            ?>
+            <tr>
+
+                <td class="field">
+                	<label for="name">Default number of speakers:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->speaker_numbers_id; ?></span>
+                </td>
+                <td class="field">
+                    <label for="name">Audio quality:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->audio_quality_id; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="name">Turnaround time:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->turnaround_time_id; ?></span>
+                </td>
+                <td class="field">
+                    <label for="name">Transcription type:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->transcription_type_id; ?></span>
+                </td>
+            </tr>
+            <?php
+            }
+            ?>
+            <?php if($this->isAdmin):?>
+            <tr>
+                <td class="field">
+                    <label for="name">Discount (%):</label>
+                </td>
+                <td class="value" colspan="3">
+                    <span class="view"><?php echo $this->form->discount; ?></span>
+                </td>
+            </tr>
+            <?php endif; ?>
+        </table>
+        <table>
+            <tr>
+                <td style="width:50%;">
+                    &nbsp;
+                </td>
+                <td>
+                    <a href="#" onclick="formEditjob.submit();return false;" class="button-img">
+                    	<img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/submit_button.png'?>" title="Save job">
+                    </a>
+                    <a href="<?php echo $this->url(array('controller' => 'job', 'action' => 'view', 'id' => $this->job['id']), null, true); ?>" class="button-img">
+                    	<img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/cancel_button.png'?>" title="Cancel job">
+                    </a>
+
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script>
+
+
+function showServiceDescriptions()
+{
+    var clientId = $( '#client_id' ).val();
+    if ( clientId == '0' )
+    {
+        alert( 'Please select a client' );
+        return false;
+    }
+    $('#service-descriptions').dialog('open');
+
+    var url ="<?php echo $this->url(array('controller' => 'job', 'action' => 'service-info'), null, true); ?>"
+    url += '/client_id/' + clientId;
+
+    $.ajax({
+        type: "GET",
+        url: url,
+        cache: false,
+        dataType: "json"
+    }).success(function( msg )
+    {
+        $("#service-descriptions-container").html(msg.html);
+    });
+}
+
+$('document').ready( function()
+{
+
+    $('#service-descriptions').dialog({
+        autoOpen: false,
+        title: 'Service Information',
+        closeOnEscape: false,
+        modal: true,
+        width: 600,
+        height: 600
+    });
+
+    $('body').on( 'change', '#client_id', function()
+    {
+        var clientId = $( this ).val();
+        var url ="<?php echo $this->url( array( 'controller' => 'job', 'action' => 'fetch-client-services' ), null, true ); ?>";
+        url += '/client_id/' + clientId;
+        $.ajax({
+            type     : 'GET',
+            url      : url,
+            cache    : false,
+            dataType : "json"
+        }).success(function( msg )
+        {
+            $( '#services_view' ).html( msg.services );
+        });
+    } );
+
+    $('body').on( 'change', 'select[name="service_id"]', function()
+    {
+        var clientId  = $( '#client_id' ).val();
+        var serviceId = $( this).val();
+        var url       = "<?php echo $this->url( array( 'controller' => 'job', 'action' => 'fetch-client-services-details' ), null, true ); ?>";
+
+        url += '/client_id/' + clientId + '/service_id/' + serviceId;
+
+        $.ajax({
+            type     : 'GET',
+            url      : url,
+            cache    : false,
+            dataType : "json"
+        }).success(function( msg )
+        {
+            $( '#speaker_numbers_view' ).html( msg.speaker_numbers );
+            $( '#turnaround_times_view' ).html( msg.turnaround_times );
+            $( '#price_modifiers_view' ).html( msg.modifiers );
+        });
+    } );
+} );
+
+	$(function() {
+		$( "#btn_save" ).button();
+		$( "#btn_cancel" ).button();
+
+		$('.flashmessenger').delay(2000).fadeOut('slow');
+
+		var rangeDemoFormat = "%Y-%m-%d %H:%i:00";
+		var earliest = "<?php echo date('Y-m-d H:00:00') ?>";
+		$("#job_start_date").AnyTime_picker({
+			format:rangeDemoFormat,
+			placement: "popup",
+			hideInput: false,
+			earliest: earliest
+		});
+
+		$("#job_due_date").AnyTime_picker({
+			format:rangeDemoFormat,
+			placement: "popup",
+			hideInput: false,
+			earliest: earliest
+		});
+	});
+
+	function getClientUsers()
+	{
+		var url ="<?php echo $this->url(array('controller' => 'client', 'action' => 'fetch-users-by-client-id'), null, true); ?>";
+
+		var client_id;
+		client_id = $("#client_id").val();
+
+		url += "/client_id/" + client_id;
+
+		$.ajax({
+			type: "POST",
+		  	url: url,
+		  	cache: false,
+		  	dataType: "json"
+		}).success(function( msg ) {
+			if (msg.status == "ok") {
+				var options, index, option, select;
+
+				// Get the raw DOM object for the select box
+				select = $("#primary_user_id");
+
+			    // Clear the old options
+			    select[0].options.length = 0;
+
+			    // Load the new options
+			    options = msg.data; // Or whatever source information you're working with
+			    for (index = 0; index < options.length; ++index) {
+			      option = options[index];
+			      select[0].options.add(new Option(option.value, option.key));
+			    }
+                getUserColleagues();
+			}
+		});
+	}
+
+    function getUserColleagues()
+	{
+        var client_id;
+		client_id = $("#client_id").val();
+
+        if (client_id > 0)
+        {
+            var userId = $('#primary_user_id').val();
+            var url ="<?php echo $this->url(array('controller' => 'client', 'action' => 'fetch-client-users'), null, true); ?>";
+
+
+
+            url += "/client_id/" + client_id;
+            url += "/job_id/"+ $('#id').val();
+            url += "/is_edit/1";
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                cache: false,
+                dataType: "json"
+            }).success(function( msg )
+            {
+                if (msg.status == "ok")
+                {
+                    $('#colleagues-data').html(msg.html);
+                    _checkAllUsers();
+                    var primaryUserId         = $('#primary_user_id').val();
+                    var selectedPrimaryUserId = '#client-user-'+primaryUserId;
+                    if ($(selectedPrimaryUserId))
+                    {
+                        $(selectedPrimaryUserId).hide();
+                    }
+
+                    if (msg.html != '')
+                    {
+                        $('#grant-access-holder').show();
+                    }
+                    else
+                    {
+                        $('#grant-access-holder').hide();
+                    }
+                    return false;
+                }
+            });
+        }
+	}
+
+    function _checkAllUsers()
+    {
+        $('.client-user').each( function()
+        {
+            amendEmailList( $(this) );
+        })
+    }
+
+    function amendEmailList( inputObj )
+    {
+        var emailListRaw = $('#additional_transcript_recipients').val();
+        var emailList    = emailListRaw.replace( ' ', '' );
+        var emailArray   = emailList.split(',');
+        var newEmailList = emailList;
+
+        if ( inputObj.attr('data').length > 0 )
+        {
+            var emailAddress = inputObj.attr('data');
+
+            if ( inputObj.is(':checked') && inputObj.is(':visible') )
+            {
+                if ( -1 == $.inArray( emailAddress, emailArray ) )
+                {
+                    if ( 0 === emailList.length )
+                    {
+                        newEmailList = emailAddress;
+                    }
+                    else
+                    {
+                        newEmailList = emailList + ',' + emailAddress;
+                    }
+
+                }
+            }
+            else
+            {
+                if ( -1 != $.inArray( emailAddress, emailArray ) )
+                {
+                    if ( 1 === emailArray.length )
+                    {
+                        newEmailList     = emailList.replace( emailAddress, '' );
+                    }
+                    else
+                    {
+                        newEmailList = emailList.replace( emailAddress + ',', '' );
+                        newEmailList = newEmailList.replace( ',' + emailAddress, '' );
+                    }
+                }
+            }
+            $('#additional_transcript_recipients').val( newEmailList );
+        }
+    }
+
+    $('#edit-job').on('click', '.client-user', function ()
+    {
+        amendEmailList( $(this) );
+    });
+
+    // Select All checkbox
+    $('#edit-job').on('click', '#select-all-users', function ()
+    {
+        if (this.checked)
+        {
+            $('.client-user').attr('checked', 'checked');
+            _checkAllUsers();
+        }
+    });
+
+	<?php echo $this->audioFileQualitiesWarningJs ?>
+</script>
+
+<?php echo $this->partial('/_partials/turnaroundTimeSelectJs.phtml'); ?>

@@ -1,0 +1,75 @@
+<?php echo $this->partial('/_partials/email/_defaultHeader.phtml',
+    array(
+        'appName' => $this->appName,
+        'title'   => 'A new audio file has been assigned to you for proofreading'
+    )
+);
+?>
+Dear <?php echo $this->data['proofreader_name']?>
+<br /><br />
+This is to inform you that you have been assigned a file in the Take Note portal as below. Please <a href="<?php echo $this->appUrl; ?>">login</a> asap to acknowledge the booking and then confirm when the audio has been downloaded and checked.
+<br /><br />
+<table class="data" style="font-family:helvetica, arial, sans-serif;color:#333;font-size:12px;line-height:18px;margin:0 0 15px;">
+    <tr class="first">
+        <td class="field">
+            <label for="name">Job ID:</label>
+        </td>
+        <td class="value">
+            <span class="view"><?php echo $this->data['audio_job_id']; ?></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="field">
+            <label for="name">File name:</label>
+        </td>
+        <td class="value">
+            <span class="view"><?php echo $this->data['file_name']; ?></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="field">
+            <label for="name">Deadline:</label>
+        </td>
+        <td class="value">
+            <span class="view"><?php echo date('g.ia d.m.y', $this->data['due_date_unix']); ?></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="field">
+            <label for="name">Duration:</label>
+        </td>
+        <td class="value">
+            	<span class="view">
+            	<?php if (!is_null($this->data['minutes_start'])): ?>
+                    <?php echo $this->escape(($this->data['minutes_end'] - $this->data['minutes_start'])); ?>m
+                    <?php else:?>
+                    <?php echo $this->displayAudioJobLength($this->data['length_seconds']); ?>
+                    <?php endif;?>
+            	</span>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="field">
+            <label for="name">Comment:</label>
+        </td>
+        <td class="value">
+            <?php if (!is_null($this->data['minutes_start'])): ?>
+            	<span class="view">This file is split. Please transcribe from the beginning of minute <?php echo ($this->data['minutes_start'])?> to the beginning of minute <?php echo ($this->data['minutes_end'])?>.
+            <br />
+            <?php endif;?>
+            <?php echo $this->escape($this->data['comment']) ?>
+        </span>
+        </td>
+    </tr>
+</table>
+If you have any queries regarding this booking please don't hesitate to get in touch with the office on <?php echo $this->transcriptsEmail; ?>
+<br /><br />
+<?php echo $this->partial('/_partials/email/_defaultFooter.phtml',
+    array(
+        'appName' => $this->appName,
+        'appUrl' => $this->appUrl,
+        'showThanksMessage' => true
+    )
+);
+?>

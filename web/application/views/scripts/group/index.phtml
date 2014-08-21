@@ -1,0 +1,271 @@
+<h1>Email The Team</h1>
+<?php $this->form->setAction($this->url()); ?>
+
+<div>
+    <p class="validateTips">Form fields marked with * are required.</p>
+    <form id="emailTheTeamForm" name="formCreateGroup" method="<?php echo $this->form->getMethod(); ?>" action="<?php echo $this->form->getAction(); ?>">
+        <?php echo $this->form->id; ?>
+        <table class="data email-team">
+        	<tr class="first">
+                <td class="field">
+                    <label for="title"><?php echo $this->form->user_type->renderLabel(); ?></label>
+                </td>
+                <td class="value checkboxes">
+                    <span class="view"><?php echo $this->form->user_type->renderViewHelper(); ?></span>
+                    <br /><br />
+                    <div class="element-error error-inner"><?php echo array_shift($this->form->user_type->getMessages()); ?></div>
+                </td>
+            </tr>
+            <tr class="first">
+                <td class="field">
+                    <label for="title"><?php echo $this->form->on_shift->renderLabel(); ?></label>
+                </td>
+                <td class="value checkboxes">
+                    <span class="view"><?php echo $this->form->on_shift->renderViewHelper(); ?></span>
+                    <br />
+                    <div class="element-error error-inner"><?php echo array_shift($this->form->on_shift->getMessages()); ?></div>
+                </td>
+            </tr>
+            <?php if ($this->typistHasShiftTimes): ?>
+                <tr class="first" id="typist-shift-time-container" <?php if(!$this->showTypistShiftTimeSelector): ?>style="display:none;" <?php endif; ?>">
+                    <td class="field">
+                        <label for="title">Typist Shift:</label>
+                    </td>
+                    <td class="value checkboxes">
+                        <span class="view"><?php echo $this->form->typist_shift_time->renderViewHelper(); ?></span>
+                    </td>
+                </tr>
+            <?php endif; ?>
+            <?php if ($this->proofreaderHasShiftTimes): ?>
+                <tr class="first" id="proofreader-shift-time-container" <?php if(!$this->showProofreaderShiftTimeSelector): ?>style="display:none;" <?php endif; ?>>
+                    <td class="field">
+                        <label for="title">Proofreader Shift:</label>
+                    </td>
+                    <td class="value checkboxes">
+                        <span class="view"><?php echo $this->form->proofreader_shift_time->renderViewHelper(); ?></span>
+                    </td>
+                </tr>
+            <?php endif; ?>
+            <tr class="first">
+                <td class="field">
+                    <label for="title"><?php echo $this->form->trained_in->renderLabel(); ?></label>
+                </td>
+                <td class="value checkboxes">
+                    <span class="view"><?php echo $this->form->trained_in->renderViewHelper(); ?></span>
+                    <br />
+                    <div class="element-error error-inner"><?php echo array_shift($this->form->trained_in->getMessages()); ?></div>
+                </td>
+            </tr>
+            <tr class="first">
+                <td class="field">
+                    <label for="title"><?php echo $this->form->typist_grade->renderLabel(); ?></label>
+                </td>
+                <td class="value checkboxes">
+                    <span class="view"><?php echo $this->form->typist_grade->renderViewHelper(); ?></span>
+                    <br />
+                    <div class="element-error error-inner"><?php echo array_shift($this->form->typist_grade->getMessages()); ?></div>
+                </td>
+            </tr>
+            <tr class="first">
+                <td class="field">
+                    <label for="title"><?php echo $this->form->proofreader_grade->renderLabel(); ?></label>
+                </td>
+                <td class="value checkboxes">
+                    <span class="view"><?php echo $this->form->proofreader_grade->renderViewHelper(); ?></span>
+                    <br />
+                    <div class="element-error error-inner"><?php echo array_shift($this->form->proofreader_grade->getMessages()); ?></div>
+                </td>
+            </tr>
+            <tr class="first">
+                <td class="field"><label for="title"><?php echo $this->form->extra_work->renderLabel(); ?></label></td>
+                <td class="value checkboxes">
+                    <span class="view"><?php echo $this->form->extra_work->renderViewHelper(); ?></span>
+                    <div class="element-error error-inner"><?php echo array_shift($this->form->extra_work->getMessages()); ?></div>
+                    <div class="clear"></div>
+                    <div id="extraWorkList"></div>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <div id="filteredEmailList">
+                        <?php if (isset($this->filteredTypists) || isset($this->filteredProofreaders)): ?>
+                            <?php   echo $this->partial('/group/ajax-email-filter.phtml',
+                                    array
+                                        (
+                                            'filteredTypists'          => $this->filteredTypists,
+                                            'filteredProofreaders'     => $this->filteredProofreaders,
+                                            'typistSelectionList'      => $this->typistSelectionList,
+                                            'proofreaderSelectionList' => $this->proofreaderSelectionList
+                                        )
+                                );
+                            ?>
+                        <?php endif; ?>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="title"><?php echo $this->form->message_title->renderLabel(); ?></label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->message_title->renderViewHelper(); ?></span>
+                    <br />
+                    <div class="element-error error-inner"><?php echo array_shift($this->form->message_title->getMessages()); ?></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="title"><?php echo $this->form->message_body->renderLabel(); ?></label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->message_body->renderViewHelper(); ?></span>
+                    <br />
+                    <div class="element-error error-inner"><?php echo array_shift($this->form->message_body->getMessages()); ?></div>
+                </td>
+            </tr>
+           <tr>
+                <td class="field"></td>
+                <td class="value">
+                    <div class="element-error error-inner"><input id="submit" class="reg_input_btn" type="image" alt="Send Email" src="/images/email_button.png" name="submit"></div>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script language="javascript">
+    $(document).ready(function()
+    {
+        $('div#filteredEmailList').on('click', '.select-link', function()
+        {
+            var id = $(this).attr('id');
+            if ('select-all' === id)
+            {
+                $('.auto-check').prop('checked', true);
+            }
+            else if ('de-select-all' === id)
+            {
+                $('.auto-check').prop('checked', false);
+            }
+            return false;
+        });
+
+        $("input[type='checkbox']").click(function()
+        {
+            var checkboxName = $(this).attr('name');
+            if (checkboxName != 'typistSelectionList[]' && checkboxName != 'proofreaderSelectionList[]')
+            {
+                var value = $(this).val();
+                if (value == 'all')
+                {
+                    var elementId   = $(this).attr('id');
+                    var elementName = elementId.split('-');
+                    var groupName   = elementName[0];
+                    if ($(this).is(':checked'))
+                    {
+                        $("input[name='" + groupName + "[]']").attr('checked', true);
+                    }
+                }
+
+                fetchFilteredEmailList();
+            }
+        });
+
+        // Shift Time select
+        $(".shift_time_select").change(function()
+        {
+            fetchFilteredEmailList();
+        });
+
+        $(".extra-work").click(function()
+        {
+            return checkExtraWorkSelected();
+        });
+
+        checkExtraWorkSelected();
+        function checkExtraWorkSelected(element)
+        {
+            if ($("#extra_work-yes").is(':checked'))
+            {
+                fetchExtraWorkList();
+            }
+            else
+            {
+                $('#extraWorkList').html('');
+            }
+        }
+
+        function fetchFilteredEmailList()
+        {
+            var form     = $('#emailTheTeamForm');
+            var formData = form.serializeArray();
+
+            var url ="<?php echo $this->url(array('controller' => 'group', 'action' => 'ajax-email-filter'), null, true); ?>";
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: formData,
+                cache: false,
+                dataType: "json"
+            }).success(function( msg ) {
+                $('#filteredEmailList').html(msg.html);
+            });
+        }
+
+        function fetchExtraWorkList()
+        {
+            var url ="<?php echo $this->url(array('controller' => 'group', 'action' => 'ajax-extra-work'), null, true); ?>";
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                cache: false,
+                dataType: "json"
+            }).success(function( msg ) {
+                $('#extraWorkList').html(msg.html);
+            });
+        }
+
+        /***** Show Shift Times based on User Type and On Shift selection *****/
+        $('.usertype_select').click( function () {
+            checkShiftTimeSelect();
+        });
+
+        $('.onshift_select').click( function () {
+            checkShiftTimeSelect();
+        });
+
+        function checkShiftTimeSelect()
+        {
+            $('#typist-shift-time-container').hide();
+            $('#proofreader-shift-time-container').hide();
+            var atLeastOneIsChecked = $('.onshift_select:checked').length > 0;
+            if (atLeastOneIsChecked == true)
+            {
+                // Typist shift times container
+                if ($('#typist-shift-time-container'))
+                {
+                    if ($('#user_type-typist').is(':checked')) {
+                        $('#typist-shift-time-container').show();
+                    }
+                }
+
+                // Proofreader shift times container
+                if ($('#proofreader-shift-time-container'))
+                {
+                    if ($('#user_type-proofreader').is(':checked'))
+                    {
+
+                        $('#proofreader-shift-time-container').show();
+                    }
+                }
+            }
+        }
+
+    });
+</script>
+<style type="text/css">
+    #extraWorkList h2 { clear: both; margin-top: 10px; }
+    .element-error { color:red; clear: both; padding-top: 5px; }
+</style>

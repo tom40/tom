@@ -1,0 +1,42 @@
+<?php
+if (isset($this->totalTime))
+{
+?>
+<p class="small-result">Total time: <span><?php echo $this->totalTime; ?></span></p>
+<p>Service required: <span><?php echo $this->transcriptionType; ?></span></p>
+<p class="small-result">Turnaround: <span><?php echo $this->turnAround; ?></span></p>
+<p>What are we typing: <span><?php echo $this->what; ?></span></p>
+<p class="small-result">Discount: <span><?php echo $this->discount; ?>%</span></p>
+<p class="the-cost ex-vat">Total Cost ex-VAT: <span>&pound;<?php echo number_format($this->price, 2); ?></span></p>
+<p class="the-cost inc-vat">Total Cost inc-VAT: <span>&pound;<?php echo number_format($this->totalPrice, 2); ?></span></p>
+
+<?php
+}
+else
+{
+?>
+	<p>Service required: <span><?php echo $this->transcriptionType; ?></span></p>
+	<p>Turnaround: <span><?php echo $this->turnAround; ?></span></p>
+	<p>What are we typing: <span><?php echo $this->what; ?></span></p>
+	<p>Discount: <span><?php echo $this->discount; ?>%</span></p>
+
+
+<div id="quote-files-list">
+	<?php
+		foreach ($this->files as $key => $file)
+		{
+			?>
+	<p class="afile"><span>File <strong><?php echo $key + 1; ?></strong></span> <span>duration <strong><?php echo $file['duration']; ?></strong></span> <span>Cost ex-VAT <strong>&pound;<?php echo number_format($file['price'], 2); ?></strong></span> <span>Cost inc-VAT <strong>&pound;<?php echo number_format($file['totalPrice'], 2); ?></strong></span></p>
+			<?php
+		}
+	?>
+</div>
+
+<p class="the-cost ex-vat">Total Cost ex-VAT: <span>&pound;<?php echo number_format($this->price, 2); ?></span></p>
+<p class="the-cost inc-vat">Total Cost inc-VAT: <span>&pound;<?php echo number_format($this->totalPrice, 2); ?></span></p>
+
+<?php
+}
+	?>
+
+<p class="results-info">Please note we bill on a per file basis rounded up to the nearest 15 minutes. If the durations are higher or lower than you have approximated the costs will adjust accordingly.</p>

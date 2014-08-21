@@ -1,0 +1,127 @@
+<?php
+$class = '';
+
+if ($this->isLead)
+{
+    $class = 'lead-audio-job ';
+}
+
+if ($this->lead_id > '0')
+{
+    $class .= ' child-audio-job';
+}
+
+?>
+<tr id="tr-<?php echo $this->id; ?>" class="<?php echo $class; ?>
+	<?php  if ($this->status_id == 1): ?>
+
+	<?php endif;?>
+	<?php if (!is_null($this->client_due_date_unix) && $this->client_due_date_unix <= time()) : ?>
+		overdue
+	<?php endif;?>
+	">
+	<td><div><?php echo $this->id; ?></div></td>
+	<td></td>
+    <td>
+        <div>
+			<span id="job-list-audio-status-<?php echo $this->escape($this->audio_job_id); ?>">
+				<?php echo $this->escape( $this->clientStatusName( $this ) ); ?>
+			</span>
+		</div>
+    </td>
+    <td></td>
+    <td>
+        <div>
+            <?php echo $this->escape($this->file_name); ?>
+        </div>
+    </td>
+    <td>
+    	<div>
+			<span style="font-size: 100%;">
+            <?php
+            echo $this->transcription_type;
+            if ( !empty( $this->service_id ) )
+            {
+                echo '<br />' . $this->speaker_numbers . ' SPEAKERS';
+            }
+            ?>
+			</span>
+		</div>
+    </td>
+    <td><!-- 6 -->
+    	<div>
+            <span style="display: none;"><?php echo $this->turnaround_priority; ?></span>
+			<span style="font-size: 100%;">
+				<?php echo $this->turnaround_time; ?>
+			</span>
+		</div>
+    </td>
+	<td>
+        <?php if ($this->lead_id > '0'): ?>
+        SPLIT
+		<div>
+			 <?php echo $this->displayAudioJobLength($this->length_seconds); ?>
+    	</div>
+        <?php else: ?>
+		<div>
+			 <?php echo $this->displayAudioJobLength($this->length_seconds); ?>
+    	</div>
+        &pound;<?php echo number_format($this->price, 2);?>
+        <?php endif; ?>
+    </td>
+    <td></td>
+	<td>
+		<div>
+			<span id="job-list-audio-due-date-<?php echo $this->escape($this->id); ?>">
+			<?php echo $this->partial('audio-job/due-date-list-cell.phtml', array(
+				'data' => array(
+					'id'				=> $this->id,
+					'due_date_unix' 	=> $this->client_due_date_unix,
+					'due_days'			=> $this->due_days,
+					'due_hours'			=> $this->due_hours,
+					'canEdit'			=> $this->canEdit,
+				)
+			)); ?>
+			</span>
+		</div>
+	</td>
+    <td></td>
+    <td class="centre-image">
+    	<div>
+            <?php
+            if ( $this->job['archived'] != '1' )
+            {
+                echo $this->partial('audio-job/sound-file-list-cell.phtml', array(
+                    'data' => array(
+                        'id'         => $this->id,
+                        'link'       => $this->link
+                    )
+                ));
+            }
+            else
+            {
+                echo '-';
+            }
+            ?>
+		</div>
+	</td>
+    <td>
+    	<div>
+                <?php if ($this->checkTranscriptionFileAccess($this->id, $this->status_id)): ?>
+                    <span id="job-list-audio-transcript-<?php echo $this->escape($this->id); ?>">
+                        <?php
+                        echo $this->partial('audio-job/transcript-list-cell.phtml', array(
+                            'data' => array(
+                                'typist_count' => $this->typist_count,
+                                'id' => $this->id,
+                                'transcription_file_count' => $this->transcription_file_count,
+                                'transcription_file_id' => $this->transcription_file_id,
+                                'canUpload' => $this->canUpload)
+                            )
+                        );
+                        ?>
+                    </span>
+                <?php endif; ?>
+		</div>
+	</td>
+</tr>

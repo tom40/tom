@@ -1,0 +1,217 @@
+<script>
+
+$( 'document' ).ready( function()
+{
+    $( 'body' ).on( 'change', '.service-option', function()
+    {
+        var optionId = $( this ).val();
+        var optionName = $( this ).attr( 'name').replace( '[]', '' );
+
+        var priceInput  = $( 'input[name="' + optionName + '-price[' + optionId + ']"]' );
+        var typistInput = $( 'input[name="' + optionName + '-typist[' + optionId + ']"]' );
+
+        if ( $( this ).is(':checked') )
+        {
+            priceInput.attr( 'disabled', false );
+            if ( typistInput.length > 0 )
+            {
+                typistInput.attr( 'disabled', false );
+            }
+        }
+        else
+        {
+            priceInput.attr( 'disabled', true );
+            if ( typistInput.length > 0 )
+            {
+                typistInput.attr( 'disabled', true );
+            }
+        }
+    })
+});
+
+</script>
+
+<div id="edit-service">
+<h1><?php echo $this->service->name; ?></h1>
+<h2 class="ta-title">Details</h2>
+<form id="editService" method="POST" action="/en/default/services/edit-service/id/<?php echo $this->service->id; ?>">
+    <input type="hidden" name="service-id" value="<?php echo $this->service->id; ?>" />
+    <table>
+        <tr>
+            <td>
+                <label for="name">Name</label>
+            </td>
+            <td>
+                <input type="text" name="service[name]" value="<?php echo $this->form->getElement( 'name' )->getValue(); ?>" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="name">Description</label>
+            </td>
+            <td>
+                <textarea name="service[description]"><?php echo $this->form->getElement( 'description' )->getValue(); ?></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="base_rate">Base Price</label>
+            </td>
+            <td>
+                <input type="text" name="service[base_price]" value="<?php echo $this->form->getElement( 'base_price' )->getValue(); ?>" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="training_code">Training Code</label>
+            </td>
+            <td>
+                <div style="width:200px">
+                    <select name="service[training_code]">
+                    <?php
+                    $element   = $this->form->getElement( 'training_code' );
+                    $formValue = $element->getValue();
+                    $options   = $element->getMultiOptions();
+
+                    foreach ( $options as $value => $option )
+                    {
+                        $selected = '';
+                        if ( $formValue == $value )
+                        {
+                            $selected = ' selected="selected"';
+                        }
+                        ?>
+                        <option value="<?php echo $value;?>"<?php echo $selected;?>><?php echo $option;?></option>
+                        <?php
+                    }
+                    ?>
+                    </select>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="typist_grade">Typist Pay Grades (per minute)</label>
+            </td>
+            <td>
+                <div class="ta-block">
+                    <p>Grade 1</p>
+                    <input type="text" name="service[typist_grade_1]" value="<?php echo $this->form->getElement( 'typist_grade_1' )->getValue(); ?>" />
+                </div>
+                <div class="ta-block">
+                    <p>Grade 2</p>
+                    <input type="text" name="service[typist_grade_2]" value="<?php echo $this->form->getElement( 'typist_grade_2' )->getValue(); ?>" />
+                </div>
+                <div class="ta-block">
+                    <p>Grade 3</p>
+                    <input type="text" name="service[typist_grade_3]" value="<?php echo $this->form->getElement( 'typist_grade_3' )->getValue(); ?>" />
+                </div>
+                <div class="ta-block">
+                    <p>Grade 4</p>
+                    <input type="text" name="service[typist_grade_4]" value="<?php echo $this->form->getElement( 'typist_grade_4' )->getValue(); ?>" />
+                </div>
+                <div class="ta-block">
+                    <p>Grade 5</p>
+                    <input type="text" name="service[typist_grade_5]" value="<?php echo $this->form->getElement( 'typist_grade_5' )->getValue(); ?>" />
+                </div>
+            </td>
+        </tr>
+    </table>
+
+<h2 class="ta-title">Turnaround Times</h2>
+
+<?php
+foreach( $this->taTimes as $taTime )
+{
+    $checked  = '';
+    $disabled = ' disabled="disabled"';
+    if( $this->service->hasTurnaroundTime( $taTime->id ) )
+    {
+        $checked  = ' checked="checked"';
+        $disabled = '';
+    }
+?>
+    <div class="ta-block">
+        <p><?php echo $taTime->name; ?> (Price %)</p>
+        <input class="service-option" type="checkbox" name="ta-time[]" value="<?php echo $taTime->id; ?>"<?php echo $checked; ?> />
+        <input type="text" name="ta-time-price[<?php echo $taTime->id; ?>]" value="<?php echo $this->service->getServiceTurnaroundTime( $taTime->id )->percentage; ?>"<?php echo $disabled; ?> />
+    </div>
+<?php
+}
+?>
+
+<h2 class="ta-title">Speaker Numbers</h2>
+
+<?php
+foreach( $this->speakerNumbers as $speakerNumber )
+{
+    $checked  = '';
+    $disabled = ' disabled="disabled"';
+    if( $this->service->hasSpeakerNumber( $speakerNumber->id ) )
+    {
+        $checked  = ' checked="checked"';
+        $disabled = '';
+    }
+    ?>
+    <div class="ta-block wide">
+        <p><?php echo $speakerNumber->name; ?> (Price % / Typist pay rate %)</p>
+        <input class="service-option" type="checkbox" name="speaker-number[]" value="<?php echo $speakerNumber->id; ?>"<?php echo $checked; ?> />
+        <input type="text" name="speaker-number-price[<?php echo $speakerNumber->id; ?>]" value="<?php echo $this->service->getServiceSpeakerNumber( $speakerNumber->id )->percentage; ?>"<?php echo $disabled; ?> />
+        <input class="margin-left" type="text" name="speaker-number-typist[<?php echo $speakerNumber->id; ?>]" value="<?php echo $this->service->getServiceSpeakerNumber( $speakerNumber->id )->typist_percentage; ?>"<?php echo $disabled; ?> />
+    </div>
+<?php
+}
+?>
+
+<h2 class="ta-title">Service Modifiers</h2>
+
+<?php
+foreach( $this->modifiers as $modifier )
+{
+    $checked       = '';
+    $disabled      = ' disabled="disabled"';
+    $readOnly      = '';
+    $readOnlyBool  = false;
+
+    if( $this->service->hasPriceModifier( $modifier->id ) )
+    {
+        $checked  = ' checked="checked"';
+        $disabled = '';
+
+        if ( !$this->service->getServicePriceModifier( $modifier->id )->canDelete() )
+        {
+            $readOnly     = ' disabled="disabled"';
+            $readOnlyBool = true;
+        }
+    }
+    ?>
+    <div class="ta-block wide">
+        <?php
+        if ( $readOnlyBool )
+        {
+            ?>
+            <input type="hidden" name="price-modifier[]" value="<?php echo $modifier->id; ?>" />
+            <?php
+        }
+        ?>
+        <p><?php echo $modifier->name; ?> (Price <?php echo $modifier->getTypeString(); ?> / Typist pay rate <?php echo $modifier->getTypeString(); ?>)</p>
+        <input<?php echo $readOnly ;?> class="service-option" type="checkbox" name="price-modifier[]" value="<?php echo $modifier->id; ?>"<?php echo $checked; ?> />
+        <input type="text" name="price-modifier-price[<?php echo $modifier->id; ?>]" value="<?php echo $this->service->getServicePriceModifier( $modifier->id )->modifier_value; ?>"<?php echo $disabled; ?> />
+        <input class="margin-left" type="text" name="price-modifier-typist[<?php echo $modifier->id; ?>]" value="<?php echo $this->service->getServicePriceModifier( $modifier->id )->typist_percentage; ?>"<?php echo $disabled; ?> />
+    </div>
+<?php
+}
+?>
+    <table>
+        <tr>
+            <td>
+                <div class="ta-block wide clear">
+                    <a href="#" id="btn_save" onclick="editService.submit();return false;">
+                        <img src="<?php echo $this->baseUrl() .'/images/submit_button.png'?>" title="Save service">
+                    </a>
+                </div>
+            </td>
+        </tr>
+    </table>
+</form>
+</div>

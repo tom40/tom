@@ -1,0 +1,7 @@
+<a href="<?php echo $this->url(array('controller' => 'user', 'action' => 'edit', 'id' => $this->data['id']), null, true); ?>" class="to_person">Edit</a>
+	&nbsp;|&nbsp;    		
+<?php if ($this->data['active']):?>	
+<a href="#" onclick="deactivate(<?php echo $this->data['id']; ?>);return false" class="to_person">Deactivate</a>
+<?php else:?>
+<a href="#" onclick="activate(<?php echo $this->data['id']; ?>);return false" class="to_person">Activate</a>
+<?php endif;?>

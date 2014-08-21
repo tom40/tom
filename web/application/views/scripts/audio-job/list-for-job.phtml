@@ -1,0 +1,1969 @@
+<?php $this->headLink()->appendStylesheet('/js/jquery.tooltip/jquery.tooltip.css') ?>
+<?php $this->headScript()->appendFile('/js/jquery.tooltip/jquery.tooltip.js') ?>
+
+<div id="table-utility<?php echo $this->customClass; ?>">
+
+    <?php
+        if ( empty( $this->job ) || $this->job['archived'] == '0' )
+        {
+    ?>
+
+	<div id="utility-links">
+		<?php if($this->audioJobCanEdit):?>
+			<a href="#" onclick="showEdit();return false;">
+				<img style="vertical-align:text-top; padding: 0px 0px 3px 2px" src="<?php echo $this->baseUrl() .'/images/edit_audio_icon.png'?>" title="Edit audio job">
+				Edit audio file
+			</a>
+		<?php endif;?>
+		<?php if($this->audioJobCanEdit):?>
+			<a href="#" onclick="approve();return false;">
+				<img style="vertical-align:text-top; padding: 0px 0px 3px 2px" src="<?php echo $this->baseUrl() .'/images/approve_audio_icon.png'?>" title="Approve audio job">
+				Approve audio file
+				</a>
+			<?php endif;?>
+		<?php if($this->audioJobCanArchive):?>
+			<a href="#" onclick="archiveAudio();return false;">
+				<img style="vertical-align:text-top; padding: 0px 0px 3px 2px" src="<?php echo $this->baseUrl() .'/images/delete_audio_icon.png'?>" title="Delete audio job">
+				Delete audio file
+			</a>
+		<?php endif;?>
+	</div>
+        <?php
+        }
+    ?>
+</div>
+
+ <div id="job-list-audio-dialog-edit" style="display: none">
+	<span id="job-list-audio-dialog-edit-container" class="view"></span>
+</div>
+
+<div id="job-list-audio-dialog" style="display: none">
+	<div id="job-list-audio-dialog-tabs"  style="font-size:0.85em">
+		<ul>
+			<li><a href="#job-list-audio-dialog-tabs-1">File details</a></li>
+			<li><a href="#job-list-audio-dialog-tabs-2">Download history</a></li>
+		</ul>
+		<div id="job-list-audio-dialog-tabs-1">
+			<p>Loading...</p>
+		</div>
+		<div id="job-list-audio-dialog-tabs-2">
+			<p>File download history goes here...</p>
+		</div>
+	</div>
+</div>
+
+<div id="job-list-audio-dialog-due-date" style="display: none">
+	<div class="ui-state-default ui-widget-content ui-widget-header">
+		<h3>
+			Select a Due Date
+		</h3>
+	</div>
+	<div class="popup-content due-date-popup">
+        <input type="hidden" name="due_date_type" id="due_date_type" value="" />
+		<span class="view">
+			<input type="text" name="job-list-audio-client_due_date" id="job-list-audio-client_due_date" value="" class="text ui-widget-content ui-corner-all" />
+		</span>
+		<a href="#" onclick="processDueDate();return false;" class="button-img">
+			<img src="<?php echo $this->baseUrl() .'/images/submit_button.png'?>" title="Save">
+		</a>
+	</div>
+</div>
+
+<div id="job-list-audio-dialog-status" style="display: none">
+	<span id="job-list-audio-dialog-status-container" class="view"></span>
+</div>
+
+
+<div id="job-list-audio-dialog-assign-typist" style="display: none">
+	<span id="job-list-audio-assign-typist-container" class="view"></span>
+</div>
+
+<div id="job-list-audio-dialog-poor-audio" style="display: none">
+    <span id="job-list-audio-poor-audio-container" class="view"></span>
+</div>
+
+<div id="job-list-audio-dialog-assign-multiple-typist" style="display: none">
+	<span id="job-list-audio-assign-multiple-typist-container" class="view"></span>
+</div>
+
+<div id="job-list-audio-dialog-assign-proofreader" style="display: none">
+	<span id="job-list-audio-assign-proofreader-container" class="view"></span>
+</div>
+
+<div id="job-list-audio-dialog-assign-multiple-proofreader" style="display: none">
+	<span id="job-list-audio-assign-multiple-proofreader-container" class="view"></span>
+</div>
+
+<div id="job-list-transcription-dialog" style="display: none">
+	<span id="job-list-transcription-dialog-container" class="view"></span>
+</div>
+
+<div id="job-dialog-es" style="display: none">
+	<span id="job-dialog-es-container" class="view"></span>
+</div>
+
+<div id="job-list-audio-container" style="width:100%">
+	<form id="job-list-audio-form">
+	<table class="index dataTable" id="job-list-audio-tbl_audiojobs">
+		<thead>
+			<tr>
+				<th style="width:40px">ID</th>
+				<th>&nbsp;</th>
+				<th style="width:10%">
+					Client
+				</th>
+				<th>&nbsp;</th>
+				<th>
+					Status
+				</th>
+				<th style="width:100px">File name</th>
+				<th style="width:100px">Service</th>
+                <th style="width:100px">Turnaround</th>
+				<th style="width:75px">Length</th>
+				<th>
+					Typist
+				</th>
+				<th>&nbsp;</th>
+				<th style="width:95px">
+					Typist Deadline
+				</th>
+				<th>&nbsp;</th>
+				<th style="width:95px">
+					Client Due
+				</th>
+				<th>&nbsp;</th>
+				<th>Proofreader</th>
+				<th>&nbsp;</th>
+				<th style="width:95px">
+					Proofreader Deadline
+				</th>
+				<th>&nbsp;</th>
+				<th style="width:100px">Audio</th>
+				<th style="width:100px">Transcripts</th>
+                <th style="width:50px">Report</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php
+            if (count($this->audioJobs) > 0)
+            {
+                foreach ($this->audioJobs as $audioJob)
+                {
+                    $audioJob['job'] = $this->job;
+                    echo $this->partial(
+                        'audio-job/_listForJobRow.phtml',
+                        'default',
+                        $audioJob
+                    );
+                }
+            }
+            ?>
+		</tbody>
+		<tfoot id="footer-search">
+			<tr>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th><input type="text" name="search_status" value="Search status" class="search_init ui-widget-content ui-corner-all" /></th>
+				<th><input type="text" name="search_title" value="Search sound file title" class="search_init ui-widget-content ui-corner-all" /></th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+                <th>&nbsp;</th>
+				<th><input type="text" name="search_typist" value="Search typist" class="search_init ui-widget-content ui-corner-all" /></th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th><input type="text" name="search_proofreader" value="Search proofreader" class="search_init ui-widget-content ui-corner-all" /></th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+                <th>&nbsp;</th>
+			</tr>
+		</tfoot>
+	</table>
+	</form>
+</div>
+<script type="text/javascript">
+var asInitVals = new Array();
+var gl_audio_job_id = null;
+var gl_audio_job_id_array = new Array();
+var gl_typist_number = null;
+var gl_proofreader_number = null;
+var audioJobTable;
+var selected_job_id = null;
+
+$.fn.dataTableExt.oApi.fnDisplayRow = function ( oSettings, nRow )
+{
+    // Account for the "display" all case - row is already displayed
+    if ( oSettings._iDisplayLength == -1 )
+    {
+        return;
+    }
+
+    // Find the node in the table
+    var iPos = -1;
+    for( var i=0, iLen=oSettings.aiDisplay.length ; i<iLen ; i++ )
+    {
+        if( oSettings.aoData[ oSettings.aiDisplay[i] ].nTr == nRow )
+        {
+            iPos = i;
+            break;
+        }
+    }
+
+    // Alter the start point of the paging display
+    if( iPos >= 0 )
+    {
+        oSettings._iDisplayStart = ( Math.floor(i / oSettings._iDisplayLength) ) * oSettings._iDisplayLength;
+        this.oApi._fnCalculateEnd( oSettings );
+    }
+
+    this.oApi._fnDraw( oSettings );
+};
+
+//var audioJobTable;
+$(document).ready(function()
+{
+    function childAudio()
+    {
+        $('.child-audio-job').each(function()
+        {
+            var nextRow = $(this).next();
+            if (!nextRow.hasClass('child-audio-job'))
+            {
+                $(this).addClass('child-audio-job-last');
+            }
+        })
+    }
+
+    childAudio();
+
+	$('#job-list-audio-dialog').dialog({
+		autoOpen: false,
+		title: 'File information...',
+        closeOnEscape: false,
+		modal: true,
+		width: 400,
+		height: 400
+	});
+	$('#job-list-audio-dialog-tabs').tabs();
+
+	$('#job-list-audio-dialog-edit').dialog({
+		autoOpen: false,
+		title: 'Edit audio job',
+        closeOnEscape: false,
+		modal: true,
+		width: 600,
+		height: 600
+	});
+
+		$('#job-dialog-es').dialog({
+			autoOpen: false,
+			title: 'Add extra services',
+            closeOnEscape: false,
+			modal: true,
+			width: 600,
+			height: 530
+		});
+
+	$('#job-list-audio-dialog-status').dialog({
+		autoOpen: false,
+		title: 'Select status',
+        closeOnEscape: false,
+		modal: true,
+		width: 400,
+		height: 400
+	});
+
+	$('#job-list-audio-dialog-due-date').dialog({
+		autoOpen: false,
+		title: 'Select due date',
+		modal: true,
+		width: 450,
+		height: 400,
+		beforeClose: function(event, ui) {AnyTime.noPicker("job-list-audio-client_due_date")}
+	});
+
+	$('#job-list-audio-dialog-assign-typist').dialog({
+		autoOpen: false,
+        closeOnEscape: false,
+		title: 'Select typist',
+		modal: true,
+		width: 800,
+		height: 600,
+		beforeClose: function(event, ui) {AnyTime.noPicker("due_date"); $("#due_date_select").AnyTime_noPicker().remove(); $('.select-job-user-container').remove(); }
+	});
+
+	$('#job-list-audio-dialog-assign-multiple-typist').dialog({
+		autoOpen: false,
+		title: 'Select typists',
+        closeOnEscape: false,
+		modal: true,
+		width: 700,
+		height: 550
+	});
+
+	$('#job-list-audio-dialog-assign-proofreader').dialog({
+		autoOpen: false,
+		title: 'Select proofreader',
+        closeOnEscape: false,
+		modal: true,
+		width: 800,
+		height: 600,
+		beforeClose: function(event, ui) {AnyTime.noPicker("due_date"); $("#due_date_select").AnyTime_noPicker().remove(); $('.select-job-user-container').remove(); }
+	});
+
+	$('#job-list-audio-dialog-assign-multiple-proofreader').dialog({
+		autoOpen: false,
+		title: 'Select proofreaders',
+        closeOnEscape: false,
+		modal: true,
+		width: 700,
+		height: 550
+	});
+
+    $('#job-list-audio-dialog-poor-audio').dialog({
+        autoOpen: false,
+        title: 'Set Poor Audio',
+        closeOnEscape: false,
+        modal: true,
+        width: 700,
+        height: 550
+    });
+
+	$('#job-list-transcription-dialog').dialog({
+		autoOpen: false,
+		title: 'View transcription files',
+		modal: true,
+		width: 900,
+		height: 550
+	});
+
+    audioJobTable = $('#job-list-audio-tbl_audiojobs').dataTable({
+    	"iDisplayLength": 50,
+        "bJQueryUI": true,
+	    "bAutoWidth": false,
+        "bStateSave": true,
+        "fnStateSave": function (oSettings, oData)
+        {
+            try
+            {
+                localStorage.setItem( 'DataTables_' + window.location.pathname, JSON.stringify( oData ) );
+            }
+            catch( e )
+            {
+                return false;
+            }
+        },
+        "fnStateLoad": function (oSettings)
+        {
+            try
+            {
+                var storedData = localStorage.getItem( 'DataTables_'+window.location.pathname );
+                if ( typeof storedData === 'string' )
+                {
+                    return JSON.parse( storedData );
+                }
+            }
+            catch( e )
+            {
+                return false;
+            }
+        },
+        //"sPaginationType": "full_numbers",
+        "bPaginate": false,
+        //"bStateSave": true,
+        "oLanguage": {
+            "sSearch": "Search all columns:",
+            "sEmptyTable": "No audio jobs available"
+        },
+        "aaSorting" : [],
+        "aoColumnDefs": [
+						{ "iDataSort": 1		, "aTargets": [ 0 ] },
+						{ "sType"	 : "numeric", "aTargets": [ 1 ] },
+
+             			{ "iDataSort": 10		, "aTargets": [ 9 ] },
+             			{ "sType"	 : "string"	, "aTargets": [ 10 ] },
+
+             			{ "iDataSort": 12		, "aTargets": [ 11 ] },
+             			{ "sType"	 : "numeric", "aTargets": [ 12 ] },
+
+             			{ "iDataSort": 14		, "aTargets": [ 13 ] },
+             			{ "sType"	 : "numeric", "aTargets": [ 14 ] },
+
+             			{ "iDataSort": 16		, "aTargets": [ 15 ] },
+             			{ "sType"	 : "string", "aTargets": [ 16 ] },
+
+             			{ "iDataSort": 18		, "aTargets": [ 17 ] },
+             			{ "sType"	 : "numeric", "aTargets": [ 18 ] },
+
+             			{ "bVisible" : false	, "aTargets": [ 1,3,10,12,14,16,18 ] },
+             			{ "bSortable": false	, "aTargets": [ 19,20 ] }
+        ]
+    });
+
+    $('#job-list-audio-tbl_audiojobs').on('click', '.DataTables_sort_wrapper', function()
+    {
+       $('#job-list-audio-tbl_audiojobs tr').removeClass('lead-audio-job');
+       $('#job-list-audio-tbl_audiojobs tr').removeClass('child-audio-job');
+    })
+
+    $("tfoot input").keyup( function () {
+        /* Filter on the column (the index) of this element */
+        // note: add +1 to the index.value as there is no input in col 0 so the index of the text input doesn't match the index of the column being queried
+        audioJobTable.fnFilter(this.value, $("tfoot input").index(this)+1);
+    } );
+
+
+/**
+    $("tfoot input").keyup( function () {
+        /* Filter on the column (the index) of this element *
+        // note: we need to add an indexAdj figure to the index(this) in order to correctly calculate which column we should be filtering on.
+        // the $("tfoot input").index(this) figure is the n-th occurence of the selector $(""tfoot input")
+
+        switch ($("tfoot input").index(this)) {
+        	case 0:
+        		var indexAdj = 4;
+            	break;
+        	case 1:
+        		var indexAdj = 4;
+            	break;
+        	case 2:
+        		var indexAdj = 7;
+            	break;
+        	case 3:
+        		var indexAdj = 12;
+            	break;
+        }
+
+        audioJobTable.fnFilter(this.value, $("tfoot input").index(this)+indexAdj);
+    } ); */
+
+
+    /*
+     * Support functions to provide a little bit of 'user friendlyness' to the textboxes in
+     * the footer
+     */
+    $("tfoot input").each( function (i) {
+        asInitVals[i] = this.value;
+    } );
+
+    $("tfoot input").focus( function () {
+        if ( this.className == "search_init" )
+        {
+            this.className = "";
+            this.value = "";
+        }
+    } );
+
+    $("tfoot input").blur( function (i) {
+        if ( this.value == "" )
+        {
+            this.className = "search_init";
+            this.value = asInitVals[$("tfoot input").index(this)];
+        }
+    } );
+} );
+
+function changeDate()
+{
+    var changeDateDay  = $('#change-date-day').val();
+    var changeDateHour = $('#change-date-hour').val();
+
+    var today   = new Date();
+    var dateObj = new Date(today.getTime() + (changeDateDay * (24 * 60 * 60 * 1000)));
+
+    var month   = _addZero(String(dateObj.getMonth() + 1));
+    var dateDay = _addZero(String(dateObj.getDate()));
+
+    var time;
+    if ('0' == changeDateHour)
+    {
+        time = _addZero(today.getHours())
+            + ':'
+            + _addZero(today.getMinutes())
+            + ':00';
+    }
+    else
+    {
+        time = changeDateHour + ':00';
+    }
+
+    var changeDate = dateObj.getFullYear()
+        + '-'
+        + month
+        + '-'
+        + dateDay
+        + ' '
+        + time;
+
+    $("#due_date_select").val(changeDate);
+}
+
+
+function _addZero(component)
+{
+    if (String(component).length < 2)
+    {
+        component = '0' + component;
+    }
+    return component;
+}
+
+function stopBubble(event) {
+   	if (event){
+   		event.stopPropagation();
+   	} else {
+   		window.event.cancelBubble = true;
+  	}
+}
+
+/**
+ * Perform a standard check where multiple audio jobs are about to be edited
+ *
+ * @returns {boolean}
+ */
+function _confirmEdit( idString )
+{
+    var idArray = idString.split( '-' );
+    if ( idArray.length > 1 )
+    {
+        var conf = confirm('Are you sure you want to amend ' + idArray.length + ' audio jobs (' + idString +')');
+        return conf;
+    }
+    return true;
+}
+
+/**
+ * Reloads the page, here as problems arising in Chrome
+ *
+ * @return void
+ */
+function _reloadPage()
+{
+    window.location.reload();
+}
+
+function showDueDate(id, date_time, dateType)
+{
+    $( 'input[name="check-' + id + '"]' ).attr( 'checked', 'checked' );
+
+	if (date_time !== undefined) {
+		$("#job-list-audio-client_due_date").val(date_time);
+	}
+	var rangeDemoFormat = "%Y-%m-%d %H:%i:00";
+	var earliest = "<?php echo date('Y-m-d H:00:00') ?>";
+	$("#job-list-audio-client_due_date").AnyTime_picker({
+		format:rangeDemoFormat,
+		placement: "inline",
+		hideInput: false,
+		earliest:  earliest,
+		firstDOW:  1
+	});
+    $("#due_date_type").val(dateType);
+	$( "#job-list-audio-dialog-due-date-btn_save" ).button();
+	$('#job-list-audio-dialog-due-date').dialog('open');
+    return false;
+}
+
+function processDueDate()
+{
+    var idString = _getAudioJobIdStrings();
+
+    if (false === idString )
+    {
+        alert ('Audio file id(s) could not be found - please reload the page and try again');
+        $('#job-list-audio-dialog-due-date').dialog('close');
+        return false;
+    }
+
+    var conf = _confirmEdit( idString );
+    if (false === conf)
+    {
+        return false;
+    }
+
+    var dateType = $("#due_date_type").val();
+    var url = '/en/default/audio-job/' + dateType + '/id/' + idString;
+
+    due_date = $("#job-list-audio-client_due_date").val();
+    var formData = [];
+    formData.push({'name' : 'due_date', 'value' : due_date });
+
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: formData,
+        cache: false,
+        dataType: "json"
+    }).success(function( msg )
+    {
+        if (msg.status == "ok")
+        {
+            $('#job-list-audio-dialog-due-date').dialog('close');
+            _reloadPage();
+        }
+    });
+}
+
+function showPoorAudio( audioJobId )
+{
+    $('#job-list-audio-dialog-poor-audio').dialog('open');
+
+    var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'show-poor-audio'), null, true); ?>"
+    url += "/audio_job_id/" + audioJobId;
+
+    $.ajax({
+        type: "GET",
+        url: url,
+        cache: false,
+        dataType: "json"
+    }).success(function( msg )
+    {
+        $("#job-list-audio-poor-audio-container").html(msg.html);
+    });
+}
+
+function processPoorAudio( audioJobId )
+{
+    var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'toggle-poor-audio'), null, true); ?>";
+    formData = {
+        'audio_job_id' : audioJobId,
+        'poor_audio'   : $('#poor_audio_modifier').val()
+    }
+
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: formData,
+        cache: false,
+        dataType: "json"
+    }).success(function( msg ) {
+        if (msg.status !== 'ok')
+        {
+            $( '#poor_audio_error').html( '<p class="action-error-messages">Please provide a valid % value (0 to 100)</p>' );
+        }
+        else
+        {
+            $('#job-list-audio-dialog-poor-audio').dialog('close');
+            _reloadPage();
+        }
+    });
+}
+
+function extraServices(job_id)
+{
+    $('#job-dialog-es').dialog('open');
+
+    var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'extra-services'), null, true); ?>"
+    url += "/job_id/" + job_id;
+
+    if (job_id === undefined)
+    {
+        return false;
+    }
+
+    $.ajax({
+        type: "GET",
+        url: url,
+        cache: false,
+        dataType: "json"
+    }).success(function( msg )
+    {
+        $("#job-dialog-es-container").html(msg.html);
+    });
+}
+
+function processAudioJobDiscount( job_id )
+{
+    var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'apply-discount'), null, true); ?>";
+    formData = {
+        'audio_job_id'       : job_id,
+        'audio_job_discount' : $('#audio_job_discount').val()
+    }
+
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: formData,
+        cache: false,
+        dataType: "json"
+    }).success(function( msg ) {
+            if (msg.status !== 'ok')
+            {
+                $( '#audio_job_discount_error').html( '<p class="action-error-messages">Please provide a valid discount (e.g. 10.25)</p>' );
+            }
+            else
+            {
+                $('#job-dialog-es').dialog('close');
+                _reloadPage();
+            }
+        });
+}
+
+function processExtraServices(job_id)
+{
+    var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'extra-services'), null, true); ?>";
+    formData = {
+        'job_id'     : job_id,
+        'service_id' : $('#es-services').val()
+    }
+
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: formData,
+        cache: false,
+        dataType: "json"
+    }).success(function( msg ) {
+        if (msg.status !== 'ok')
+        {
+            alert('There was an error adding this');
+        }
+        else
+        {
+            $('#job-dialog-es-container').html(msg.html);
+        }
+    });
+}
+
+function deleteExtraService(job_id, service_id)
+{
+    var conf = confirm("Are you sure you want to remove this service");
+    if (conf !== true)
+    {
+        return false;
+    }
+
+    var url  ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'remove-extra-service'), null, true); ?>";
+    var data = {
+        'job_id'     : job_id,
+        'service_id' : service_id
+    };
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: data,
+        cache: false,
+        dataType: "json"
+    }).success(function(msg) {
+        if (msg.status === 'ok')
+        {
+            $('#es' + service_id).remove();
+        }
+        else
+        {
+            alert('There was a problem removing this extra service');
+        }
+    });
+}
+
+function searchOperative()
+{
+    var searchValue = $('#search').val();
+    if ('' == searchValue)
+    {
+        $('.operative-search').show();
+    }
+    else
+    {
+        $('.operative-search').each(function(index, element)
+        {
+            var operativeName = $('.operative-search-name', $(element)).html();
+            if (operativeName.toLowerCase().indexOf(searchValue) >= 0)
+            {
+                console.log( 'test' );
+                $(element).show();
+            }
+            else
+            {
+                $(element).hide();
+            }
+        })
+    }
+}
+
+function showStatus(audioJobId)
+{
+    var idString = _getAudioJobIdStrings( audioJobId );
+
+    if (false === idString )
+    {
+        alert("No audio file selected");
+        return false;
+    }
+
+	$('#job-list-audio-dialog-status').dialog('open');
+
+	var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'show-edit-statuses'), null, true); ?>"
+	url += "/audio_job_id/" + idString;
+
+	$.ajax({
+		type: "GET",
+	  	url: url,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg )
+    {
+	  	$("#job-list-audio-dialog-status-container").html(msg.html);
+        return false;
+	});
+    return false;
+}
+
+function processStatus(status_id, status, show_warning)
+{
+    var idString = _getAudioJobIdStrings();
+
+    if (false === idString )
+    {
+        alert("No audio file selected");
+        return false;
+    }
+
+    var idLength = idString.split('-').length;
+
+	if(show_warning)
+    {
+		var c = confirm("Are you sure you wish to change to status '" + status + "?");
+		if (c == false) {
+			return false;
+		}
+	}
+
+    if (!_confirmEdit( idString ))
+    {
+        return false;
+    }
+
+	var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'update-status'), null, true); ?>";
+    url += "/id/" + idString;
+
+	var formData = [];
+	formData.push({'name' : 'status_id', 'value' : status_id });
+
+	$.ajax({
+		type: "POST",
+	  	url: url,
+	  	data: formData,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg )
+    {
+		if (msg.status == "ok")
+        {
+			$('#job-list-audio-dialog-status').dialog('close');
+            _reloadPage();
+		} else {
+			alert(msg.error);
+		}
+	});
+}
+
+function showAssignTypist( id, currentTypist )
+{
+    var idString = _getAudioJobIdStrings( id );
+
+    if (false === idString )
+    {
+        alert("No audio file selected");
+        return false;
+    }
+	$('#job-list-audio-dialog-assign-typist').dialog('open');
+
+
+	var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'assign-typist'), null, true); ?>"
+	url += "/audio_job_id/" + idString;
+
+    if (typeof currentTypist !== 'undefined')
+    {
+        url += '/id/' + currentTypist;
+    }
+
+	$.ajax({
+		type: "GET",
+	  	url: url,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg )
+    {
+	  	$("#job-list-audio-assign-typist-container").html(msg.html);
+	  	$( "#assign-typist-btn_save" ).button();
+		$( "#assign-typist-btn_cancel" ).button();
+		var rangeDemoFormat = "%Y-%m-%d %H:%i:00";
+		var earliest = "<?php echo date('Y-m-d H:i:00') ?>";
+		$("#due_date").AnyTime_picker({
+			format:rangeDemoFormat,
+			placement: "inline",
+			hideInput:true,
+			earliest: earliest,
+			firstDOW: 1
+		});
+	});
+}
+
+function submitAssignTypist()
+{
+    var idString = _getAudioJobIdStrings();
+
+    if (false === idString )
+    {
+        alert("No audio file selected");
+        return false;
+    }
+
+    var idLength = idString.split('-').length;
+
+	// get form data
+	var formData          = $('#formAssignTypist').serializeArray();
+	var bln_found_user_id = false;
+	var user_id;
+    var due_date;
+
+	$.each(formData, function(index, value)
+    {
+		if (value["name"] == "user_id")
+        {
+			bln_found_user_id = true;
+			user_id = value['value'];
+		}
+        if (value["name"] == "due_date")
+        {
+            due_date = value['value'];
+		}
+	});
+
+	if (!bln_found_user_id)
+    {
+		alert("Please select a typist");
+		return false;
+	}
+    else if (!isValidDatetime(due_date))
+    {
+        alert("Please select a valid due date (YYYY-MM-DD HH:II)");
+		return false;
+    }
+
+    var typistConfirmText = 'Are you sure you wish to assign this typist?';
+    if ($('#full_filename'))
+    {
+        var typistText = '';
+        if ($('#assign-typist-typist-name-' + user_id))
+        {
+           typistText = ' to ' + $.trim($('#assign-typist-typist-name-' + user_id).html());
+        }
+
+        var fileText;
+        if ( 1 < idLength )
+        {
+            fileText = idLength + ' files (' + idString + ')';
+        }
+        else
+        {
+            fileText = $('#full_filename').val();
+        }
+
+        typistConfirmText = 'Are you sure you want to assign ' + fileText + typistText + '?';
+    }
+
+	if (!confirm(typistConfirmText))
+    {
+		return false;
+	}
+
+    if (gl_typist_number != null)
+    {
+        // grab selected typist name
+        var typist_name = $("#assign-typist-typist-name-" + user_id).html();
+        updateMultipleTypistRow(formData, typist_name);
+        $("#due_date").AnyTime_noPicker().remove();
+        $('#job-list-audio-dialog-assign-typist').dialog('close');
+        return false;
+    }
+
+	$.ajax({
+		type: "POST",
+		url: "<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'assign-typist'), null, true); ?>" + '/audio_job_id/' + idString,
+		data: formData,
+		dataType: "json",
+		cache: false
+	}).done(function( msg )
+    {
+		if (msg.status == 'ok')
+        {
+			$("#due_date").AnyTime_noPicker().remove();
+			$('#job-list-audio-dialog-assign-typist').dialog('close');
+            _reloadPage();
+		} else {
+			$("#due_date").AnyTime_noPicker().remove();
+			$("#job-list-audio-assign-typist-container").html(msg.html);
+			$( "#assign-typist-btn_save" ).button();
+			$( "#assign-typist-btn_cancel" ).button();
+			var rangeDemoFormat = "%Y-%m-%d %H:%i:00";
+			var earliest = "<?php echo date('Y-m-d H:00:00') ?>";
+			$("#due_date").AnyTime_picker({
+				format:rangeDemoFormat,
+				placement: "inline",
+				hideInput:true,
+				earliest: earliest
+			});
+		}
+	});
+}
+
+function isValidDatetime(dateTime)
+{
+    var dateFormatFull     = /^(\d{4})-(\d{2})-(\d{2}) ([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/;
+    var dateFormatHourOnly = /^(\d{4})-(\d{2})-(\d{2}) ([01][0-9]|2[0-3]):([0-5][0-9])$/;
+    if (dateFormatFull.test(dateTime) || dateFormatHourOnly.test(dateTime)) {
+        return true;
+    }
+    return false;
+}
+
+function showAssignMultipleTypist(audio_job_id, mode, row_count)
+{
+	$('#job-list-audio-dialog-assign-multiple-typist').dialog('open');
+
+	var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'assign-multiple-typist'), null, true); ?>"
+	url += "/audio_job_id/" + audio_job_id;
+	url += "/mode/" + mode;
+
+	if (row_count !== undefined) {
+		url += "/row_count/" + row_count;
+	}
+
+	if (audio_job_id === undefined) {
+		// do nothing
+	} else {
+		gl_audio_job_id = audio_job_id;
+		gl_audio_job_id_array = null
+	}
+
+	$.ajax({
+		type: "GET",
+	  	url: url,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg ) {
+	  	$("#job-list-audio-assign-multiple-typist-container").html(msg.html);
+	  	$( "#assign-multiple-typist-btn_save" ).button();
+		$( "#assign-multiple-typist-btn_cancel" ).button();
+	});
+}
+
+function submitAssignMultipleTypist()
+{
+
+	if (!confirm('Are you sure you wish to assign these typists?')) {
+		return false;
+	}
+
+	// get form data
+	var formData = $('#formAssignMultipleTypist').serializeArray();
+
+	if (gl_audio_job_id == null && gl_audio_job_id_array == null) {
+		alert ('Audio file id(s) could not be found - please reload the page and try again');
+		$('#job-list-audio-dialog-assign-multiple-typist').dialog('close');
+		return false;
+	}
+
+    formData.push({'name' : 'audio_job_id', 'value' : gl_audio_job_id });
+
+	$.ajax({
+		type: "POST",
+		url: "<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'assign-multiple-typist'), null, true); ?>",
+		data: formData,
+		dataType: "json",
+		cache: false
+	}).done(function( msg ) {
+		if (msg.status == 'ok')
+        {
+			$('#job-list-audio-dialog-assign-multiple-typist').dialog('close');
+            _reloadPage();
+		}
+        else
+        {
+			$("#job-list-audio-assign-multiple-typist-container").html(msg.html);
+		}
+	});
+}
+
+function unsplitMultipleTypist(audio_job_id)
+{
+	if (!confirm('Are you sure you wish to unsplit this audio job?')) {
+		return false;
+	}
+
+    var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'unsplit-multiple-typist'), null, true); ?>/audio_job_id/" + audio_job_id;
+
+	$.ajax({
+		type: "POST",
+		url: url,
+		dataType: "json",
+		cache: false
+	}).done(function( msg )
+    {
+		if (msg.status == 'ok')
+        {
+			$('#job-list-audio-dialog-assign-multiple-typist').dialog('close');
+
+			$("#job-list-audio-typist-" + gl_audio_job_id).html(msg.html[gl_audio_job_id]);
+			if(msg.html2[gl_audio_job_id]) {
+				var cell = $("#job-list-audio-status-" + gl_audio_job_id);
+				cell.html(msg.html2[gl_audio_job_id]);
+				// need to set parent row bg colour
+				$(cell).closest('tr').css("background-color",msg.css_bgcolor[gl_audio_job_id]);
+			}
+			if(msg.html3[gl_audio_job_id])
+            {
+				$("#job-list-typist-date-" + gl_audio_job_id).html(msg.html3[gl_audio_job_id]);
+			}
+			// set typist due date sort field
+			if(msg.html4[gl_audio_job_id]) {
+				// insert into table using fnUpdate so that the data is included in the sorting calcs
+				// for future sorting operations, but we don't resort at this point as too confusing for the user
+				ns = $("#tr-" + gl_audio_job_id)[0];
+			    audioJobTable.fnUpdate(msg.html4[gl_audio_job_id], ns, 11, false, true);
+			}
+			if(msg.html5[gl_audio_job_id]) {
+				$("#job-list-audio-transcript-" + gl_audio_job_id).html(msg.html5[gl_audio_job_id]);
+			}
+
+		}
+        else
+        {
+			$("#job-list-audio-assign-multiple-typist-container").html(msg.html);
+		}
+	});
+}
+
+function unsplitMultipleProofreader(audio_job_id)
+{
+	if (!confirm('Are you sure you wish to unsplit this audio job?')) {
+		return false;
+	}
+
+    var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'unsplit-multiple-proofreader'), null, true); ?>/audio_job_id/" + audio_job_id;
+
+	$.ajax({
+		type: "POST",
+		url: url,
+		dataType: "json",
+		cache: false
+	}).done(function( msg )
+    {
+		if (msg.status == 'ok')
+        {
+			$('#job-list-audio-dialog-assign-multiple-proofreader').dialog('close');
+
+			$("#job-list-audio-proofreader-" + gl_audio_job_id).html(msg.html[gl_audio_job_id]);
+			if(msg.html2[gl_audio_job_id]) {
+				var cell = $("#job-list-audio-status-" + gl_audio_job_id);
+				cell.html(msg.html2[gl_audio_job_id]);
+				// need to set parent row bg colour
+				$(cell).closest('tr').css("background-color",msg.css_bgcolor[gl_audio_job_id]);
+			}
+			if(msg.html3[gl_audio_job_id])
+            {
+				$("#job-list-proofreader-date-" + gl_audio_job_id).html(msg.html3[gl_audio_job_id]);
+			}
+			// set typist due date sort field
+			if(msg.html4[gl_audio_job_id]) {
+				// insert into table using fnUpdate so that the data is included in the sorting calcs
+				// for future sorting operations, but we don't resort at this point as too confusing for the user
+				ns = $("#tr-" + gl_audio_job_id)[0];
+			    audioJobTable.fnUpdate(msg.html4[gl_audio_job_id], ns, 11, false, true);
+			}
+			if(msg.html5[gl_audio_job_id]) {
+				$("#job-list-audio-transcript-" + gl_audio_job_id).html(msg.html5[gl_audio_job_id]);
+			}
+
+		}
+        else
+        {
+			$("#job-list-audio-assign-multiple-proofreader-container").html(msg.html);
+		}
+	});
+}
+
+function typistAccept(audio_job_id, audio_jobs_typists_id)
+{
+	var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'accept-typist'), null, true); ?>/audio_job_id/" + audio_job_id + "/id/" + audio_jobs_typists_id;
+	$.ajax({
+		type: "GET",
+	  	url: url,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg ) {
+		$("#job-list-audio-typist-" + audio_job_id).html(msg.html);
+	});
+}
+
+function typistConfirmDownload(audio_job_id, audio_jobs_typists_id)
+{
+	var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'confirm-download-typist'), null, true); ?>/audio_job_id/" + audio_job_id + "/id/" + audio_jobs_typists_id;
+
+	$.ajax({
+		type: "GET",
+	  	url: url,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg ) {
+		$("#job-list-audio-typist-" + audio_job_id).html(msg.html);
+	});
+}
+
+function showAssignProofreader( id, currentProofreader )
+{
+    var idString = _getAudioJobIdStrings( id );
+
+    if (false === idString )
+    {
+        alert("No audio file selected");
+        return false;
+    }
+    $('#job-list-audio-dialog-assign-proofreader').dialog('open');
+
+
+    var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'assign-proofreader'), null, true); ?>"
+    url += "/audio_job_id/" + idString;
+
+
+    if (typeof currentProofreader !== 'undefined')
+    {
+        url += '/id/' + currentProofreader;
+    }
+
+    $.ajax({
+        type: "GET",
+        url: url,
+        cache: false,
+        dataType: "json"
+    }).success(function( msg )
+    {
+        $("#job-list-audio-assign-proofreader-container").html(msg.html);
+        $( "#assign-typist-btn_save" ).button();
+        $( "#assign-typist-btn_cancel" ).button();
+        var rangeDemoFormat = "%Y-%m-%d %H:%i:00";
+        var earliest = "<?php echo date('Y-m-d H:i:00') ?>";
+        $("#due_date").AnyTime_picker({
+            format:rangeDemoFormat,
+            placement: "inline",
+            hideInput:true,
+            earliest: earliest,
+            firstDOW: 1
+        });
+    });
+}
+
+function submitAssignProofreader()
+{
+
+    var idString = _getAudioJobIdStrings();
+
+    if (false === idString )
+    {
+        alert("No audio file selected");
+        return false;
+    }
+
+    var idLength = idString.split('-').length;
+
+    // get form data
+    var formData          = $('#formAssignProofreader').serializeArray();
+    var bln_found_user_id = false;
+    var user_id;
+    var due_date;
+
+    $.each(formData, function(index, value)
+    {
+        if (value["name"] == "user_id")
+        {
+            bln_found_user_id = true;
+            user_id = value['value'];
+        }
+        if (value["name"] == "due_date")
+        {
+            due_date = value['value'];
+        }
+    });
+
+    if (!bln_found_user_id)
+    {
+        alert("Please select a proofreader");
+        return false;
+    }
+    else if (!isValidDatetime(due_date))
+    {
+        alert("Please select a valid due date (YYYY-MM-DD HH:II)");
+        return false;
+    }
+
+    var proofreaderConfirmText = 'Are you sure you wish to assign this proofreader?';
+    if ($('#full_filename'))
+    {
+        var proofreaderText = '';
+        if ($('#assign-proofreader-proofreader-name-' + user_id))
+        {
+            proofreaderText = ' to ' + $.trim($('#assign-proofreader-proofreader-name-' + user_id).html());
+        }
+
+        var fileText;
+        if ( 1 < idLength )
+        {
+            fileText = idLength + ' files (' + idString + ')';
+        }
+        else
+        {
+            fileText = $('#full_filename').val();
+        }
+
+        proofreaderConfirmText = 'Are you sure you want to assign ' + fileText + proofreaderText + '?';
+    }
+
+    if (!confirm(proofreaderConfirmText))
+    {
+        return false;
+    }
+
+    if (gl_proofreader_number != null)
+    {
+        // grab selected typist name
+        var proofreader_name = $("#assign-proofreader-proofreader-name-" + user_id).html();
+        updateMultipleProofreaderRow(formData, proofreader_name);
+        $("#due_date").AnyTime_noPicker().remove();
+        $('#job-list-audio-dialog-assign-proofreader').dialog('close');
+        return false;
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'assign-proofreader'), null, true); ?>" + '/audio_job_id/' + idString,
+        data: formData,
+        dataType: "json",
+        cache: false
+    }).done(function( msg )
+        {
+            if (msg.status == 'ok')
+            {
+                $("#due_date").AnyTime_noPicker().remove();
+                $('#job-list-audio-dialog-assign-proofreader').dialog('close');
+                _reloadPage();
+            }
+            else
+            {
+                $("#due_date").AnyTime_noPicker().remove();
+                $("#job-list-audio-assign-proofreader-container").html(msg.html);
+                $( "#assign-proofreader-btn_save" ).button();
+                $( "#assign-proofreader-btn_cancel" ).button();
+                var rangeDemoFormat = "%Y-%m-%d %H:%i:00";
+                var earliest = "<?php echo date('Y-m-d H:00:00') ?>";
+                $("#due_date").AnyTime_picker({
+                    format:rangeDemoFormat,
+                    placement: "inline",
+                    hideInput:true,
+                    earliest: earliest
+                });
+            }
+        });
+}
+
+function showEditProofreader(audio_job_id, audio_jobs_proofreaders_id)
+{
+	$('#job-list-audio-dialog-assign-proofreader').dialog('open');
+	var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'assign-proofreader'), null, true); ?>";
+	url += "/audio_job_id/" + audio_job_id;
+
+	if (audio_job_id === undefined || audio_jobs_proofreaders_id === undefined) {
+		// do nothing
+	} else {
+		url += "/id/" + audio_jobs_proofreaders_id;
+		gl_audio_job_id = audio_job_id;
+		gl_audio_job_id_array = null
+	}
+
+	$.ajax({
+		type: "GET",
+	  	url: url,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg ) {
+	  	$("#job-list-audio-assign-proofreader-container").html(msg.html);
+	  	$( "#assign-proofreader-btn_save" ).button();
+		$( "#assign-proofreader-btn_cancel" ).button();
+		var rangeDemoFormat = "%Y-%m-%d %H:%i:00";
+		var earliest = "<?php echo date('Y-m-d H:00:00') ?>";
+		AnyTime.noPicker("due_date");
+		$("#due_date").AnyTime_picker({
+			format:rangeDemoFormat,
+			placement: "inline",
+			hideInput:true,
+			earliest: earliest
+		});
+	});
+}
+
+function proofreaderAccept(audio_job_id, audio_jobs_proofreaders_id)
+{
+	var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'accept-proofreader'), null, true); ?>/audio_job_id/" + audio_job_id + "/id/" + audio_jobs_proofreaders_id;
+
+	$.ajax({
+		type: "GET",
+	  	url: url,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg ) {
+		$("#job-list-audio-proofreader-" + audio_job_id).html(msg.html);
+	});
+}
+
+function showAssignMultipleProofreader(audio_job_id, mode, row_count)
+{
+	$('#job-list-audio-dialog-assign-multiple-proofreader').dialog('open');
+
+	var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'assign-multiple-proofreader'), null, true); ?>"
+	url += "/audio_job_id/" + audio_job_id;
+	url += "/mode/" + mode;
+
+	if (row_count !== undefined) {
+		url += "/row_count/" + row_count;
+	}
+
+	if (audio_job_id === undefined) {
+		// do nothing
+	} else {
+		gl_audio_job_id = audio_job_id;
+		gl_audio_job_id_array = null
+	}
+
+	$.ajax({
+		type: "GET",
+	  	url: url,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg ) {
+	  	$("#job-list-audio-assign-multiple-proofreader-container").html(msg.html);
+	  	$( "#assign-multiple-proofreader-btn_save" ).button();
+		$( "#assign-multiple-proofreader-btn_cancel" ).button();
+	});
+}
+
+function submitAssignMultipleProofreader()
+{
+
+	if (!confirm('Are you sure you wish to assign these proofreaders?')) {
+		return false;
+	}
+
+	// get form data
+	var formData = $('#formAssignMultipleProofreader').serializeArray();
+
+
+	if (gl_audio_job_id == null && gl_audio_job_id_array == null) {
+		alert ('Audio file id(s) could not be found - please reload the page and try again');
+		$('#job-list-audio-dialog-assign-multiple-proofreader').dialog('close');
+		return false;
+	}
+
+    formData.push({'name' : 'audio_job_id', 'value' : gl_audio_job_id });
+
+	$.ajax({
+		type: "POST",
+		url: "<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'assign-multiple-proofreader'), null, true); ?>",
+		data: formData,
+		dataType: "json",
+		cache: false
+	}).done(function( msg ) {
+		if (msg.status == 'ok')
+        {
+			$('#job-list-audio-dialog-assign-multiple-proofreader').dialog('close');
+            _reloadPage();
+		}
+        else
+        {
+			$("#job-list-audio-assign-multiple-proofreader-container").html(msg.html);
+		}
+	});
+}
+
+function showSoundFile(audio_job_id)
+{
+	$('#job-list-audio-dialog').dialog('open');
+	$('#job-list-audio-dialog-tabs-1').html('<p>Loading...</p>');
+
+	var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'show-sound-file-details'), null, true); ?>/audio_job_id/" + audio_job_id;
+	$.ajax({
+		type: "GET",
+	  	url: url,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg ) {
+	  	$("#job-list-audio-dialog-tabs-1").html(msg.html);
+	  	$("#job-list-audio-dialog-tabs-2").html(msg.html_history);
+	});
+}
+
+function showTranscriptionFiles(audio_job_id)
+{
+	$('#job-list-transcription-dialog').dialog('open');
+
+	var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'show-transcription-file-list'), null, true); ?>/audio_job_id/" + audio_job_id;
+	$.ajax({
+		type: "GET",
+	  	url: url,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg ) {
+	  	$("#job-list-transcription-dialog-container").html(msg.html);
+	  	$( "#job-list-transcription-dialog-btn_cancel" ).button();
+	});
+}
+
+function doSoundFileDownload(audio_job_id)
+{
+	var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'download'), null, true); ?>/id/" + audio_job_id;
+  	window.location.href = url;
+}
+
+function doTranscriptionFileDownload(transcription_file_id)
+{
+	var url ="<?php echo $this->url(array('controller' => 'transcription-file', 'action' => 'download'), null, true); ?>/id/" + transcription_file_id;
+  	window.location.href = url;
+}
+
+function toggleTypistDetail(id) {
+	var options = {};
+	$( "#assign-typist-" + id ).toggle("blind", options, 200 );
+}
+
+function splitAudioJob(audio_job_id, typist_count, mode) {
+	gl_audio_job_id = audio_job_id;
+
+	var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'split-audio-job'), null, true); ?>"
+	url += "/audio_job_id/" + audio_job_id;
+	url += "/typist_count/" + typist_count;
+	url += "/mode/" + mode;
+
+	$.ajax({
+		type: "GET",
+	  	url: url,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg ) {
+		$("#job-list-audio-assign-multiple-typist-container").html(msg.html);
+		$("#assign-multiple-typists-select-split").hide();
+		$( "#assign-multiple-typist-btn_save" ).button();
+		$( "#assign-multiple-typist-btn_cancel" ).button();
+	});
+}
+
+function assignMultipleTypist(audio_job_id, typist_number, user_audio_job_id)
+{
+	gl_typist_number = typist_number;
+    selected_job_id  = user_audio_job_id;
+	showAssignTypist(audio_job_id, user_audio_job_id);
+}
+
+
+function removeMultipleTypist(userAudioJobId, audioJobId, audioJobIdTypistNumber)
+{
+    if (confirm("Are you sure you want to unassign this typist from this audio job?"))
+    {
+        var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'remove-multiple-typist'), null, true); ?>"
+        url += "/typist_audio_job_id/" + userAudioJobId;
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            cache: false,
+            dataType: "json"
+        }).success(function( msg )
+        {
+            $('#typist-'+audioJobId+'-'+audioJobIdTypistNumber+'-typist-name').html(
+                '<a onclick="assignMultipleTypist('+audioJobId+', '+audioJobIdTypistNumber+');return false;" href="#">Select typist ' + audioJobIdTypistNumber+'</a>'
+            );
+
+            // Prevent from typist being reassigned when form is submitted
+            $('#typist-'+audioJobId+'-'+audioJobIdTypistNumber+'-user_id').val('0');
+            var removeIconElement = '#typist-'+audioJobId+'-'+audioJobIdTypistNumber+'-removelink';
+            if ($(removeIconElement))
+            {
+                $(removeIconElement).remove();
+            }
+        });
+	}
+
+   return false;
+}
+
+function removeMultipleProofreader(userAudioJobId, audioJobId, audioJobIdProofreaderNumber)
+{
+    if (confirm("Are you sure you want to unassign this proofreader from this audio job?"))
+    {
+        var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'remove-multiple-proofreader'), null, true); ?>"
+        url += "/proofreader_audio_job_id/" + userAudioJobId;
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            cache: false,
+            dataType: "json"
+        }).success(function( msg )
+        {
+            $('#proofreader-'+audioJobId+'-'+audioJobIdProofreaderNumber+'-proofreader-name').html(
+                '<a onclick="assignMultipleProofreader('+audioJobId+', '+audioJobIdProofreaderNumber+');return false;" href="#">Select proofreader ' + audioJobIdProofreaderNumber+'</a>'
+            );
+
+            // Prevent from proofreader being reassigned when form is submitted
+            $('#proofreader-'+audioJobId+'-'+audioJobIdProofreaderNumber+'-user_id').val('0');
+
+            var removeIconElement = '#proofreader-'+audioJobId+'-'+audioJobIdProofreaderNumber+'-removelink';
+            if ($(removeIconElement))
+            {
+                $(removeIconElement).remove();
+            }
+        });
+	}
+
+   return false;
+}
+
+function updateMultipleTypistRow(formData, typist_name)
+{
+    var offSet = Number( formData.length - 10 );
+
+	$("#typist-" + gl_audio_job_id + "-" + gl_typist_number + "-typist-name").html(typist_name);
+	var dteFormat = moment(formData[(5 + offSet)]['value'].replace(/\s+/g, '')).utc(); // if not utc then uses local time (which server has already accounted for)
+    $("#typist-" + gl_audio_job_id + "-" + gl_typist_number + "-due-date").html(dteFormat.format('Do MMM \\at HH:mm'));
+	// set the hidden input
+	$("#typist-" + gl_audio_job_id + "-" + gl_typist_number + "-user_id").val(formData[(9 + offSet)]['value']);
+	$("#typist-" + gl_audio_job_id + "-" + gl_typist_number + "-due_date").val(formData[(5 + offSet)]['value']);
+	$("#typist-" + gl_audio_job_id + "-" + gl_typist_number + "-comment").val(formData[(2 + offSet)]['value']);
+    $("#typist-" + gl_audio_job_id + "-" + gl_typist_number + "-shift_id").val(formData[(8 + offSet)]['value']);
+
+    if ( $( '#substandard_payrate' ).is(':checked') )
+    {
+        if ( $( '#substandard_payrate_' + gl_typist_number ).length > 0 )
+        {
+            $( '#substandard_payrate_' + gl_typist_number).remove();
+        }
+        var userId = $( '#substandard_payrate').val();
+        $( '#formAssignMultipleTypist').append( '<input type="hidden" id="substandard_payrate_' + gl_typist_number  + '" name="substandard_payrate[]" value="' + userId + '" />' );
+    }
+}
+
+function splitAudioJobProofreader(audio_job_id, proofreader_count, mode) {
+	gl_audio_job_id = audio_job_id;
+
+	var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'split-audio-job-proofreader'), null, true); ?>"
+	url += "/audio_job_id/" + audio_job_id;
+	url += "/proofreader_count/" + proofreader_count;
+	url += "/mode/" + mode;
+
+	$.ajax({
+		type: "GET",
+	  	url: url,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg ) {
+		$("#job-list-audio-assign-multiple-proofreader-container").html(msg.html);
+		$("#assign-multiple-proofreaders-select-split").hide();
+		$("#assign-multiple-proofreader-btn_save").button();
+		$("#assign-multiple-proofreader-btn_cancel").button();
+	});
+}
+
+function assignMultipleProofreader(audio_job_id, proofreader_number, user_audio_job_id) {
+	gl_proofreader_number = proofreader_number;
+    selected_job_id  = user_audio_job_id;
+	showAssignProofreader(audio_job_id);
+}
+
+function updateMultipleProofreaderRow(formData, proofreader_name) {
+    $("#proofreader-" + gl_audio_job_id + "-" + gl_proofreader_number + "-proofreader-name").html(proofreader_name);
+	var dteFormat = moment(formData[5]['value'].replace(/\s+/g, '')).utc(); // if not utc then uses local time (which server has already accounted for)
+	$("#proofreader-" + gl_audio_job_id + "-" + gl_proofreader_number + "-due-date").html(dteFormat.format('Do MMM \\at HH:mm'));
+	// set the hidden input
+	$("#proofreader-" + gl_audio_job_id + "-" + gl_proofreader_number + "-user_id").val(formData[9]['value']);
+	$("#proofreader-" + gl_audio_job_id + "-" + gl_proofreader_number + "-due_date").val(formData[5]['value']);
+    $("#proofreader-" + gl_audio_job_id + "-" + gl_proofreader_number + "-shift_id").val(formData[8]['value']);
+}
+
+function proofreaderConfirmDownload(audio_job_id, audio_jobs_proofreaders_id)
+{
+    var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'confirm-download-proofreader'), null, true); ?>/audio_job_id/" + audio_job_id + "/id/" + audio_jobs_proofreaders_id + "/type/admin";
+
+    $.ajax({
+        type: "GET",
+        url: url,
+        cache: false,
+        dataType: "json"
+    }).success(function( msg ) {
+                $("#job-list-audio-proofreader-" + audio_job_id).html(msg.html);
+            });
+}
+
+function _getAudioJobIdStrings( audioJobId )
+{
+    if ( audioJobId !== 'undefined' )
+    {
+        $( 'input[name="check-' + audioJobId + '"]' ).attr( 'checked', 'checked' );
+    }
+    gl_audio_job_id_array = $('input', audioJobTable.fnGetNodes()).serializeArray();
+
+    var audioJobIdArray = [];
+    $( gl_audio_job_id_array ).each( function( key, element )
+    {
+        audioJobIdArray[key] = element.value;
+    });
+
+    var idString = audioJobIdArray.join( '-' );
+
+    if ( idString.length > 0 )
+    {
+        return idString;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+function unassign( audioJobId, staffType )
+{
+    if ( audioJobId !== 'undefined' )
+    {
+        $( 'input[name="check-' + audioJobId + '"]' ).attr( 'checked', 'checked' );
+    }
+    var idString = _getAudioJobIdStrings( audioJobId );
+
+    if (!confirm('Are you sure you wish to unassign file(s) ' + idString + '?'))
+    {
+        return false;
+    }
+
+    if ( $( '#substandard_payrate' ).length > 0 && $( '#substandard_payrate').is( ':checked' ) )
+    {
+        idString += '/substandard_payrate/' + $( '#substandard_payrate' ).val();
+    }
+
+    $.ajax({
+        type: "GET",
+        url: '/en/default/audio-job/unassign-' + staffType + '/audio_job_id/' + idString,
+        dataType: "json",
+        cache: false
+    }).done(function( msg )
+        {
+            if (msg.status == 'ok')
+            {
+                $('#job-list-audio-dialog-assign-' + staffType).dialog('close');
+                _reloadPage();
+            }
+        });
+}
+
+function showEdit( audioJobId )
+{
+    var idString = _getAudioJobIdStrings( audioJobId );
+
+    if (false === idString )
+    {
+        alert("No audio file selected");
+        return false;
+    }
+
+	$('#job-list-audio-dialog-edit').dialog('open');
+
+	var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'edit'), null, true); ?>"
+	url += "/id/" + idString;
+
+
+	$.ajax({
+		type: "GET",
+	  	url: url,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg )
+    {
+	  	$("#job-list-audio-dialog-edit-container").html( msg.html );
+	});
+}
+
+function processEdit()
+{
+    var idString = $('#formEditAudioJob input[name=id]').val();
+    var conf     = _confirmEdit( idString );
+    if (false === conf)
+    {
+        return false;
+    }
+
+	var formData = $('#formEditAudioJob').serializeArray();
+
+	var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'edit'), null, true); ?>";
+    url += '/id/' + idString;
+
+	$.ajax({
+		type: "POST",
+	  	url: url,
+	  	data: formData,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg )
+    {
+		if (msg.status == "ok")
+        {
+			$('#job-list-audio-dialog-edit').dialog('close');
+             _reloadPage();
+		} else
+        {
+			$('#job-list-audio-dialog-edit-container').html(msg.html);
+		}
+	});
+}
+
+function approve()
+{
+    processStatus( 2, 'approved');
+}
+
+
+function archiveAudio() {
+    gl_audio_job_id_array = $('input', audioJobTable.fnGetNodes()).serializeArray();
+
+	if (gl_audio_job_id == null && gl_audio_job_id_array == null) {
+		alert ('Audio file id(s) could not be found - please reload the page and try again');
+		return false;
+	}
+
+	if (gl_audio_job_id_array.length == 0) {
+		alert("No audio file selected");
+		return false;
+	}
+
+	if (gl_audio_job_id_array.length > 1) {
+		alert("It is only possible to delete one audio file at a time");
+		return false;
+	}
+
+	var id = gl_audio_job_id_array[0].value;
+
+	if (confirm("Confirm deletion of audio file ID " + id + "?\n\nTHIS OPERATION CANNOT BE UNDONE")) {
+		// do nothing - continue
+	} else {
+		return false;
+	}
+
+	var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'archive'), null, true); ?>"
+	url += "/id/" + id;
+
+	$.ajax({
+		type: "GET",
+	  	url: url,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg ) {
+		if (msg.status == "ok") {
+			ns = $("#tr-" + gl_audio_job_id_array[0].value)[0];
+			audioJobTable.fnDeleteRow(ns);
+			alert("Audio file deleted");
+		} else {
+			alert("Audio file could not be deleted");
+		}
+
+	});
+}
+
+function archiveTranscript(id) {
+
+	if (id === "undefined") {
+		alert("No transcript selected");
+		return false;
+	}
+
+	if (confirm("Confirm deletion of transcript ID " + id + "?\n\nTHIS OPERATION CANNOT BE UNDONE")) {
+		// do nothing - continue
+	} else {
+		return false;
+	}
+
+	var url ="<?php echo $this->url(array('controller' => 'transcription-file', 'action' => 'archive'), null, true); ?>"
+	url += "/id/" + id;
+
+	$.ajax({
+		type: "GET",
+	  	url: url,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg ) {
+		if (msg.status == "ok") {
+			$("#transcription-tr-" + id).hide();
+			alert("Transcript deleted");
+		} else {
+			alert("Transcript could not be deleted");
+		}
+
+	});
+}
+
+function archiveSupport(id) {
+
+	if (id === "undefined") {
+		alert("No support document selected");
+		return false;
+	}
+
+	if (confirm("Confirm deletion of support document ID " + id + "?\n\nTHIS OPERATION CANNOT BE UNDONE")) {
+		// do nothing - continue
+	} else {
+		return false;
+	}
+
+	var url ="<?php echo $this->url(array('controller' => 'support-file', 'action' => 'archive'), null, true); ?>"
+	url += "/id/" + id;
+
+	$.ajax({
+		type: "GET",
+	  	url: url,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg ) {
+		if (msg.status == "ok") {
+			ns = $("#tr-support-" + id)[0];
+			supportJobTable.fnDeleteRow(ns);
+			alert("Support document deleted");
+		} else {
+			alert("Support document could not be deleted");
+		}
+
+	});
+}
+
+function launchEdit(source, title, width)
+{
+    if (width == undefined)
+    {
+        width = 1000;
+    }
+    height = 600;
+    var left = (screen.width - width) / 2;
+    var top  = (screen.height - height) / 2;
+    infoWindow = window.open(source, title, "width=" + width + ", height=" + height + ", location=no, menubar=no, resizable=yes, scrollbars=yes, status=yes, titlebar=no, toolbar=no, top="+top+", left="+left);
+    if (infoWindow.opener == null)
+    {
+        infoWindow.opener = self;
+    }
+    infoWindow.focus();
+
+    if (event)
+    {
+        event.cancelBubble = true;
+    }
+}
+</script>

@@ -1,0 +1,93 @@
+<?php
+    $link = '<a href="/en/default/job/view/id/' . $this->job_id . '/audio-id/' . $this->id . '">%s</a>';
+?>
+
+<tr id="tr-<?php echo $this->id; ?>" class="
+	<?php  if ($this->status_id == 1): ?>
+
+	<?php endif;?>
+	<?php if (!is_null($this->client_due_date_unix) && $this->client_due_date_unix <= time()) : ?>
+		overdue
+	<?php endif;?>
+	">
+	<td> <!-- 0 -->
+		<div>
+			<?php echo $this->id; ?>
+			<br />
+			<input type="checkbox" name="check-<?php echo $this->escape($this->id)?>" value="<?php echo $this->escape($this->id)?>">
+		</div>
+	</td>
+	<td><?php echo (int)$this->id; ?></td>
+	<td class="pre-image"><!-- 2 -->
+		<div>
+			<a href="<?php echo $this->url(array('controller' => 'job', 'action' => 'view', 'id' => $this->job_id), null, true); ?>" style="font-size:75%; color: #A8A8A8;">
+				<img src="<?php echo $this->baseUrl() .'/images/client_icon.png'?>" title="Go to Project">
+			</a>
+			<?php echo $this->client_name; ?> - <?php echo $this->job_primary_user; ?>
+		</div>
+	</td>
+	<td>&nbsp;</td><!-- not used --><!-- 3 -->
+	<td><!-- 4 -->
+		<div>
+			<?php echo sprintf($link, 'Lead file')?>
+		</div>
+	</td>
+	<td>
+		<div>
+			<?php echo sprintf($link, 'View linked files')?>
+		</div>
+	</td><!-- 5 -->
+    <td><!-- 6 -->
+    </td>
+    <td><!-- 7 -->
+		<div>
+		</div>
+    </td>
+	<td><!-- 8 -->
+		<div>
+		</div>
+	</td>
+	<td>
+		<div>
+		</div>
+	</td><!-- 9 --> <!--  for sorting -->
+	<td><!-- 10 -->
+		<div>
+		</div>
+	</td>
+	<td>
+		<div>
+		</div>
+	</td><!-- for sorting --><!-- 11 -->
+	<td> <!-- 12 -->
+		<div>
+		</div>
+	</td>
+	<td></td><!-- 13 --> <!--  for sorting -->
+	<td><!-- 14 -->
+		<div>
+		</div>
+	</td>
+	<td>
+		<div>
+		</div>
+	</td><!-- 15 --> <!--  for sorting -->
+	<td><!-- 16 -->
+		<div>
+		</div>
+	</td>
+	<td>
+		<div>
+		</div>
+	</td><!-- for sorting --><!-- 17 -->
+    <td><!-- 18 -->
+		<div>
+		</div>
+	</td>
+	<td><!-- 19 -->
+		<div>
+		</div>
+	</td>
+	<td><!-- 19 -->
+	</td>
+</tr>

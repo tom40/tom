@@ -1,0 +1,7 @@
+<?php if($this->data['support_file_count'] > 0):?>	
+	<a href="#" onclick="showSupportFiles(<?php echo $this->escape($this->data['job_id']); ?>); return false;" style="font-size:75%; color: #A8A8A8;">
+		<img style="margin-bottom:5px;vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/icons/page_copy.png'?>" title="View all support files" />
+		<br />
+		<span style="font-size:8pt; color: #A8A8A8;">Support</span>
+	</a>
+<?php endif;?>

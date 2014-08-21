@@ -1,0 +1,276 @@
+<div class="ui-state-default ui-widget-content ui-widget-header">
+	<h3 style="padding:5px">
+		Creating new user
+	</h3>
+</div>
+
+<?php
+$this->form->setAction($this->url());
+?>
+
+<div>
+    <p class="validateTips">Form fields marked with * are required.</p>
+    <form id="formCreateUser" method="<?php echo $this->form->getMethod(); ?>" action="<?php echo $this->form->getAction(); ?>">
+        <?php echo $this->form->id; ?>
+        <table class="data">
+        	<tr class="first">
+                <td class="field">
+                    <label for="name">Name:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->name; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="name">Username:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->username; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="name">Password:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->password; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="name">Confirm password:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->password_confirm; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="name">Email:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->email; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="name">Alternative Email:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->email_alternative; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="name">Landline:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->landline; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="name">Mobile:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->mobile; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="name">General comments:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->comments; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="name">Select user type:</label>
+                </td>
+                <td class="value">
+                	<span class="view"><?php echo $this->form->acl_group_id; ?></span>
+                </td>
+            </tr>
+
+	  	</table>
+
+
+
+	  	<div id="staff-details" style="display:none">
+
+	  		<table class="data">
+	  			<tr>
+            		<td>
+            			&nbsp;
+            		</td>
+            		<td class="value">
+            			Enter staff details
+					</td>
+            	</tr>
+            	<tr class="first">
+            		<td class="field">
+            			<label for="name">Is Typist:</label>
+            		</td>
+            		<td class="value">
+            			<span class="view"><?php echo $this->typistForm->is_typist; ?></span>
+					</td>
+            	</tr>
+	  			<tr >
+            		<td class="field">
+            			<label for="name">Grade:</label>
+            		</td>
+            		<td class="value">
+            			<span class="view"><?php echo $this->typistForm->typist_grade_id; ?></span>
+					</td>
+            	</tr>
+            	<tr>
+	                <td class="field">
+	                    <label for="name">Typing Speed (wpm):</label>
+	                </td>
+	                <td class="value">
+	                    <span class="view"><?php echo $this->typistForm->typing_speed; ?></span>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td class="field">
+	                    <label for="name">Trained in Summaries:</label>
+	                </td>
+	                <td class="value">
+	                    <span class="view"><?php echo $this->typistForm->trained_summaries; ?></span>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td class="field">
+	                    <label for="name">Trained in Notes:</label>
+	                </td>
+	                <td class="value">
+	                    <span class="view"><?php echo $this->typistForm->trained_notes; ?></span>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td class="field">
+	                    <label for="name">Trained in Legal:</label>
+	                </td>
+	                <td class="value">
+	                    <span class="view"><?php echo $this->typistForm->trained_legal; ?></span>
+	                </td>
+	            </tr>
+
+	            <tr>
+	                <td class="field">
+	                    <label for="full">Trained in Full:</label>
+	                </td>
+	                <td class="value">
+	                    <span class="view"><?php echo $this->typistForm->full; ?></span>
+	                </td>
+	            </tr>
+
+	            <tr>
+	                <td class="field">
+	                    <label for="note_taker">Trained in Note Taking:</label>
+	                </td>
+	                <td class="value">
+	                    <span class="view"><?php echo $this->typistForm->note_taker; ?></span>
+	                </td>
+	            </tr>
+
+	            <tr>
+	                <td class="field">
+	                    <label for="name">Typing comments:</label>
+	                </td>
+	                <td class="value">
+	                    <span class="view"><?php echo $this->typistForm->typing_comments; ?></span>
+	                </td>
+	            </tr>
+	            <tr>
+            		<td class="field">
+            			<label for="name">Is Proofreader:</label>
+            		</td>
+            		<td class="value">
+            			<span class="view"><?php echo $this->typistForm->is_proofreader; ?></span>
+					</td>
+            	</tr>
+            	<tr >
+            		<td class="field">
+            			<label for="name">Grade:</label>
+            		</td>
+            		<td class="value">
+            			<span class="view"><?php echo $this->typistForm->proofreader_grade_id; ?></span>
+					</td>
+            	</tr>
+	            <tr>
+	                <td class="field">
+	                    <label for="name">Proofreading comments:</label>
+	                </td>
+	                <td class="value">
+	                    <span class="view"><?php echo $this->typistForm->proofreading_comments; ?></span>
+	                </td>
+	            </tr>
+		  	</table>
+	  	</div>
+
+	  	<div id="client-details" style="display:none">
+		  	<table class="data">
+				<tr>
+            		<td>
+            			&nbsp;
+            		</td>
+            		<td class="value">
+            			Enter client details
+					</td>
+            	</tr>
+	        	<tr class="first">
+	                <td class="field">
+	                    <label for="name">Client Name:</label>
+	                </td>
+	                <td class="value">
+	                    <span class="view"><?php echo $this->clientUserForm->client_id; ?></span>
+	                </td>
+	            </tr>
+		  	</table>
+	  	</div>
+
+	    <table class="data">
+            <tr>
+                <td>
+                    &nbsp;
+                </td>
+                <td>
+                    <?php //echo $this->form->submit; ?>
+                    <a href="#" id="btn_save" onclick="formCreateUser.submit();return false;">
+                    	Submit
+                    	<img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/icons/accept.png'?>" title="Save Price">
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script>
+	$(function() {
+		$( "#btn_save" ).button();
+		$( "#btn_cancel" ).button();
+		$( "#job_due_date" ).datepicker({dateFormat: 'dd/mm/yy'});
+
+		setUserAclGroupDiv($("#acl_group_id").val());
+
+		$("#acl_group_id").on('change', function(){
+			setUserAclGroupDiv(this.value);
+		});
+	});
+
+	function setUserAclGroupDiv(acl_group_id) {
+		if (acl_group_id == 2) {
+			$("#staff-details").show();
+			$("#client-details").hide();
+		} else if (acl_group_id == 3) {
+			$("#client-details").show();
+			$("#staff-details").hide();
+		} else {
+			// do nothing
+		}
+	}
+</script>

@@ -1,0 +1,9 @@
+<h2>Your Quote</h2>
+<input id="edit-quote" type="image" src="/images/edit_quote.png" value="Edit Quote">
+<?php
+
+echo $this->partial(
+    'quote-generator/_quote-body.phtml',
+    'default',
+    $this->viewData
+);

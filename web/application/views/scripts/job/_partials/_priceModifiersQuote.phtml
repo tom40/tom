@@ -1,0 +1,26 @@
+<?php
+if ( $this->service instanceof Application_Model_Service_Row && count( $this->service->getServicePriceModifiers() ) > 0 )
+{
+    ?>
+        <?php
+        foreach ( $this->service->getServicePriceModifiers() as $priceModifier )
+        {
+            $checked = '';
+            if ( ( $this->audioJob && $this->audioJob->hasPriceModifier( $priceModifier->id ) ) || ( is_array( $this->modifiers ) && in_array( $priceModifier->id, $this->modifiers ) ) )
+            {
+                $checked = ' checked="checked"';
+            }
+            ?>
+            <span style="width:100%; float:left; display:block; padding:4px; border-bottom:1px dotted gray;">
+                <label>
+                    <?php echo $priceModifier->getPriceModifier()->name; ?>
+                </label>
+                <span>
+                    <input style="margin: 0px" class="checkbox-modifier"<?php echo $checked;?> type="checkbox" name="price_modifiers[]" value="<?php echo $priceModifier->id; ?>" />
+                </span>
+            </span>
+        <?php
+        }
+        ?>
+<?php
+}

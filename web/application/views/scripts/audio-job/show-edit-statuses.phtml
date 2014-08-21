@@ -1,0 +1,15 @@
+<div class="ui-state-default ui-widget-content ui-widget-header">
+	<h3>
+		Select a Status
+	</h3>
+</div>
+	
+<div>
+	<table class="index">
+	<?php foreach($this->data as $status):?>
+		<tr>
+			<td><a href="#" onclick="processStatus(<?php echo($this->escape($status['key']))?>, '<?php echo($this->escape($status['value']))?>', <?php echo($this->escape($status['show_warning']))?>, '<?php echo $this->audioJobId ;?>');return false;"><?php echo($this->escape($status['value']))?></a></td>
+		</tr>
+	<?php endforeach;?>
+	</table>
+</div>

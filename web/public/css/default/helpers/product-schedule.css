@@ -1,0 +1,47 @@
+@CHARSET "UTF-8";
+
+.schedule-container {
+    border: 1px solid black;
+    height: 400px;
+    overflow: auto;
+    width: 100%;
+}
+
+.schedule-container table {
+    border-collapse: collapse;
+    margin: 10px;
+}
+
+.schedule-container td {
+    border: 1px solid #999;
+    padding: 3px;
+    min-width: 100px;
+}
+
+.schedule-container td.weekend {
+    background-color: #eee;
+    min-width: 60px;
+}
+
+.schedule-container table thead td {
+    text-align: center;
+    white-space: nowrap;
+}
+
+.schedule-container div.entry {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    margin: 3px;
+    padding: 3px 6px;
+}
+
+.schedule-container div.entry .time {
+    font-weight: bold;
+    padding-right: 6px;
+}
+
+.schedule-navigation span {
+    padding: 0 10px;
+}

@@ -1,0 +1,62 @@
+<h1>Creating new service</h1>
+
+<?php
+$this->form->setAction($this->url());
+?>
+
+<div>
+    <p class="validateTips">Form fields marked with * are required.</p>
+    <form id="formCreateUser" method="<?php echo $this->form->getMethod(); ?>" action="<?php echo $this->form->getAction(); ?>">
+        <?php echo $this->form->id; ?>
+        <table class="data">
+        	<tr class="first">
+                <td class="field">
+                    <label for="name">*Name:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->name; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="description">*Description:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->description; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="price">*Price:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->price; ?></span>
+                </td>
+            </tr>
+	  	</table>
+
+	    <table class="data">
+            <tr>
+                <td class="field">
+                    &nbsp;
+                </td>
+                <td>
+                    <?php //echo $this->form->submit; ?>
+                    <a href="#" onclick="formCreateUser.submit();return false;" class="button-img">
+                    	<img src="<?php echo $this->baseUrl() .'/images/submit_button.png'?>" title="Save job">
+                    </a>
+                    <a href="<?php echo $this->url(array('controller' => 'additional-service', 'action' => 'index'), null, true); ?>" class="button-img">
+                    	<img src="<?php echo $this->baseUrl() .'/images/cancel_button.png'?>" title="Cancel job">
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script>
+	$(function() {
+		$( "#btn_save" ).button();
+		$( "#btn_cancel" ).button();
+	});
+</script>

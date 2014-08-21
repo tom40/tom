@@ -1,0 +1,5 @@
+<?php if(!empty($this->data['due_date_unix'])):
+    echo date('jS M \a\t H:i', $this->data['due_date_unix']);
+    else:
+        echo '-';
+        endif;?>

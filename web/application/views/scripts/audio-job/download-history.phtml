@@ -1,0 +1,18 @@
+<?php if(count($this->data) == 0):?>
+This file has never been downloaded
+<?php else:?>
+<table>
+	<tbody>
+		<?php foreach($this->data as $row):?>
+		<tr>
+	    	<td class="field">
+	        	<span class="view"><?php echo $row['user']; ?></span>
+			</td>
+	        <td class="value">
+	        	<span class="view"><?php echo date('jS F Y \a\t g:ia',$row['download_date']); ?></span>
+	        </td>
+		</tr>
+		<?php endforeach;?>
+	</tbody>
+</table>
+<?php endif;?>

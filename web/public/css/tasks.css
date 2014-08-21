@@ -1,0 +1,114 @@
+@CHARSET "UTF-8";
+
+.center {
+    text-align: center;
+}
+
+.pagination-control {
+    margin: 10px 0;
+}
+
+table {
+	font-size: 110%;
+    border-spacing: 2px 2px;
+    border-color: gray;
+    border-collapse: separate;
+    display: table;
+}
+
+table.index {
+    background-color: #fcfcfc;
+    border-collapse: collapse;
+    border-top: 1px solid #ededed;
+    width: 100%;
+}
+
+td, th {
+    text-align: left;
+}
+
+table.index td {
+    border-bottom: 1px solid #EDEDED;
+    padding: 10px 0px 5px 5px;
+    vertical-align: top;
+}
+
+table.index td.checkbox {
+
+    padding: 15px 5px 10px;
+    vertical-align: top;
+}
+
+table.index td.avatar {
+    padding: 10px 15px;
+}
+
+table.index a {
+    text-decoration: none;
+}
+
+img.blank_avatar,
+span.blank_avatar {
+    padding: 0px;
+}
+
+img.avatar, span.avatar {
+/*    border: 1px solid #E6E6E6;*/
+    padding: 1px;
+    
+}
+
+.sprite {
+    background-repeat: no-repeat;
+    border: none;
+    display: inline-block;
+    height: 0px;
+    overflow: hidden;
+    padding: 0px;
+    text-decoration: none !important;
+    vertical-align: middle;
+}
+
+table.index td.party {
+    padding-left: 0px;
+    width: 100%;
+}
+
+div.avatar_subject {
+    clear: left;
+    overflow: hidden;
+}
+
+body.parties table.index div.avatar_subject, body.parties table.index div.avatar_subject img.avatar, body.parties table.index div.avatar_subject span.avatar {
+    margin: 0px;
+}
+
+body.parties table.index div.avatar_subject div.info,
+div.info {
+    margin-left: 0px;
+    background: #fff;
+}
+
+h3 {
+    font-size: 16px;
+}
+
+
+table.index td.party h3 {
+    color: black;
+    margin-bottom: 3px;
+}
+
+
+h6 {
+    font-size: 10px;
+    font-weight: normal;
+    margin-bottom: 0px;
+}
+
+table.index td.party h6 {
+    color: #888;
+    font-size: 12px;
+    line-height: 1.3em;
+    margin-bottom: 3px;
+}

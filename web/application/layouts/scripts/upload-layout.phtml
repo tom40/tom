@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8">
+
+<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+Remove this if you use the .htaccess -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+
+<?php $this->headTitle()->append('Take Note'); ?>
+
+    <?php $this->headTitle()->setSeparator(' | '); ?>
+    <?php echo $this->headTitle(); ?>
+
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!--  Mobile viewport optimized: j.mp/bplateviewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Place favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+    <link rel="shortcut icon" href="<?php echo $this->baseUrl(); ?>/favicon.ico">
+    <link rel="apple-touch-icon" href="<?php echo $this->baseUrl(); ?>/apple-touch-icon.png">
+
+    <!-- CSS : implied media="all" -->
+    <?php $this->headLink()->prependStylesheet($this->baseUrl() . '/css/buttons.css?v=2'); ?>
+    <?php $this->headLink()->prependStylesheet($this->baseUrl() . '/css/tasks.css?v=2'); ?>
+    <?php $this->headLink()->prependStylesheet($this->baseUrl() . '/css/style2.css?v=2'); ?>
+    <?php $this->headLink()->prependStylesheet($this->baseUrl() . '/css/style.css?v=2'); ?>
+
+   <?php $this->headLink()->prependStylesheet($this->baseUrl() . '/css/anytime/anytimec.css'); ?>
+
+   <?php echo $this->headLink(); ?>
+
+
+    <link rel="stylesheet" href="<?php echo $this->baseUrl(); ?>/css/ui-redmond/jquery-ui-1.8.20.custom.css">
+    <link rel="stylesheet" href="<?php echo $this->baseUrl(); ?>/css/oocss/template.css">
+    <link rel="stylesheet" href="<?php echo $this->baseUrl(); ?>/css/default/common.css">
+    <script src="<?php echo $this->baseUrl(); ?>/js/jquery/jquery-1.7.2.min.js"></script>
+    <script src="<?php echo $this->baseUrl(); ?>/js/jquery-ui/jquery-ui-1.8.20.custom.min.js"></script>
+    <script src="<?php echo $this->baseUrl(); ?>/js/dataTables/jquery.dataTables.min.js"></script>
+    <script src="<?php echo $this->baseUrl(); ?>/js/anytime/anytimec.js"></script>
+    <script src="<?php echo $this->baseUrl(); ?>/js/moment/moment-v.1.6.2.min.js"></script>
+
+
+
+    <?php echo $this->headScript(); ?>
+
+</head>
+
+<body id="upload-page">
+
+<div id="container" class="page">
+
+<?php if ($this->hasIdentity && $this->hasTopMenu):?>
+    <div class="head">
+    	<a href="/"><img src="/images/logo.gif" alt="Take Note" /></a>
+        <ul id="main-menu">
+
+	<!-- Jobs Menu -->
+	<?php if ($this->hasIdentity && ($this->acl()->isAdmin() || $this->identity->acl_group_id == 3)): ?>
+	<li><a href="#"><img  src="<?php echo $this->baseUrl();?>/images/projects_icon.png" />Projects</a>
+		<ul>
+			<li><a href="<?php echo $this->url(array('controller' => 'job', 'action' => 'create'), null, true); ?>"><img src="<?php echo $this->baseUrl();?>/images/add_project_icon.png" class="menu" />Add Project</a></li>
+		<?php if ($this->hasIdentity && $this->acl()->isAdmin()): ?>
+			<li><a href="<?php echo $this->url(array('controller' => 'job', 'action' => 'list'), null, true); ?>"><img src="<?php echo $this->baseUrl();?>/images/current_project_icon.png" class="menu" />Current</a></li>
+			<li><a href="<?php echo $this->url(array('controller' => 'job', 'action' => 'list-completed'), null, true); ?>"><img src="<?php echo $this->baseUrl();?>/images/current_project_icon.png" class="menu" />Completed</a></li>
+		<?php elseif($this->hasIdentity && $this->identity->acl_group_id == 3):?>
+			<li><a href="<?php echo $this->url(array('controller' => 'job', 'action' => 'list-client'), null, true); ?>"><img src="<?php echo $this->baseUrl();?>/images/current_project_icon.png" class="menu" />Current</a></li>
+			<li><a href="<?php echo $this->url(array('controller' => 'job', 'action' => 'list-client-completed'), null, true); ?>"><img src="<?php echo $this->baseUrl();?>/images/historical_icon.png" class="menu" />	Historical</a></li>
+		<?php endif;?>
+		</ul>
+	</li>
+	<?php endif;?>
+
+	<!-- Audio jobs Menu -->
+	<?php if ($this->hasIdentity && ($this->acl()->isAdmin() || $this->identity->acl_group_id == 2)): ?>
+	<li><a href="#"><img  src="<?php echo $this->baseUrl();?>/images/audio_icon.png" />Audio Files</a>
+		<ul>
+		<?php if ($this->hasIdentity && $this->acl()->isAdmin()): ?>
+			<li><a href="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'list', 'filter' => 'pending'), null, true); ?>">&nbsp;Pending</a></li>
+			<li><a href="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'list', 'filter' => 'today'), null, true); ?>">&nbsp;Due today</a></li>
+			<li><a href="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'list', 'filter' => 'tomorrow'), null, true); ?>">&nbsp;Due tomorrow</a></li>
+			<li><a href="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'list', 'filter' => 'week'), null, true); ?>">&nbsp;Due this week</a></li>
+			<li><a href="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'list', 'filter' => 'all'), null, true); ?>">&nbsp;All current</a></li>
+		<?php elseif($this->hasIdentity && $this->identity->acl_group_id == 2):?>
+			<li><a href="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'list-typist'), null, true); ?>">&nbsp;Typing jobs</a></li>
+			<li><a href="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'list-proofreader'), null, true); ?>">&nbsp;Proofreading jobs</a></li>
+		<?php endif;?>
+		</ul>
+	</li>
+	<?php endif;?>
+
+	<!-- Admin Menu -->
+	<?php if ($this->hasIdentity && ($this->acl()->isAdmin() || $this->identity->acl_group_id == 2)): ?>
+	<li><a href="#"><img  src="<?php echo $this->baseUrl();?>/images/admin_icon.png" />Administration</a>
+		<ul>
+		<?php if ($this->hasIdentity && $this->acl()->isAdmin()): ?>
+			<li><a href="<?php echo $this->url(array('controller' => 'user', 'action' => 'list'), null, true); ?>">&nbsp;Users</a></li>
+			<li><a href="<?php echo $this->url(array('controller' => 'client', 'action' => 'list-all'), null, true); ?>">&nbsp;Clients</a></li>
+			<li><a href="<?php echo $this->url(array('controller' => 'shift-booker', 'action' => 'list'), null, true); ?>">&nbsp;Shiftbooker</a></li>
+            <li><a href="<?php echo $this->url(array('controller' => 'group', 'action' => 'index'), null, true); ?>">&nbsp;Email The Team</a></li>
+            <li><a href="<?php echo $this->url(array('controller' => 'transcription-type', 'action' => 'index'), null, true); ?>">&nbsp;Transcription Types</a></li>
+            <li><a href="<?php echo $this->url(array('controller' => 'transcription-price', 'action' => 'index'), null, true); ?>">&nbsp;Transcription Prices</a></li>
+            <li><a href="<?php echo $this->url(array('controller' => 'additional-service', 'action' => 'index'), null, true); ?>">&nbsp;Additional Services</a></li>
+		<?php elseif($this->hasIdentity && $this->identity->acl_group_id == 2):?>
+			<li><a href="<?php echo $this->url(array('controller' => 'shift-booker', 'action' => 'edit'), null, true); ?>">&nbsp;Shiftbooker</a></li>
+		<?php endif;?>
+		</ul>
+	</li>
+	<?php endif;?>
+		<li id="live-chat"><img src="/images/live_chat.png" alt="Live Chat" onclick="SnapABug.startLink();" /></li></a>
+	</ul>
+
+
+        <div id="util-nav">
+
+            <ul>
+                <li>Logged in as: <?php echo $this->username ?></li>
+                <!--
+                <li><a href="#">Account</a></li>
+                <li><a href="#">Help</a></li> -->
+                <li><a href="#" onclick="confirmLogout();return false;">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+<?php endif;?>
+
+    <div class="body">
+
+
+        <div class="leftCol">
+            <div class="liner">
+                <?php echo $this->layout()->nav; ?>
+	       </div>
+        </div><!-- /leftCol -->
+
+        <div id="page">
+
+            <div class="main">
+                <?php echo $this->flashMessenger(); ?>
+                <?php echo $this->layout()->content; ?>
+            </div><!-- /main -->
+
+        </div>
+
+    </div><!-- /body -->
+
+    <div class="foot">
+        <div id="footer">
+            <div>
+                Copyright &copy;
+                <?php if (date('Y') > 2012) : ?>
+                    2011 -
+                <?php endif;?>
+                <?php echo date('Y'); ?>
+                <a href="http://www.takenotetyping.com" title="Go to Take Note home page" target="_blank" class="copyright">Take Note</a>. <?php echo $this->version(); ?>
+                All rights reserved.
+            </div>
+        </div>
+    </div>
+
+</div><!--! end of #container -->
+
+<?php
+
+if (!is_array($this->identity) || !isset($this->identity['acl_group']) || !$this->acl()->isAdmin())
+{
+?>
+
+<script type="text/javascript">
+document.write(unescape("%3Cscript src='//www.snapengage.com/snapabug.js' type='text/javascript'%3E%3C/script%3E"));</script><script type="text/javascript">
+SnapABug.addButton("0aac85b7-a508-47ce-8f8c-5ec2c76390f5","0","55%");
+</script>
+<?php
+}
+?>
+
+    <!-- Javascript at the bottom for fast page loading -->
+
+<script>
+function confirmLogout() {
+	if (confirm("Are you sure you wish to logout? \n\nImportant note: please do not logout if you are currently uploading any files.")) {
+		location.href="<?php echo $this->url(array('controller' => 'auth', 'action' => 'logout'), null, true); ?>";
+	}
+}
+</script>
+</body>
+</html>

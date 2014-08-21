@@ -1,0 +1,59 @@
+<h1>Report</h1>
+<p>Typist: <?php echo $this->reportInfo['typist_name']; ?>
+    <br />
+Audio File: <?php echo $this->reportInfo['file_name']; ?></p>
+<form method="post">
+    <input type="hidden" name="report_id" value="<?php echo $this->reportInfo['id']; ?>" />
+    <table class="data update-report">
+        <tr>
+            <td>Total:</td>
+            <td width="200">
+                <?php echo $this->partial('/report/_reportScore.phtml', array('totalScore' => $this->reportInfo['total_score'], 'maxScore' => $this->maxScore)); ?>
+            </td>
+            <td width="250">
+                Proofreader Summary:<textarea name="summary"><?php echo $this->reportInfo['comment']; ?></textarea>
+            </td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <th>
+                <h2>Area</h2>
+                (and points available out of <?php echo $this->maxScore; ?>)
+            </th>
+            <th><h2>Points awarded</h2></th>
+            <th><h2>Comments</h2></th>
+            <th><h2>How to obtain maximum score</h2></th>
+        </tr>
+        <?php foreach ($this->reportCriteria as $report): ?>
+            <?php $identifier = 'area_'.$report['id']; ?>
+            <?php echo $this->partial('/report/_form.phtml',
+                array(
+                    'report'       => $report,
+                    'errors'       => isset($this->formErrors[$report['id']]) ? $this->formErrors[$report['id']] : null,
+                    'formData'     => isset($this->formData[$identifier]) ? $this->formData[$identifier] : null,
+                    'areaName'     => $report['area'],
+                    'maxAreaScore' => $report['score'],
+                    'identifier'   => $identifier,
+                    'criteriaId'   => $report['id'],
+                    'criteria'     => $report['criteria']
+                ));
+            ?>
+        <?php endforeach; ?>
+    </table>
+    <input type="hidden" id="page-action" name="action" />
+    <input type="image" src="/images/save_button.png" onclick="return setAction('save'); " alt="save" />
+    <input type="image" src="/images/savesend_button.png" onclick="return setAction('saveandsend'); " alt="Save and send to typist" />
+</form>
+<br />
+    <?php if ($this->isProofreader) : ?>
+        <a href="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'list-proofreader'), null, true); ?>">&lt;&lt; Return to Audio Jobs</a>
+    <?php else: ?>
+        <a href="<?php echo $this->url(array('controller' => 'job', 'action' => 'view', 'id' => $this->audioJob['job_id']), null, true); ?>">&lt;&lt; Return to Audio Jobs</a>
+    <?php endif; ?>
+<script type="text/javascript">
+    function setAction(action)
+    {
+        jQuery('#page-action').val(action);
+        return true;
+    }
+</script>

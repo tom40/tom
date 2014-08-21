@@ -1,0 +1,15 @@
+<?php echo $this->escape($this->appName); ?> User Account
+------------------------------------------------------------------
+
+Dear <?php echo $this->escape($this->name); ?>
+<?php echo $this->escape($this->translate('Your details have been updated for the account below.')); ?>
+
+<?php echo $this->escape($this->translate('Username')); ?>: <?php echo $this->escape($this->username); ?>
+<?php if (isset($this->password) && !empty($this->password)): ?>
+    <?php echo $this->escape($this->translate('Password')); ?>: <?php echo $this->escape($this->password); ?>
+<?php endif; ?>
+
+<?php echo $this->escape($this->translate('Please login and review the changes.')); ?>
+
+<?php echo $this->escape($this->translate('You can login at')); ?>:
+<?php echo $this->appUrl; ?>

@@ -1,0 +1,192 @@
+<div id="shift-booked" style="display: none">
+	<span id="shift-booked-container" class="view"></span>
+</div>
+
+<script>
+$(document).ready(function()
+{
+	$('#shift-booked').dialog({
+		autoOpen: false,
+		title: 'Delete shift',
+        closeOnEscape: false,
+		modal: true,
+		width: 400,
+		height: 400
+	});
+});
+
+function showDeleteShift(staff_id, shift_id, user_type)
+{
+
+    $('#shift-booked').dialog('open');
+
+    var url ="<?php echo $this->url(array('controller' => 'shift-booker', 'action' => 'show-delete-shift'), null, true); ?>"
+    url += "/shiftId/" + shift_id + "/staffId/" + staff_id + "/userType/" + user_type;
+
+    if (shift_id === undefined)
+    {
+        return false;
+    }
+
+    $.ajax({
+        type: "GET",
+        url: url,
+        cache: false,
+        dataType: "json"
+    }).success(function( msg )
+    {
+        $("#shift-booked-container").html(msg.html);
+    });
+}
+
+</script>
+
+<h1>Shiftbooker</h1>
+<a href="<?php echo $this->url(array('controller' => 'shift-booker', 'action' => 'manage-shifts'), null , true); ?>">
+	<img src="/images/manage_shifts_button.png" alt="Manage Shifts" />
+</a>
+<br /><br />
+<?php echo $this->partial('/shift-booker/_searchForm.phtml', array('form' => $this->form, 'canFilterByAbility' => $this->canFilterByAbility)); ?>
+<h1><?php echo ucfirst($this->userType); ?>s on shift: <?php echo $this->noRecordsFound; ?></h1>
+<table class="dataTable index shiftbooker">
+    <thead>
+        <?php if (!empty($this->defaultShiftDays)): ?>
+            <tr>
+            <th colspan="2">
+                <div>Username</div>
+            </th>
+            <?php foreach ($this->defaultShiftDays as $dayNumber => $shiftDay): ?>
+            <th colspan="<?php echo $shiftDay['noShifts']; ?>">
+                <div>
+                    <?php echo $shiftDay['date']; ?>
+                    <br />
+                    <?php echo $shiftDay['start_day']; ?>
+                </div>
+            </th>
+            <?php endforeach; ?>
+            </tr>
+            <tr class="shift-date">
+            <td colspan="2"></td>
+            <?php foreach ($this->defaultShiftTimes as $shiftTime): ?>
+                    <td>
+                        <div>
+                        <?php echo $this->formatTime($shiftTime['start_time']); ?>
+                        <br />
+                        -
+                        <br />
+                        <?php if (!empty($shiftTime['end_day']) && $shiftTime['start_day'] != $shiftTime['end_day']): ?>
+                            (<?php echo substr($shiftTime['end_day'], 0, 3); ?>) <br />
+                        <?php endif; ?>
+                        <?php echo $this->formatTime($shiftTime['end_time']); ?>
+                        </div>
+                    </td>
+            <?php endforeach; ?>
+        </tr>
+        <?php endif; ?>
+    </tr>
+    </thead>
+    <?php if (!empty($this->shiftData)): ?>
+        <tbody>
+            <?php foreach ($this->shiftData as $userId => $userShifts): ?>
+                <?php echo $this->partial('/shift-booker/_userShiftRow.phtml',
+                                         array(
+                                                'shiftDays'  => $this->defaultShiftTimes,
+                                                'userInfo'   => $userShifts['info'],
+                                                'userShifts' => $userShifts['shifts'],
+                                                'userId'     => $userId,
+                                                'userType'   => $this->userType
+                                              )
+                                         );
+                ?>
+            <?php endforeach; ?>
+        </tbody>
+    <?php else: ?>
+        <td colspan="<?php echo ($this->noColsPerRow + 2); ?>">
+            <div>There are no results matching your criteria</div>
+        </td>
+    <?php endif; ?>
+</table>
+
+<script>
+    //$( "#shift_date" ).datepicker({dateFormat: 'dd/mm/yy'});
+    var rangeDemoFormat = "%Y-%m-%d";
+    $("#shift_date").AnyTime_picker({
+        format:rangeDemoFormat,
+        placement: "popup",
+        hideInput: false
+    });
+
+    $('.toggle-user-comments').mouseover(function ()
+    {
+        var options = {};
+        var id = $(this).attr('id');
+        $( "#shiftbooker-user-detail-" + id ).toggle("blind", options, 200 );
+    }).mouseout(function(){
+        var options = {};
+        var id = $(this).attr('id');
+        $( "#shiftbooker-user-detail-" + id ).toggle("blind", options, 200 );
+    });
+
+    function toggleUserDetail(id) {
+        var options = {};
+        $( "#shiftbooker-user-detail-" + id ).toggle("blind", options, 200 );
+    }
+
+    var lastShiftDate = $('#shift_date').val();
+    $('#shift_date').change(function ()
+    {
+        var shiftDate = $(this).val();
+        if (lastShiftDate != shiftDate) {
+            lastShiftDate = shiftDate;
+            fetchShiftDateTimes(shiftDate);
+        }
+    });
+
+    loadShiftDateTimesDropdown();
+    function loadShiftDateTimesDropdown()
+    {
+        var shiftDate = $('#shift_date').val();
+        fetchShiftDateTimes(shiftDate);
+        $('#shift-times-selector').show();
+    }
+
+    function getShiftDateTimeUrl()
+    {
+        var userType = $('#user_type').val();
+        var url = "<?php echo $this->url(array('controller' => 'shift-booker', 'action' => 'ajax-fetch-shift-times'), null, true); ?>";
+    }
+
+    function fetchShiftDateTimes(shiftDate)
+    {
+        var userType = $('#user_type').val();
+        var url = "<?php echo $this->url(array('controller' => 'shift-booker', 'action' => 'ajax-fetch-shift-times'), null, true); ?>";
+
+        $.ajax({
+            type: "GET",
+            url:  url,
+            data: {shift_date: shiftDate, user_type: userType},
+            cache: false,
+            dataType: "json",
+            async: false
+        }).success(function( shiftTimes ) {
+            if (shiftTimes.length != 0)
+            {
+                var items = '';
+                items += "<option class='shift-times-option' value=''>All</option>";
+                $.each(shiftTimes,function(index, item)
+                {
+                    items += "<option class='shift-times-option' id='shift-option-"+item.key+"' value='"+item.key+"'>"+item.value+"</option>";
+                });
+                $("#date-shift-select").html(items);
+                $(".shift-times-option").attr('selected', false);
+                $("#shift-option-<?php echo $this->selectedShiftId; ?>").attr('selected', true);
+                $('#shift-times-container').show();
+            }
+            else
+            {
+                $('#shift-times-container').hide();
+            }
+        });
+    }
+
+</script>

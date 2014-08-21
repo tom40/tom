@@ -1,0 +1,2 @@
+#!/bin/sh
+php /var/www/html/scripts/zf-cli.php -e production -a /archive/purge-files-no-record

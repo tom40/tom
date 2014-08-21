@@ -1,0 +1,27 @@
+<?php echo $this->partial('/_partials/email/_defaultHeader.phtml',
+    array(
+            'appName' => $this->appName,
+            'title'   => $this->appName
+         )
+    );
+?>
+                            <?php echo nl2br($this->escape($this->message)); ?><br />
+                            <a href="<?php echo $this->appUrl; ?>"><?php echo $this->appUrl; ?></a><br />
+
+                            <?php if ($this->isExtraWorkEmail && !empty($this->jobs)): ?>
+                            <h2>Jobs</h2>
+                                <table>
+                                <?php foreach($this->jobs as $job): ?>
+                                    <tr>
+                                        <td><?php echo $job['transcription_type']; ?> - <?php echo $this->displayAudioJobLength($job['length_seconds']); ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                </table>
+                            <?php endif; ?>
+<?php echo $this->partial('/_partials/email/_defaultFooter.phtml',
+    array(
+            'appName' => $this->appName,
+            'appUrl' => $this->appUrl
+        )
+    );
+?>

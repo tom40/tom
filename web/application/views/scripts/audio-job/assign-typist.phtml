@@ -1,0 +1,21 @@
+<?php
+    echo $this->partial('/_partials/_audioJobUserList.phtml',
+        array(
+                'title'             => 'Typist',
+                'form'              => $this->form,
+                'dueDays'           => $this->dueDays,
+                'usersOnShift'      => $this->usersOnShift,
+                'otherUsers'        => $this->otherUsers,
+                'hasTrainingFilter' => $this->hasTrainingFilter,
+                'user_id'           => $this->user_id,
+                'shiftId'           => $this->shiftId,
+                'fullFileName'      => $this->fullFileName,
+                'userView'          => '_audioJobTypistList.phtml',
+                'userType'          => 'typist',
+                'selectedDueDay'    => $this->selectedDueDay,
+                'audioJobs'         => $this->audioJobs,
+                'currentTypist'     => $this->currentTypist,
+                'subStandard'       => $this->subStandard
+             )
+    );
+?>

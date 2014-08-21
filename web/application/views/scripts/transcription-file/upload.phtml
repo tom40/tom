@@ -1,0 +1,288 @@
+
+<!--
+/*
+ * jQuery File Upload Plugin Demo 6.9
+ * https://github.com/blueimp/jQuery-File-Upload
+ *
+ * Copyright 2010, Sebastian Tschan
+ * https://blueimp.net
+ *
+ * Licensed under the MIT license:
+ * http://www.opensource.org/licenses/MIT
+ */
+-->
+    <!-- Bootstrap CSS Toolkit styles -->
+    <!-- <link rel="stylesheet" href="http://blueimp.github.com/cdn/css/bootstrap.min.css"> -->
+    <link rel="stylesheet" href="<?php echo $this->baseUrl(); ?>/css/blueImpUpload/bootstrap.min.css">
+    <!-- Generic page styles -->
+    <!-- link rel="stylesheet" href="<?php echo $this->baseUrl(); ?>/js/blueImpUpload/css/style.css">-->
+    <!-- Bootstrap styles for responsive website layout, supporting different screen sizes -->
+    <!-- <link rel="stylesheet" href="http://blueimp.github.com/cdn/css/bootstrap-responsive.min.css">-->
+    <!-- Bootstrap CSS fixes for IE6 -->
+    <!--[if lt IE 7]><link rel="stylesheet" href="http://blueimp.github.com/cdn/css/bootstrap-ie6.min.css"><![endif]-->
+    <!-- Bootstrap Image Gallery styles -->
+    <!--<link rel="stylesheet" href="http://blueimp.github.com/Bootstrap-Image-Gallery/css/bootstrap-image-gallery.min.css">-->
+    <!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
+    <link rel="stylesheet" href="<?php echo $this->baseUrl(); ?>/js/blueImpUpload/css/jquery.fileupload-ui.css">
+    <!-- Shim to make HTML5 elements usable in older Internet Explorer versions -->
+    <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+<div id="file-upload">
+<h1>Upload</h1>
+<h2>Adding transcription file(s) to sound file ID <?php echo $this->audioJob['id']?></h2>
+<br />
+<div>
+	<table class="data">
+ 		<tr class="first">
+        	<td class="field">
+            	<label for="title">Sound file:</label>
+            </td>
+            <td class="value">
+            	<span class="view"><?php echo $this->audioJob['file_name']; ?></span>
+            </td>
+        </tr>
+	</table>
+</div>
+
+<div class="container">
+    <br>
+    <!-- The file upload form used as target for the file upload widget -->
+    <form id="fileupload" action="<?php echo $this->url(array('controller' => 'transcription-file', 'action' => 'upload'), null, true); ?>" method="POST" enctype="multipart/form-data">
+
+        <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+        <div class="row fileupload-buttonbar">
+            <div class="span7">
+                <!-- The fileinput-button span is used to style the file input field as button -->
+                <span class="btn btn-success fileinput-button">
+                    <i class="icon-plus icon-white"></i>
+                    <span>Add files...</span>
+                    <input type="file" name="files[]" multiple>
+                </span>
+                <button type="submit" class="btn btn-primary start">
+                    <i class="icon-upload icon-white"></i>
+                    <span>Start upload</span>
+                </button>
+                <button type="reset" class="btn btn-danger cancel">
+                    <i class="icon-ban-circle icon-white"></i>
+                    <span>Cancel upload</span>
+                </button>
+               <button type="button" class="btn btn-danger delete" onclick="if (confirmCancel()) window.close();window.opener.document.location.reload(false);">
+                    <span>Close window</span>
+                </button>
+            </div>
+            <!-- The global progress information -->
+            <div class="span5 fileupload-progress fade">
+                <!-- The global progress bar -->
+                <div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                    <div class="bar" style="width:0%;"></div>
+                </div>
+                <!-- The extended global progress information -->
+                <div class="progress-extended">&nbsp;</div>
+            </div>
+        </div>
+        <!-- The loading indicator is shown during file processing -->
+        <div class="fileupload-loading"></div>
+        <br>
+        <!-- The table listing the files available for upload/download -->
+        <table role="presentation" class="table table-striped"><tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody></table>
+    </form>
+</div>
+<!-- The template to display files available for upload -->
+<script id="template-upload" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-upload fade">
+        <td class="name"><span>{%=file.name%}</span></td>
+        <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
+        {% if (file.error) { %}
+            <td class="error" colspan="5"><span class="label label-important">{%=locale.fileupload.error%}</span> {%=locale.fileupload.errors[file.error] || file.error%}</td>
+        {% } else if (o.files.valid && !i) { %}
+            <td style="width:50px">
+                <div style="width:75px" class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="bar" style="width:0%;"></div></div>
+            </td>
+            <td class="start">{% if (!o.options.autoUpload) { %}
+                <button class="btn btn-primary">
+                    <i class="icon-upload icon-white"></i>
+                    <span>{%=locale.fileupload.start%}</span>
+                </button>
+            {% } %}</td>
+        {% } else { %}
+            <td colspan="4"></td>
+        {% } %}
+
+		<td class="minutes_taken" style="width:150px">
+            <?php
+            if (true === $this->isAudioJobProofreader)
+            {
+            ?>
+                <p>Proofreading time:</p>
+            <?
+            }
+            else
+            {
+            ?>
+				<p>Transcription time:</p>
+            <?php
+            }
+            ?>
+				<div style="width:150px">
+
+					<span style="width:65px; float:left; font-size:90%">Hours</span>
+						<span style="width:75px; float:right;font-size:90%">
+						<select name="hours" id="hours" style="width:75px;" required>
+							<option value="">select</option>
+							<option value="0">0</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							<option value="10">10</option>
+						</select>
+					</span>
+				</div>
+				<div style="clear:both"></div>
+				<div style="width:150px">
+					<span style="width:65px; float:left; font-size:90%">Minutes</span>
+					<span style="width:75px; float:right;font-size:90%">
+						<select name="minutes" id="minutes" style="width:75px" required>
+							<option value="">select</option>
+							<option value="00">00</option>
+							<option value="15">15</option>
+							<option value="30">30</option>
+							<option value="45">45</option>
+						</select>
+					</span>
+				</div>
+		</td>
+		<td>
+			<label>Proofread:
+				<input type="checkbox" name="proofread[]" <?php if (true === $this->isAudioJobProofreader): ?>checked="checked"<?php endif; ?> />
+			</label>
+		</td>
+		<td>
+			<label>Comment:
+				<textarea name="comment[]" value="" cols="8" rows="4"/>
+			</label>
+		</td>
+
+        <td class="cancel">{% if (!i) { %}
+            <button class="btn btn-danger">
+                <i class="icon-ban-circle icon-white"></i>
+                <span>{%=locale.fileupload.cancel%}</span>
+            </button>
+        {% } %}</td>
+    </tr>
+{% } %}
+</script>
+<!-- The template to display files available for download -->
+<script id="template-download" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-download fade">
+        {% if (file.error) { %}
+            <td></td>
+            <td class="name"><span>{%=file.name%}</span></td>
+            <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
+            <td class="error" colspan="2"><span class="label label-important">{%=locale.fileupload.error%}</span> {%=locale.fileupload.errors[file.error] || file.error%}</td>
+        {% } else { %}
+            <td colspan="4" class="name">
+                <img src="<?php echo $this->baseUrl(); ?>/images/icons/tick.png">&nbsp;{%=file.name%}
+            </td>
+            <td class="size"><span>{%=o.formatFileSize(file.size)%}</span></td>
+            <td colspan="2"></td>
+        {% } %}
+    </tr>
+{% } %}
+</script>
+<!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>-->
+<!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
+<!--<script src="<?php echo $this->baseUrl(); ?>/js/blueImpUpload/js/vendor/jquery.ui.widget.js"></script>-->
+<!-- The Templates plugin is included to render the upload/download listings -->
+<script src="<?php echo $this->baseUrl(); ?>/js/blueImpJavascriptTemplates/tmpl.min.js"></script>
+<!-- The Load Image plugin is included for the preview images and image resizing functionality -->
+<!--<script src="http://blueimp.github.com/JavaScript-Load-Image/load-image.min.js"></script>-->
+<!-- The Canvas to Blob plugin is included for image resizing functionality -->
+<!--<script src="http://blueimp.github.com/JavaScript-Canvas-to-Blob/canvas-to-blob.min.js"></script>-->
+<!-- Bootstrap JS and Bootstrap Image Gallery are not required, but included for the demo -->
+<!--<script src="http://blueimp.github.com/cdn/js/bootstrap.min.js"></script>-->
+<!--<script src="http://blueimp.github.com/Bootstrap-Image-Gallery/js/bootstrap-image-gallery.min.js"></script>-->
+<!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
+<script src="<?php echo $this->baseUrl(); ?>/js/blueImpUpload/js/jquery.iframe-transport.js"></script>
+<!-- The basic File Upload plugin -->
+<script src="<?php echo $this->baseUrl(); ?>/js/blueImpUpload/js/jquery.fileupload.js"></script>
+<!-- The File Upload file processing plugin -->
+<script src="<?php echo $this->baseUrl(); ?>/js/blueImpUpload/js/jquery.fileupload-fp.js"></script>
+<!-- The File Upload user interface plugin -->
+<script src="<?php echo $this->baseUrl(); ?>/js/blueImpUpload/js/jquery.fileupload-ui.js"></script>
+<!-- The localization script -->
+<script src="<?php echo $this->baseUrl(); ?>/js/blueImpUpload/js/locale.js"></script>
+<!-- The main application script -->
+<!--<script src="<?php echo $this->baseUrl(); ?>/js/blueImpUpload/js/main.js"></script> -->
+<!-- The XDomainRequest Transport is included for cross-domain file deletion for IE8+ -->
+<!-- [if gte IE 8]><script src="<?php echo $this->baseUrl(); ?>/js/blueImpUpload/<script src="js/cors/jquery.xdr-transport.js"></script><![endif]-->
+<script>
+$(function () {
+	'use strict';
+
+	// Initialize the jQuery File Upload widget:
+	$('#fileupload').fileupload();
+
+	var error_count = 0;
+	$('#fileupload').bind('fileuploadsubmit', function (e, data) {
+	    var inputs = data.context.find(':input');
+	    //if (inputs.filter('.required[value=""]').first().focus().length) {
+	    if (inputs.filter('[required][value=""]').length) {
+	    	inputs.filter('[required][value=""]').css('background-color', '#FFFFB3');
+	    	//if (error_count == 0) {
+	    	//	error_count ++;
+	    		alert('Please complete the highlighted fields');
+	    	//}
+	        return false;
+	    } //else {
+	    	//error_count == 0;
+	    //}
+
+	    data.formData = inputs.serializeArray();
+		data.formData.push({'name':'audio_job_id', 'value':'<?php echo $this->audioJob['id']?>'});
+	});
+});
+
+/**
+* Creates a pop-up window asking a user to confirm when trying to leave a page.
+*
+* @compatability Windows IE4+
+*/
+function closeIt() {
+   msg = "Close window?";
+   // simply return the msg rather than setting 'event.returnValue' to
+   // make it work in non-IE browsers
+   // event.returnValue = msg;
+   return msg;
+}
+
+/**
+* Set whether the onbeforeunload event handler should be used.
+*
+* @param bool on whether the onbeforeunload is used or not.
+* @compatability Windows IE4+
+*/
+function setCloseIt(on) {
+   window.onbeforeunload = (on) ? closeIt : null;
+}
+
+/**
+* Confirms with the user whether to continue with the cancel action.
+*/
+function confirmCancel() {
+   if (confirm('Are you sure you wish to close this window?')) {
+       setCloseIt(false);
+       return true;
+   }
+   return false;
+}
+
+</script>
+</div>

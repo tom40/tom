@@ -1,0 +1,24 @@
+<?php
+
+if ( count( $this->turnaroundTimes ) > 0 )
+{
+    ?>
+    <select name="turnaround_time_id">
+        <option value="0">-- Select --</option>
+        <?php
+        foreach ( $this->turnaroundTimes as $turnaroundTime )
+        {
+            $selected = '';
+            if ( $this->turnaroundTimeId && $this->turnaroundTimeId == $turnaroundTime->getTurnaroundTime()->id )
+            {
+                $selected = ' selected="selected"';
+            }
+            ?>
+            ?>
+            <option<?php echo $selected;?> value="<?php echo $turnaroundTime->getTurnaroundTime()->id;?>"><?php echo $turnaroundTime->getTurnaroundTime()->name; ?></option>
+        <?php
+        }
+        ?>
+    </select>
+<?php
+}

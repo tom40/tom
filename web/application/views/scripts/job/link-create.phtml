@@ -1,0 +1,462 @@
+<script>
+$(document).ready(function()
+{
+
+    $( 'body' ).on( 'change', '.service_id_view select', function()
+    {
+        var parentDiv        = $( this ).closest( 'td' );
+        var turnaround       = $( '.turnaround_time_view', parentDiv );
+        var speakerNumbers   = $( '.speaker_numbers_view', parentDiv );
+        var modifiers        = $( '.modifiers_view', parentDiv );
+
+        var speakerNumbersId = $( 'select', speakerNumbers ).attr( 'id' );
+        var turnaroundTimeId = $( 'select', turnaround ).attr( 'id' );
+        var modifiersName    = $( 'input', modifiers ).first().attr( 'name' );
+
+        var url ="<?php echo $this->url( array( 'controller' => 'job', 'action' => 'fetch-service-details-link', 'job_id' => $this->job->id ), null, true ); ?>";
+        url += '/service_id/' + $( this ).val();
+
+        $.ajax({
+            type     : 'GET',
+            url      : url,
+            cache    : false,
+            dataType : "json"
+        }).success(function( msg )
+        {
+            speakerNumbers.html( msg.speaker_numbers );
+            turnaround.html( msg.turnaround_times );
+            modifiers.html( msg.modifiers );
+
+            $( 'select', turnaround ).attr( 'id', turnaroundTimeId );
+            $( 'select', speakerNumbers ).attr( 'id', speakerNumbersId );
+            $( 'input', modifiers ).attr( 'name', modifiersName );
+        });
+    });
+
+    getFormCount = function()
+    {
+        var lastForm         = $('.clonable-form:last');
+        var lastId           = lastForm.attr('id');
+        var lastIdComponents = lastId.split('-');
+        return parseInt(lastIdComponents[2]) + 1;
+    }
+
+    generateForm = function()
+    {
+        var firstForm        = $('#input-row-0');
+        var lastForm         = $('.clonable-form:last');
+        var count            = getFormCount();
+        var newForm          = firstForm.clone();
+
+        newForm.attr('id', 'input-row-' + count);
+        $('.edit-options-link', newForm).attr('id', 'edit-' + count);
+        $('.save-inputs', newForm).attr('id', 'save-' + count);
+        $('.edit-options', $('#input-row-' + count)).hide();
+        $('.row-number', newForm).html(count + 1);
+
+        $( 'input[name="price_modifiers[]"]', newForm )
+            .attr(
+            {
+                'name' : 'price_modifiers-' + count + '[]'
+            }
+        );
+
+        $('#file_name', newForm)
+            .attr(
+            {
+                'id' : 'file_name-' + count,
+                'name' : 'file_name-' + count
+            }
+        );
+
+        $('#length_hours', newForm)
+            .attr(
+            {
+                'id'    : 'length_hours-' + count,
+                'name'  : 'length_hours-' + count,
+                'value' : '0'
+            }
+        );
+
+        $('#length_mins', newForm)
+            .attr(
+            {
+                'id'    : 'length_mins-' + count,
+                'name'  : 'length_mins-' + count,
+                'value' : '0'
+            }
+        );
+
+        $('#is_exact', newForm)
+            .attr(
+            {
+                'id'      : 'is_exact-' + count,
+                'name'    : 'is_exact-' + count,
+                'checked' : false
+            }
+        );
+
+        $('#is_approx', newForm)
+            .attr(
+            {
+                'id'      : 'is_approx-' + count,
+                'name'    : 'is_exact-' + count,
+                'checked' : 'checked'
+            }
+        );
+
+        $('#service_id', newForm)
+            .attr(
+            {
+                'id'    : 'service_id-' + count,
+                'name'  : 'service_id-' + count,
+                'value' : '<?php echo $this->form->service_id->getValue(); ?>'
+            }
+        );
+
+        $('#turnaround_time_id', newForm)
+            .attr(
+            {
+                'id'    : 'turnaround_time_id-' + count,
+                'name'  : 'turnaround_time_id-' + count,
+                'value' : '<?php echo $this->form->turnaround_time_id->getValue(); ?>'
+            }
+        );
+
+        $('#audio_quality_id', newForm)
+            .attr(
+            {
+                'id'    : 'audio_quality_id-' + count,
+                'name'  : 'audio_quality_id-' + count,
+                'value' : '<?php echo $this->form->audio_quality_id->getValue(); ?>'
+            }
+        );
+
+        $('#speaker_numbers_id', newForm)
+            .attr(
+            {
+                'id'    : 'speaker_numbers_id-' + count,
+                'name'  : 'speaker_numbers_id-' + count,
+                'value' : '<?php echo $this->form->speaker_numbers_id->getValue(); ?>'
+            }
+        );
+
+        lastForm.after(newForm);
+    }
+
+    calculateForms = function()
+    {
+        var numFiles  = $('#num_files').val();
+        var formCount = getFormCount();
+
+        if (numFiles > formCount)
+        {
+            var formsAdd = numFiles - formCount;
+            for (var count = 0; count < formsAdd; count++)
+            {
+                generateForm();
+            }
+        }
+        else
+        {
+            for (var count = formCount; count >= numFiles; count--)
+            {
+                $('#input-row-' + count).remove();
+            }
+        }
+    }
+
+    showForms = function()
+    {
+        if ('in-a-rush' === $('input[name="form-type"]:checked').val())
+        {
+            $('#form-body').hide();
+        }
+        else
+        {
+            $('#form-body').show();
+        }
+    }
+
+    $('#multi-audio-form').on('change', '#num_files', calculateForms);
+    $('#multi-audio-form').on('change', 'input[name="form-type"]', showForms);
+
+	$('#multi-audio-form').on('click', 'a.edit-options-link', function(e)
+	{
+		var linkId           = $(this).attr('id');
+		var linkIdComponents = linkId.split('-');
+		var count            = linkIdComponents[1];
+
+		if ('save' === linkIdComponents[0])
+		{
+			$('.edit-options', $('#input-row-' + count)).hide();
+		}
+		else if ('edit' === linkIdComponents[0])
+		{
+			$('.edit-options', $('#input-row-' + count)).show();
+		}
+
+		e.preventDefault();
+
+	});
+});
+
+    function processLink()
+	{
+		var formData = $('#multi-audio-form').serializeArray();
+
+		var url ="<?php echo $this->url(array('controller' => 'job', 'action' => 'link-create', 'id' => $this->job['id']), null, true); ?>";
+
+		$.ajax({
+			type: "POST",
+		  	url: url,
+		  	data: formData,
+		  	cache: false,
+		  	dataType: "json"
+		}).success(function( msg ) {
+
+			if (msg.status == "ok") {
+				$('#job-dialog-link-file').dialog('close');
+				window.location.reload();
+			} else {
+				$('#job-dialog-link-file-container').html(msg.html);
+			}
+		});
+	}
+
+    <?php
+        if (isset($this->formData))
+        {
+            ?>
+              $('#num_files').val('<?php echo $this->formData['num_files'] ?>');
+              $('input[name="form-type"]').val('<?php echo $this->formData['form-type'] ?>');
+              calculateForms();
+              showForms();
+            <?php
+            if ('got-5-minutes' === $this->formData['form-type'])
+            {
+                ?>
+                    $('#got-5-minutes').attr('checked', true);
+                    $('#in-a-rush').attr('checked', false);
+                    showForms();
+                <?php
+            }
+            unset($this->formData['num_files'], $this->formData['form-type']);
+            foreach ($this->formData as $key => $value)
+            {
+                ?>
+                    <?php
+                if (false !== strpos($key, 'is_exact'))
+                {
+                    $count    = explode('-', $key);
+                    $countNum = (isset($count[1])) ? '-' . $count[1] : '';
+
+                    if ('yes' === $value)
+                    {
+                        ?>
+                        $('#is_exact<?php echo $countNum; ?>').attr('checked', true);
+                        $('#is_approx<?php echo $countNum; ?>').attr('checked', false);
+                        <?php
+                    }
+                    else
+                    {
+                        ?>
+                        $('#is_exact<?php echo $countNum; ?>').attr('checked', false);
+                        $('#is_approx<?php echo $countNum; ?>').attr('checked', true);
+                        <?php
+                    }
+
+                }
+                else
+                {
+                    ?>
+                        $('#<?php echo $key; ?>').val('<?php echo $value; ?>');
+                    <?php
+                }
+            }
+        }
+    ?>
+
+</script>
+
+<div class="ui-state-default ui-widget-content ui-widget-header">
+	<h3 style="padding:5px">Adding audio link to Job ID: <?php echo $this->job['id']; ?>
+		<span style="color: #A8A8A8; font-size: 75%">
+		<?php if (strlen($this->job['title']) > 50) {
+			echo substr($this->job['title'], 0, 50) . '...';
+		} else {
+			echo $this->job['title'];
+		}?>
+		</span>
+	</h3>
+</div>
+
+<div id="link-audio-content">
+	<form action="<?php $this->url(); ?>" method="POST" id="multi-audio-form">
+
+		<div id="audio-link">
+			<label for="link-url">Link: Where can we find this file?</label>
+            <?php
+                if ($this->invalid)
+                {
+                    ?>
+                    <p class="audio-warning">Please enter a valid link</p>
+                    <?php
+                }
+            ?>
+			<input type="text" name="link-url" id="link-url" placeholder="http://" />
+			<input type="hidden" name="job_id" value="<?php echo $this->job['id']; ?>" />
+		</div>
+		<div id="file-count">
+			<label for="num_files">How many files are on this link?</label>
+			<select name="num_files" id="num_files">
+				<?php
+				for ($i = 1; $i <= 10; $i++)
+				{
+					?>
+					<option value="<?php echo $i;?>"><?php echo $i; ?></option>
+					<?php
+				}
+				?>
+			</select>
+		</div>
+
+		<div id="audio-radio">
+			<input type="radio" name="form-type" id="in-a-rush" value="in-a-rush" checked="checked" />
+			<label for="in-a-rush"><strong>In a rush?</strong> Just add the link and note how many files and we will fill in the details for you.</label>
+
+			<input type="radio" name="form-type" id="got-5-minutes" value="got-5-minutes" />
+			<label for="got-5-minutes"><strong>Got 5 minutes?</strong> Please add each audio file name and duration below.</label>
+		</div>
+
+		<div id="form-body" style="display: none;">
+			<h2 id="audio-job-info">Audio Job Information</h2>
+			<div id="audio-service-details">
+				<div>
+					<h3>Service details</h3>
+					<p>You are adding these files to project number: JN<?php echo $this->job['id']; ?>. The saved defaults are shown on the right. If you would like to change these for a particular file simply click on 'edit service options'</p>
+				</div>
+				<div id="audio-detailed">
+					<p>Number of speakers: <strong><?php echo $this->job->getSpeakerNumbersName(); ?></strong></p>
+					<p>Audio quality: <strong><?php echo $this->job->getQualityName(); ?></strong></p>
+					<p>Service: <strong><?php echo $this->job->getServiceName(); ?></strong></p>
+					<p>Turnaround time: <strong><?php echo $this->job->getTurnaroundTimeName(); ?></strong></p>
+				</div>
+			</div>
+
+			<table cellpadding="0"cellspacing="0" border="0">
+				<tr class="input-row-header">
+					<th width="30">
+						Audio file
+					</th>
+					<th width="170">
+						Audio file name
+					</th>
+					<th width="130">
+						Audio file duration
+					</th>
+					<th width="130">
+						Is this the exact duration
+					</th>
+					<th width="70">
+						Service options
+					</th>
+				</tr>
+				<tr>
+					<td colspan="5">
+
+						<table class="input-row clonable-form" id="input-row-0">
+							<tr>
+								<td width="35" class="row-number">
+									1.
+								</td>
+								<td width="170">
+									<?php echo $this->form->file_name; ?>
+								</td>
+								<td width="130" class="small">
+									<?php echo $this->form->length_hours; ?>
+									<label>Hours</label>
+
+									<?php echo $this->form->length_mins; ?>
+									<label>Minutes</label>
+								</td>
+								<td class="small radio" width="130">
+									<input type="radio" name="is_exact" id="is_exact" value="yes" />
+									<label>Exact</label>
+
+									<input type="radio" name="is_exact" id="is_approx" value="no" checked="checked" />
+									<label>Approximate</label>
+								</td>
+								<td width="70">
+									<a href="#" class="edit-options-link" id="edit-0">Edit</a>
+								</td>
+							</tr>
+							<tr class="edit-options" style="display:none;">
+								<td colspan="5">
+
+                                    <div>
+                                        <label for="audio_quality_id">Audio quality:</label>
+                                        <span class="view"><?php echo $this->form->audio_quality_id; ?></span>
+                                    </div>
+
+                                    <div>
+                                        <label for="transcription_type_id">Service:</label>
+                                        <span class="view service_id_view"><?php echo $this->form->service_id; ?></span>
+                                    </div>
+
+									<div>
+										<label for="speaker_numbers_id">Number of speakers:</label>
+										<span class="view speaker_numbers_view"><?php echo $this->form->speaker_numbers_id; ?></span>
+									</div>
+
+									<div>
+										<label for="turnaround_time_id">Turnaround time:</label>
+										<span class="view turnaround_time_view"><?php echo $this->form->turnaround_time_id; ?></span>
+									</div>
+
+                                    <div>
+                                        <label>Additional Services:</label>
+                                        <span class="view modifiers_view">
+                                            <?php echo $this->partial( 'job/_partials/_priceModifiers.phtml', 'default',  array( 'service' => $this->service, 'modifiers' => unserialize( $this->job->modifiers ) ) ); ?>
+                                        </span>
+                                    </div>
+
+									<a href="#" class="edit-options-link save-inputs" id="save-0">Save service options</a>
+								</td>
+							</tr>
+						</table>
+
+					</td>
+				</tr>
+			</table>
+
+		</div>
+
+		<div id="form-comments" style="display:hidden">
+			<h2 id="audio-job-info">Comments</h2>
+			<label for="client_comments">If you have any additional information for us please let us know here</label>
+			<textarea name="client_comments" id="client_comments"></textarea>
+		</div>
+		<div>
+			<a href="#" onclick="processLink();return false;" class="button-img">
+				<img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/submit_button.png'?>" title="Save job">
+			</a>
+			<a href="#" onclick="$('#job-dialog-link-file').dialog('close'); return false;" class="button-img">
+				<img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/cancel_button.png'?>" title="Cancel job">
+			</a>
+		</div>
+
+	</form>
+	<script>
+		$(function() {
+			$( "#btn_save" ).button();
+			$( "#btn_cancel" ).button();
+			$( "#job_due_date" ).datepicker({dateFormat: 'dd/mm/yy'});
+		});
+
+
+		<?php echo $this->audioFileQualitiesWarningJs; ?>
+		<?php echo $this->turnaroundTimeWarningJs; ?>
+	</script>
+	<?php echo $this->partial('/_partials/turnaroundTimeSelectJs.phtml'); ?>
+</div>

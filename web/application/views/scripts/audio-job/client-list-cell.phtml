@@ -1,0 +1,59 @@
+<?php
+if( !empty( $this->data['client_overall_comments'] ) || !empty( $this->data['user_overall_comments'] ) )
+{
+    ?>
+<img class="client-comments" src="<?php echo $this->baseUrl() . '/images/client_comment_icon.png'?>" title="Client comments exist for this job" />
+    <span class="job-comments client-comments">
+		<span class="hidden-comments">
+            <?php
+            if ( $this->data['client_overall_comments'] )
+            {
+            ?>
+                <h2><?php echo $this->data['client_name'] ;?> Comments</h2>
+                <p>
+                    <?php echo $this->data['client_overall_comments']; ?>
+                </p>
+                <br />
+            <?php
+            }
+            if ( $this->data['user_overall_comments'] )
+            {
+                ?>
+                <h2><?php echo $this->data['job_primary_user'] ;?> Comments</h2>
+                <p>
+                    <?php echo $this->data['user_overall_comments']; ?>
+                </p>
+                <br />
+            <?php
+            }
+            ?>
+		</span>
+	</span>
+<?php
+}
+?>
+<script>
+
+    (function($) {
+        $.fn.showClientComments = function()
+        {
+            $(this).hover(function()
+            {
+                $(this).next('span').children('span').eq(0).fadeIn(300);
+            }, function()
+            {
+                $(this).next('span').children('span').eq(0).stop(true, false).fadeOut(300);
+            });
+        };
+    })(jQuery);
+
+    $(function(){
+        $('img.client-comments').showClientComments();
+    });
+
+</script>
+
+<p>
+    <?php echo $this->data['client_name']; ?> -<br />
+    <?php echo $this->data['job_primary_user']; ?>
+</p>

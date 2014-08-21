@@ -1,0 +1,284 @@
+<?php
+
+$class = '';
+
+if ($this->isLead)
+{
+    $class = 'lead-audio-job ';
+}
+
+if ($this->lead_id > '0')
+{
+    $class .= ' child-audio-job';
+}
+
+$statusClass = '';
+if ($this->acl()->isAdmin())
+{
+    $statusClass = str_replace(array('(', ')', '- '), '', $this->status);
+    $statusClass = ' status-' . str_replace(' ', '-', strtolower($statusClass));
+}
+?>
+
+<tr id="tr-<?php echo $this->id; ?>" class="<?php echo $class . $statusClass; ?>
+	<?php  if ($this->status_id == 1): ?>
+
+	<?php endif;?>
+	<?php if (!is_null($this->client_due_date_unix) && $this->client_due_date_unix <= time()) : ?>
+		overdue
+	<?php endif;?>
+	">
+	<td> <!-- 0 -->
+		<div>
+			<?php echo $this->id; ?>
+			<br />
+			<input type="checkbox" name="check-<?php echo $this->escape($this->id)?>" value="<?php echo $this->escape($this->id)?>">
+		</div>
+	</td>
+	<td><div><?php echo (int)$this->id; ?></div></td>
+	<td class="pre-image"><!-- 2 -->
+		<div>
+			<a href="<?php echo $this->url(array('controller' => 'job', 'action' => 'view', 'id' => $this->job_id), null, true); ?>">
+				<img src="<?php echo $this->baseUrl() .'/images/client_icon.png' ?>" title="Go to Project">
+			</a>
+            <?php
+                if ( '0' < $this->poor_audio )
+                {
+                    $poorAudio = ( $this->poor_audio - 1 ) * 100;
+                    ?>
+                    <a href="#" onclick="showPoorAudio(<?php echo $this->id; ?>); return false;">
+                        <img class="client-comments" src="<?php echo $this->baseUrl() .'/images/poor_audio_on.png' ?>" title="Poor audio <?php echo $poorAudio ;?>%" />
+                    </a>
+                <?php
+                }
+                else
+                {
+                    ?>
+                    <a href="#" onclick="showPoorAudio(<?php echo $this->id; ?>); return false;">
+                        <img class="client-comments" src="<?php echo $this->baseUrl() .'/images/poor_audio_off.png' ?>" title="Set poor audio rate" />
+                    </a>
+                    <?php
+                }
+            echo $this->partial('audio-job/client-list-cell.phtml',
+                array(
+                    'data' => array(
+                        'file_name' 			  => $this->file_name,
+                        'client_name'             => $this->client_name,
+                        'job_primary_user'        => $this->job_primary_user,
+                        'client_overall_comments' => $this->client_overall_comments,
+                        'user_overall_comments'   => $this->user_overall_comments,
+                        'id'					  => $this->id
+                    )
+                )
+            ); ?>
+		</div>
+	</td>
+	<td><div>&nbsp;</div></td><!-- not used --><!-- 3 -->
+	<td><!-- 4 -->
+		<div>
+			<span id="job-list-audio-status-<?php echo $this->escape($this->id); ?>">
+				<a href="#" onclick="showStatus(<?php echo $this->escape($this->id); ?>); return false;"><?php echo $this->escape($this->status); ?></a>
+			</span>
+		</div>
+	</td>
+	<td class="pre-image">
+		<div>
+			<span id="job-list-audio-file-name-<?php echo $this->escape($this->id); ?>">
+			<?php
+            echo $this->partial('audio-job/file-name-list-cell.phtml',
+				array(
+					'data' => array(
+						'file_name' 			  => $this->file_name,
+                        'client_name'             => $this->client_name,
+                        'job_primary_user'        => $this->job_primary_user,
+						'client_comments'		  => $this->client_comments,
+						'internal_comments'		  => $this->internal_comments,
+						'id'					  => $this->id
+					)
+				)
+			); ?>
+			</span>
+		</div>
+	</td><!-- 5 -->
+    <td><!-- 6 -->
+    	<div>
+			<span style="font-size: 100%;">
+				<?php
+                echo $this->transcription_type;
+                if ( !empty( $this->service_id ) )
+                {
+                    echo '<br />' . $this->speaker_numbers . ' SPEAKERS' . '<br />' . $this->additional_services;
+                }
+                ?>
+			</span>
+		</div>
+    </td>
+    <td><!-- 7 -->
+    	<div>
+            <span style="display: none;"><?php echo $this->turnaround_priority; ?></span>
+			<span style="font-size: 100%;">
+				<?php echo $this->turnaround_time; ?>
+			</span>
+		</div>
+    </td>
+    <td><!-- 8 -->
+        <?php if ($this->lead_id > '0'): ?>
+        SPLIT
+        <div>
+            <?php echo $this->displayAudioJobLength($this->length_seconds); ?>
+        </div>
+        <?php else: ?>
+            <div>
+                <?php echo $this->displayAudioJobLength($this->length_seconds); ?>
+            </div>
+
+            <?php
+                $discount = '';
+                if ( (float) $this->audio_job_discount != 0 )
+                {
+                    $discount = ' (' . (float) $this->audio_job_discount . '%)';
+                }
+            ?>
+
+            <a href="#" onclick="extraServices('<?php echo $this->id; ?>')">&pound;<?php echo number_format($this->price, 2) . $discount ;?></a>
+        <?php endif; ?>
+    </td>
+	<td><!-- 9 -->
+		<div>
+			<span id="job-list-audio-typist-<?php echo $this->escape($this->id); ?>">
+			<?php echo $this->partial('audio-job/typist-list-cell.phtml', array(
+				'data' => array(
+					'typist_count' 			=> $this->typist_count,
+					'typist_name'			=> $this->typist_name,
+					'typist_due_date'		=> $this->typist_due_date,
+					'accepted'				=> $this->accepted,
+                    'hasSubStandard'        => $this->hasSubStandard,
+					'downloaded'			=> $this->downloaded,
+					'audio_jobs_typists_id' => $this->audio_jobs_typists_id,
+					'id'					=> $this->id)
+				)
+			); ?>
+			</span>
+		</div>
+	</td>
+	<td><div><?php echo $this->escape($this->typist_name)?></div></td><!-- 10 --> <!--  for sorting -->
+	<td><!-- 11 -->
+		<div>
+			<span id="job-list-typist-date-<?php echo $this->escape($this->id); ?>">
+
+				<?php echo $this->partial('audio-job/typist-due-date-list-cell.phtml', array(
+					'data' => array(
+						'typist_count' 			=> $this->typist_count,
+						'due_date_unix'			=> $this->typist_due_date_unix,
+						'due_days'				=> $this->typist_due_days,
+						'due_hours'				=> $this->typist_due_hours,
+						'id'					=> $this->id,
+                        'type'                  => 'update-typist-due-date'
+                    )
+                )
+            ); ?>
+			</span>
+		</div>
+	</td>
+	<td><div><?php echo $this->typist_due_date_unix; ?></div></td><!-- for sorting --><!-- 12 -->
+	<td> <!-- 13 -->
+		<div>
+			<span id="job-list-audio-due-date-<?php echo $this->escape($this->id); ?>">
+			<?php echo $this->partial('audio-job/due-date-list-cell.phtml', array(
+				'data' => array(
+					'id'				=> $this->id,
+					'due_date_unix' 	=> $this->client_due_date_unix,
+					'due_days'			=> $this->due_days,
+					'due_hours'			=> $this->due_hours,
+					'canEdit'			=> $this->canEdit,
+				)
+			)); ?>
+			</span>
+		</div>
+	</td>
+	<td><div><?php echo $this->client_due_date_unix?></div></td><!-- 14 --> <!--  for sorting -->
+	<td><!-- 15 -->
+		<div>
+			<span id="job-list-audio-proofreader-<?php echo $this->escape($this->id); ?>">
+			<?php echo $this->partial('audio-job/proofreader-list-cell.phtml', array(
+				'data' => array(
+					'proofreader_count'  	     => $this->proofreader_count,
+					'proofreader_name'	      	 => $this->proofreader_name,
+					'due_date'			         => $this->proofreader_due_date,
+					'due_date_unix'			     => $this->proofreader_due_date_unix,
+					'accepted'			         => $this->proofreader_accepted,
+					'downloaded'		         => $this->proofreader_downloaded,
+					'audio_jobs_proofreaders_id' => $this->audio_jobs_proofreaders_id,
+					'id'					     => $this->id)
+				)
+			); ?>
+			</span>
+		</div>
+	</td>
+	<td><div><?php echo $this->escape($this->proofreader_name)?></div></td><!-- 16 --> <!--  for sorting -->
+	<td><!-- 17 -->
+		<div>
+			<span id="job-list-proofreader-date-<?php echo $this->escape($this->id); ?>">
+
+				<?php echo $this->partial('audio-job/typist-due-date-list-cell.phtml', array(
+					'data' => array(
+						'typist_count' 			=> $this->proofreader_count,
+						'due_date_unix'			=> $this->proofreader_due_date_unix,
+						'due_days'				=> $this->proofreader_due_days,
+						'due_hours'				=> $this->proofreader_due_hours,
+						'id'					=> $this->id,
+                        'type'                  => 'update-proofreader-due-date'
+                    )
+                )
+            ); ?>
+			</span>
+		</div>
+	</td>
+	<td><div><?php echo $this->proofreader_due_date_unix; ?></div></td><!-- for sorting --><!-- 18 -->
+    <td class="centre-image"><!-- 19 -->
+    	<div>
+			<?php
+            if ( $this->job['archived'] != '1' )
+            {
+                echo $this->partial('audio-job/sound-file-list-cell.phtml', array(
+				'data' => array(
+					'id'         => $this->id,
+					'link'       => $this->link
+				)
+			));
+            }
+            else
+            {
+                echo '-';
+            }
+            ?>
+		</div>
+	</td>
+	<td class="centre-image"><!-- 20 -->
+		<div>
+			<span id="job-list-audio-transcript-<?php echo $this->escape($this->id); ?>">
+                <?php
+                echo $this->partial('audio-job/transcript-list-cell.phtml', array(
+				'data' => array(
+					'typist_count' 				=> $this->typist_count,
+					'id'						=> $this->id,
+					'transcription_file_count'	=> $this->transcription_file_count,
+					'transcription_file_id'		=> $this->transcription_file_id,
+					'canUpload'					=> $this->canUpload,
+				)
+			));
+                ?>
+			</span>
+		</div>
+	</td>
+    <td class="centre-image">
+        <?php
+        echo $this->partial('audio-job/report-cell.phtml', array(
+			'data' => array(
+				'typist_count' => $this->typist_count,
+				'id'		   => $this->id,
+	   		)
+   		));
+        ?>
+    </td><!-- 21 -->
+</tr>

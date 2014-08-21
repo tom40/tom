@@ -1,0 +1,68 @@
+<div>
+    <form id="formCreateTranscriptionType" name="transcriptionType" method="<?php echo $this->form->getMethod(); ?>" action="<?php echo $this->form->getAction(); ?>">
+        <?php echo $this->form->id; ?>
+        <?php echo $this->form->client_id; ?>
+        <input type="hidden" name="formName" value="transcription_type" />
+        <table class="data index">
+            <tr class="first">
+                <td class="field">
+                    <label for="name">*Transcription Type:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->transcription_type; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="description">Description</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->description; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="description">Sort Order: </label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->sort_order; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="description">*Default Turnaround Time:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->default_turnaround_time; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="description">*Turnaround Times:</label>
+                </td>
+                <td class="value checkboxes">
+                    <span class="view"><?php echo $this->form->turnaround_times; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    &nbsp;
+                </td>
+                <td>
+                    <a href="#" onclick="formCreateTranscriptionType.submit();return false;" class="button-img">
+                        <img src="<?php echo $this->baseUrl() . '/images/submit_button.png' ?>" title="Save job">
+                    </a>
+                    <a href="<?php echo $this->url(array('controller' => 'transcription-price', 'action' => 'client-list'), null, true); ?>" class="button-img">
+                        <img src="<?php echo $this->baseUrl() . '/images/cancel_button.png' ?>" title="Cancel job">
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script>
+    $(function() {
+        $( "#btn_create" ).button();
+    });
+</script>

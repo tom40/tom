@@ -1,0 +1,255 @@
+<script>
+
+    $( 'body' ).on( 'change', '.service_id_view select', function()
+    {
+        var turnaround       = $( '.turnaround_time_view' );
+        var speakerNumbers   = $( '.speaker_numbers_view' );
+        var modifiers        = $( '.modifiers_view' );
+
+        var url ="<?php echo $this->url( array( 'controller' => 'audio-job', 'action' => 'fetch-service-details-edit', 'audio_job_id' => $this->id ), null, true ); ?>";
+        url += '/service_id/' + $( this ).val();
+
+        $.ajax({
+            type     : 'GET',
+            url      : url,
+            cache    : false,
+            dataType : "json"
+        }).success(function( msg )
+        {
+            speakerNumbers.html( msg.speaker_numbers );
+            turnaround.html( msg.turnaround_times );
+            modifiers.html( msg.modifiers );
+        });
+    });
+
+</script>
+
+<div class="ui-state-default ui-widget-content ui-widget-header">
+    <h3>Editing Job ID: <?php echo $this->id ?></h3>
+</div>
+
+<?php
+$this->form->setAction($this->url());
+?>
+
+<div>
+    <p class="validateTips">Form fields marked with * are required.</p>
+    <form id="formEditAudioJob" method="<?php echo $this->form->getMethod(); ?>" action="<?php echo $this->form->getAction(); ?>">
+        <?php echo $this->form->id; ?>
+        <table class="data">
+            <?php
+            if (false === $this->isMulti):
+            ?>
+            <tr class="first">
+                <td class="field">
+                    <label for="name">File name:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->file_name; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="name">Link:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->link; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="name">Length (hours):</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->length_hours; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="name">Length (mins):</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->length_mins; ?></span>
+                </td>
+            </tr>
+            <?php
+                endif;
+
+            ?>
+            <?php
+                if ( $this->service )
+                {
+                ?>
+                    <tr>
+                        <td class="field">
+                            <label for="name">Service:</label>
+                        </td>
+                        <td class="value">
+                            <span class="view service_id_view"><?php echo $this->form->service_id; ?></span>
+                        </td>
+                    </tr>
+                <?php
+                }
+                else
+                {
+            ?>
+            <tr>
+                <td class="field">
+                    <label for="name">Transcription type:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->transcription_type_id; ?></span>
+                </td>
+            </tr>
+            <?php
+                }
+                if ( '1' == $this->audioJob->manual_client_due_date )
+                {
+            ?>
+            <tr>
+                <td class="field">Re-calculate client due date</td>
+                <td class="value"><input type="checkbox" name="manual_client_due_date" value="0" /></td>
+            </tr>
+            <?php
+                }
+            ?>
+            <tr>
+                <td class="field">
+                    <label for="name">Default number of speakers:</label>
+                </td>
+                <td class="value">
+                    <span class="view speaker_numbers_id"><?php echo $this->form->speaker_numbers_id; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="name">Turnaround time:</label>
+                </td>
+                <td class="value">
+                    <span class="view turnaround_time_view"><?php echo $this->form->turnaround_time_id; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="name">Audio quality:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->audio_quality_id; ?></span>
+                </td>
+            </tr>
+            <?php
+            if ( $this->service )
+            {
+                ?>
+                <tr>
+                    <td>
+                    <label>Additional Services:</label>
+                    </td>
+                    <td>
+                        <span class="view modifiers_view">
+                            <?php echo $this->partial( 'job/_partials/_priceModifiers.phtml', 'default',  array( 'service' => $this->service, 'audioJob' => $this->audioJob ) ); ?>
+                        </span>
+                    </td>
+                </tr>
+                <?php
+            }
+            ?>
+            <?php
+            if ( count( $this->audioJobs ) > 0 && null === $this->isInvoice )
+            {
+            ?>
+            <tr>
+                <td class="field">
+                    <label for="name">Multipart audio:</label>
+                </td>
+                <td class="value">
+                    <p>For multipart audio files, check to assign this file to another audio file.</p>
+                    <span class="view"><input type="checkbox" id="show-multi-audio" onclick="javascript:showMultiAudio()" <?php if (!empty($this->leadId)): ?>checked="checked" <?php endif; ?>></span>
+                </td>
+            </tr>
+            <tr id="multi-audio-row" <?php if ( empty( $this->leadId ) ): ?>style="display: none;"<?php endif; ?>>
+                <td class="field">
+                    <label for="name">Select Lead Job:</label>
+                </td>
+                <td class="value">
+                    <span class="view">
+                            <select name="lead_id" required>
+                                <option value="0">-- select --</option>
+                                <?php
+                                foreach ($this->audioJobs as $option)
+                                {
+                                    $select = '';
+                                    if ($option['id'] === $this->leadId)
+                                    {
+                                        $select = ' selected="selected"';
+                                    }
+                                ?>
+                                <option<?php echo $select;?> value="<?php echo $option['id'] ?>"><?php echo $option['file_name'] ?></option>
+                                <?php
+                                }
+                                ?>
+                            </select>
+                    </span>
+                </td>
+            </tr>
+            <?php
+            }
+            if ( !$this->isMulti && null === $this->isInvoice ):
+            ?>
+            <tr>
+                <td class="field">
+                    <label for="name">Client comments:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->client_comments; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="name">Internal comments:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->internal_comments; ?></span>
+                </td>
+            </tr>
+            <?php
+                endif;
+            ?>
+            <tr>
+                <td>
+                    &nbsp;
+                </td>
+                <td>
+                    <a href="#" class="button-img" onclick="processEdit(); return false;">
+                        <img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() . '/images/submit_button.png' ?>" title="Save job">
+                    </a>
+                    <a href="#" class="button-img" onclick="$('#job-list-audio-dialog-edit').dialog('close'); return false;">
+                        <img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() . '/images/cancel_button.png' ?>" title="Cancel job">
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script>
+    function showMultiAudio()
+    {
+        if ($('#show-multi-audio').is(':checked'))
+        {
+            $('#multi-audio-row').show();
+        }
+        else
+        {
+            $('#multi-audio-row').hide();
+            $('select[name="lead_id"]').val(0);
+        }
+
+    }
+</script>
+<script>
+    $(function() {
+        $( "#btn_save" ).button();
+        $( "#btn_cancel" ).button();
+    });
+</script>
+<?php echo $this->partial('/_partials/turnaroundTimeSelectJs.phtml'); ?>

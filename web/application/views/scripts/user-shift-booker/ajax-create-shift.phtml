@@ -1,0 +1,54 @@
+<div class="ui-state-default ui-widget-content ui-widget-header">
+	<h3>
+		Select a Shift
+	</h3>
+</div>
+<?php if (!$this->shiftDateInThePast): ?>
+    <?php echo $this->flashMessenger(); ?>
+    <?php if (true === $this->hasShifts): ?>
+        <form id="shiftBookerForm" method="<?php echo $this->form->getMethod(); ?>" action="<?php echo $this->form->getAction(); ?>">
+            <?php echo $this->form->id; ?>
+            <input type="hidden" name="usertype" value="<?php echo $this->userType; ?>" />
+            <input type="hidden" name="userid" value="<?php echo $this->currentUserId; ?>" />
+            <input type="hidden" name="date" value="<?php echo $this->shiftDate; ?>" />
+            <table class="data">
+                <tr class="first">
+                    <td class="field">
+                        <label for="on-holiday"><?php echo $this->form->on_holiday->renderLabel(); ?></label>
+                    </td>
+                    <td class="value">
+                        <span class="view"><?php echo $this->form->on_holiday->renderViewHelper(); ?></span>
+                    </td>
+                </tr>
+                <tr class="first shift-selector" <?php if ($this->isOnHoliday): ?>style="display:none;"<?php endif; ?>>
+                    <td class="field">
+                        <label for="shift-time"><?php echo $this->form->shift_time->renderLabel(); ?></label>
+                        <br />
+                        <div class="element-error error-inner"><?php echo array_shift($this->form->shift_time->getMessages()); ?></div>
+                    </td>
+                    <td class="value">
+                        <span class="view"><?php echo $this->form->shift_time->renderViewHelper(); ?></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="field"></td>
+                    <td class="value">
+                        <div class="element-error error-inner">
+                            <a href="#" onclick="processShiftBookerForm();return false;" class="button-img">
+                                <img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/submit_button.png'?>" title="Save">
+                            </a>
+                            <a href="#" onclick="return closeShiftDialog();" class="button-img">
+                                <img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/cancel_button.png'?>" title="Cancel">
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    <?php else: ?>
+        <p>There are no shifts available for the selected day</p>
+    <?php endif; ?>
+<?php else: ?>
+    <p class="shift-padding">The selected shift date is in the past and cannot be amended</p>
+<?php endif; ?>
+<?php echo $this->partial('/user-shift-booker/_shiftBookerFormJs.phtml'); ?>

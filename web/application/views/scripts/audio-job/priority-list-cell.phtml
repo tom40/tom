@@ -1,0 +1,4 @@
+<?php if ($this->data['priority_id'] > 0) : ?>
+	<img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/icons/flag_' . $this->escape($this->data['priority_flag_colour']) . '.png'?>" title="Priority: <?php echo $this->escape(ucfirst($this->data['priority_name'])); ?>">
+<?php endif;?>
+<span style="display:none"><?php echo $this->data['priority_sort_order']?></span>

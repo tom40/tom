@@ -1,0 +1,61 @@
+<div>
+	<table style="font-size: 85%">
+		<thead>
+			<tr>
+				<th>Proofreader</th>
+				<th>Due date</th>
+				<th style="width:50px">Minute start</th>
+				<th style="width:50px">Minute end</th>
+				<th>Comment</th>
+				<th style="width:100px"></th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach($this->data as $row): ?>
+			<tr id="assign-multiple-proofreader-<?php echo $this->audioJobId?>-row-<?php echo $row['audioJobIdProofreaderNumber']?>">
+				<td id="proofreader-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdProofreaderNumber']?>-proofreader-name">
+				<?php if ($row['proofreader_name'] == ''):?>
+					<a href="#" onclick="assignMultipleProofreader(<?php echo $this->audioJobId?>, <?php echo $row['audioJobIdProofreaderNumber']?>);return false;">Select proofreader <?php echo $row['audioJobIdProofreaderNumber']?></a>
+				<?php else:?>
+					<?php echo $row['proofreader_name']?>
+				<?php endif;?>
+				</td>
+				<td id="proofreader-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdProofreaderNumber']?>-due-date">
+				<?php if ($row['due_date_unix'] == ''):?>
+					&nbsp;
+				<?php else:?>
+					<?php echo date('jS M \a\t H:i', $row['due_date_unix'])?>
+				<?php endif;?>
+				</td>
+				<td><!-- keep the hidden inputs in this row since we don't replace this row html at any point -->
+					<input type="hidden" id="proofreader-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdProofreaderNumber']?>-id" name="proofreader-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdProofreaderNumber']?>-id" value="<?php echo $row['id']?>" />
+					<input type="hidden" id="proofreader-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdProofreaderNumber']?>-current" name="proofreader-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdProofreaderNumber']?>-current" value="1" />
+					<input type="hidden" id="proofreader-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdProofreaderNumber']?>-user_id" name="proofreader-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdProofreaderNumber']?>-user_id" value="<?php echo $row['user_id']?>" />
+					<input type="hidden" id="proofreader-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdProofreaderNumber']?>-due_date" name="proofreader-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdProofreaderNumber']?>-due_date" value="<?php echo $row['due_date']?>" />
+					<input type="hidden" id="proofreader-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdProofreaderNumber']?>-shift_id" name="proofreader-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdProofreaderNumber']?>-shift_id" value="<?php echo $row['shift_id']?>" style="width:100%" />
+                    <input type="text" id="proofreader-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdProofreaderNumber']?>-minutes_start" name="proofreader-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdProofreaderNumber']?>-minutes_start" value="<?php echo $row['minutes_start']?>" style="width:100%" />
+				</td>
+				<td>
+					<input type="text" id="proofreader-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdProofreaderNumber']?>-minutes_end" name="proofreader-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdProofreaderNumber']?>-minutes_end" value="<?php echo $row['minutes_end']?>" style="width:100%" />
+				</td>
+				<td>
+					<input type="text" id="proofreader-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdProofreaderNumber']?>-comment" name="proofreader-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdProofreaderNumber']?>-comment" value="<?php echo $row['comment']?>" style="width:100%" />
+				</td>
+				<td style="text-align:center">
+                    <?php if (!empty($row['user_id'])): ?>
+                        <?php if (!$this->hasUploadedTranscript($this->audioJobId, Application_Model_User::PROOFREADER_USER, $row['user_id'])): ?>
+                            <span id="proofreader-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdProofreaderNumber']?>-removelink">
+                                <a href="#" onclick="removeMultipleProofreader(<?php echo $row['id']?>, <?php echo $this->audioJobId; ?>, <?php echo $row['audioJobIdProofreaderNumber']; ?>);return false;">
+                                    <img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/icons/delete.png'?>" title="Remove proofreader">
+                                </a>
+                            </span>
+                        <?php endif; ?>
+                    <?php endif; ?>
+					<a href="#" onclick="assignMultipleProofreader(<?php echo $this->audioJobId?>, <?php echo $row['audioJobIdProofreaderNumber']?>, <?php echo isset($row['id']) ? $row['id'] : 'null'; ?>);return false;">
+						<img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/icons/user_edit.png'?>" title="Change proofreader"></a>
+				</td>
+			</tr>
+			<?php endforeach;?>
+		</tbody>
+	</table>
+</div>

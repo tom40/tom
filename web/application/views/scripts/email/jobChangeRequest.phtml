@@ -1,0 +1,49 @@
+<?php echo $this->partial('/_partials/email/_defaultHeader.phtml',
+    array(
+            'appName' => $this->appName,
+            'title'   => 'Your change request has been received.'
+         )
+    );
+?>
+Hello <?php echo $this->data['created_user_name']; ?>,
+<br /><br />
+Just to let you know your change request has been safely received as below.
+
+<br />
+
+	<table class="data" style="font-family:helvetica, arial, sans-serif;color:#333;font-size:12px;line-height:18px;margin:0 0 15px;">
+ 		<tr class="first">
+        	<td class="field">
+            	<label for="name">From:</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php echo $this->data['created_user_name']; ?></span>
+            </td>
+		</tr>
+		<tr>
+        	<td class="field">
+            	<label for="name">Date:</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php echo date('jS M \a\t H:i', $this->data['created_date_unix']); ?></span>
+            </td>
+		</tr>
+		<tr>
+        	<td class="field" style="vertical-align:top">
+            	<label for="name">Change request:</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php echo nl2br($this->data['change_request']); ?></span>
+            </td>
+		</tr>
+
+	</table>
+Thankyou<br/>
+The Take Note Team
+<?php echo $this->partial('/_partials/email/_defaultFooter.phtml',
+    array(
+            'appName' => $this->appName,
+            'appUrl' => $this->appUrl
+        )
+    );
+?>

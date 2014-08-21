@@ -1,0 +1,8 @@
+<h1>New Transcription Type: <?php echo $this->client['name']; ?></h1>
+<?php echo $this->partial('/transcription-price/_clientTranscriptionTypeForm.phtml', array('form' => $this->transcriptionTypeForm)); ?>
+<script>
+    $(function() {
+        $( "#btn_save" ).button();
+        $( "#btn_cancel" ).button();
+    });
+</script>

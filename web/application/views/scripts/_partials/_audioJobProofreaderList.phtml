@@ -1,0 +1,86 @@
+	<h4 class="no-margin">On Shift</h4>
+    <p>
+        <?php if (1 == count($this->usersOnShift)): ?>
+            <?php echo count($this->usersOnShift); ?> proofreader found
+        <?php else: ?>
+            <?php echo count($this->usersOnShift); ?> proofreaders found
+        <?php endif; ?>
+    </p>
+    <?php if (!empty($this->usersOnShift)): ?>
+        <table>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Grade</th>
+            </tr>
+            <?php $i = 0; foreach ($this->usersOnShift as $proofreader): ?>
+               <tr <?php if($i % 2 == 0){echo 'class="even"';}; ?>>
+                    <td><input type="radio" name="user_id" value="<?php echo $this->escape($proofreader['user_id']); ?>" <?php if($this->user_id == $proofreader['user_id']):?>checked<?php endif;?> /></td>
+                    <td>
+                        <?php if (!empty($proofreader['comments'])): ?>
+                            <span class="audio-job-user-comment">
+                                <img src="<?php echo $this->baseUrl() .'/images/icons/information.png'?>"/>
+                                <span class="comment-holder" style="display:none;"><?php echo $proofreader['comments']; ?></span>
+                            </span>
+                        <?php endif; ?>
+                        <span class="operative-search-name" id="assign-proofreader-proofreader-name-<?php echo $this->escape($proofreader['user_id']); ?>"><?php echo $this->escape($proofreader['name']); ?></span>
+                        <span><?php echo $this->userAudioJobsForShift($proofreader['user_id'], $this->shiftId, 'proofreader'); ?></span>
+                    </td>
+                    <td><?php echo $proofreader['grade']; ?></td>
+                </tr>
+            <?php
+            	$i++;
+            	endforeach;
+            ?>
+        </table>
+
+    <?php else: ?>
+        <p>There are no proofreaders on shift for the selected shift</p>
+    <?php endif; ?>
+
+    <h4>Other Proofreaders</h4>
+    <p>
+        <?php if (1 == count($this->otherUsers)): ?>
+            <?php echo count($this->otherUsers); ?> proofreader found
+        <?php else: ?>
+            <?php echo count($this->otherUsers); ?> proofreaders found
+        <?php endif; ?>
+    </p>
+    <?php if (!empty($this->otherUsers)): ?>
+        <table>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Grade</th>
+            </tr>
+            <?php $i = 0; foreach ($this->otherUsers as $proofreader): ?>
+               <tr <?php if($i % 2 == 0){echo 'class="even"';}; ?>>
+                    <td><input type="radio" name="user_id" value="<?php echo $this->escape($proofreader['user_id']); ?>" <?php if($this->user_id == $proofreader['user_id']):?>checked<?php endif;?>  /></td>
+                    <td>
+                        <?php if (!empty($proofreader['comments'])): ?>
+                            <span class="audio-job-user-comment">
+                                <img src="<?php echo $this->baseUrl() .'/images/icons/information.png'?>"/>
+                                <span class="comment-holder" style="display:none;"><?php echo $proofreader['comments']; ?></span>
+                            </span>
+                        <?php endif; ?>
+                        <span class="operative-search-name" id="assign-proofreader-proofreader-name-<?php echo $this->escape($proofreader['user_id']); ?>"><?php echo $this->escape($proofreader['name']); ?></span>
+                        <span><?php echo $this->userAudioJobsForShift($proofreader['user_id'], $this->shiftId, 'proofreader'); ?></span>
+                    </td>
+                    <td><?php echo $proofreader['grade']; ?></td>
+                </tr>
+            <?php
+            	$i++;
+            	endforeach;
+            ?>
+        </table>
+    <?php else: ?>
+        <p>There are no other proofreaders for the selected shift</p>
+    <?php endif; ?>
+
+<script type="text/javascript">
+    $(".audio-job-user-comment").tooltip({
+        bodyHandler: function() {
+            return $(this).find(".comment-holder").html();
+        }
+    });
+</script>

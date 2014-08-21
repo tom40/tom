@@ -1,0 +1,50 @@
+<?php echo $this->partial('/_partials/email/_defaultHeader.phtml',
+    array(
+            'appName' => $this->appName,
+            'title'   => 'A change has been made to the following booking: ' . $this->data['file_name'] . '. Please read before continuing.'
+         )
+    );
+?>
+Dear <?php echo $this->data['typist_name']?>
+<br /><br />
+A change has been made to the following booking: <?php echo $this->data['file_name']; ?>, please see below:
+<?php if (!empty($this->data['comment'])): ?>
+    <p>Comments: <?php echo $this->escape($this->data['comment']) ?></p>
+<?php endif; ?>
+
+<table class="data" style="font-family:helvetica, arial, sans-serif;color:#333;font-size:12px;line-height:18px;margin:0 0 15px;">
+    <tr>
+        <td class="field">
+            <label for="name">Audio file name:</label>
+        </td>
+        <td class="value">
+            <span class="view"><?php echo $this->data['file_name']; ?></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="field">
+            <label for="name">Deadline:</label>
+        </td>
+        <td class="value">
+            <span class="view"><?php echo date('jS F g.ia', $this->data['due_date_unix']); ?></span>
+        </td>
+    </tr>
+    <tr>
+        <td class="field">
+            <label for="name">Service:</label>
+        </td>
+        <td class="value">
+            <span class="view"><?php echo $this->data['transcription_type']; ?></span>
+        </td>
+    </tr>
+</table>
+
+<?php echo $this->partial('/_partials/email/_defaultFooter.phtml',
+    array(
+        'appName' => $this->appName,
+        'appUrl' => $this->appUrl,
+        'showThanksMessage' => true,
+        'customThankYouMessage' => 'Many thanks'
+    )
+);
+?>

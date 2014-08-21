@@ -1,0 +1,67 @@
+<div id='calendar'></div>
+
+	<div id="select-shift-dialog" style="display: none">
+		<span id="select-shift-dialog-container" class="view"></span>
+	</div>
+	<script type='text/javascript'>
+
+		$(document).ready(function() {
+			$('#calendar').fullCalendar({
+				timeFormat:  'h:mmTT { - h:mmTT}',
+                firstDay: 1,
+				header: {
+                    center: 'title',
+					left: 'prev,next today',
+					right: 'agendaDay,month,agendaWeek'
+				},
+				disableDragging: true,
+				events: "<?php echo $this->url(array('controller' => 'user-shift-booker', 'action' => 'ajax-fetch-shifts', 'usertype' => $this->userType, 'userid' => $this->userId), null,true); ?>",
+				loading: function(bool)
+                {
+					if (bool)
+                    {
+                        $('#loading').show();
+                    }
+					else
+                    {
+                        $('#loading').hide();
+                    }
+				},
+                eventClick: function(calEvent, jsEvent, view)
+                {
+					var shiftDate = $.fullCalendar.formatDate(calEvent.start, 'yyyy-MM-dd');
+					selectShiftDialog('<?php echo $this->userType; ?>', shiftDate, '<?php echo $this->userId; ?>');
+				},
+				dayClick: function(date, allDay, jsEvent, view)
+                {
+					var shiftDate = $.fullCalendar.formatDate(date, 'yyyy-MM-dd');
+					selectShiftDialog('<?php echo $this->userType; ?>', shiftDate, '<?php echo $this->userId; ?>');
+				}
+			});
+
+			$('#select-shift-dialog').dialog({
+				autoOpen: false,
+				title: 'Shiftbooker',
+				closeOnEscape: false,
+				modal: true,
+				width: 600,
+				height: 450
+			});
+		});
+
+		function selectShiftDialog(userType, date, userId)
+		{
+			$('#select-shift-dialog').dialog('open');
+			var url ="<?php echo $this->url(array('controller' => 'user-shift-booker', 'action' => 'ajax-create-shift'), null, true); ?>"
+
+			$.ajax({
+				type: "GET",
+				url: url,
+				cache: false,
+				data: {usertype: userType, date: date, userid: userId},
+				dataType: "json"
+			}).success(function( msg ) {
+				$("#select-shift-dialog-container").html(msg.html);
+			});
+		}
+	</script>

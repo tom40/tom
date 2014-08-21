@@ -1,0 +1,25 @@
+<?php echo $this->partial('/_partials/email/_defaultHeader.phtml',
+    array(
+            'appName' => $this->appName,
+         )
+    );
+?>
+<?php if (!empty($this->addressee)): ?>
+Dear <?php echo $this->addressee; ?><br /><br />
+<?php endif; ?>
+
+We are pleased to inform you that your transcripts for project ID <?php echo $this->data['job_id']?> (<?php echo $this->jobTitle; ?>) have now been completed. You can login to the Take Note Portal at any point to download your transcripts using the below link.
+<br /><br />
+LINK: <?php echo $this->appUrl; ?>
+<br /><br />
+As always if you come across any inaccuracy or are not completely satisfied please do not hesitate to let us know, amendments or additional checks will always be made free of charge.
+<br /><br />
+<?php echo $this->partial('/_partials/email/_defaultFooter.phtml',
+    array(
+            'appName' => $this->appName,
+            'appUrl' => $this->appUrl,
+            'showThanksMessage' => true,
+            'customThankYouMessage' => 'Thanks for using Take Note and we look forward to working with you again soon.'
+        )
+    );
+?>

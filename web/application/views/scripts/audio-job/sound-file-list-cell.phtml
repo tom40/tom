@@ -1,0 +1,12 @@
+<?php if(!is_null($this->data['link'])):?>
+<a href="<?php echo $this->escape($this->data['link']); ?>" target="_blank" title="Link sound file">
+	<img style="margin-bottom:7px;vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/link_icon.png'?>" />
+</a>
+<?php else:?>
+    <a href="#" onclick="doSoundFileDownload(<?php echo $this->escape($this->data['id']); ?>); return false;" title="Download sound file">
+        <img src="<?php echo $this->baseUrl() .'/images/download_audio_icon.png'?>" />
+    </a>
+    <a href="#" onclick="showSoundFile(<?php echo $this->escape($this->data['id']); ?>); return false;">
+        <img src="<?php echo $this->baseUrl() .'/images/audio_details_icon.png'?>" title="View sound file details">
+    </a>
+<?php endif;?>

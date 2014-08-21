@@ -1,0 +1,50 @@
+<br />
+<h2>Share Access</h2>
+<?php if (!empty($this->colleagues)): ?>
+<form method="post" id="grantTranscriptionAccessForm">
+    <input type="hidden" name="audio_job_id" value="<?php echo $this->audioJobId; ?>" />
+    <table width="100px">
+        <tr>
+            <th>Access</th>
+            <th>Colleague</th>
+        </tr>
+    <?php foreach($this->colleagues as $colleague): ?>
+        <tr>
+            <th><input type="checkbox" name="access[]" value="<?php echo $colleague['user_id']; ?>" <?php if ($this->userHasAudioJobAccess($colleague['user_id'], $this->audioJobId)): ?>checked="checked"<?php endif; ?> /></th>
+            <th><?php echo $colleague['name']; ?></th>
+        </tr>
+    <?php endforeach; ?>
+    </table>
+    <br />
+    <a href="#" id="submitGrantTranscriptionAccessForm" class="button-img">
+        <img src="<?php echo $this->baseUrl() .'/images/save_button.png'?>" title="Save job" />
+    </a>
+</form>
+<?php else: ?>
+    <p> are no colleagues</p>
+<?php endif; ?>
+<script type="text/javascript">
+
+    $('#submitGrantTranscriptionAccessForm').click(function() {
+        var formData = $('#grantTranscriptionAccessForm').serialize();
+        var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'grant-user-access'), null, true); ?>";
+        $.ajax({
+            type: "POST",
+            url: url,
+            cache: false,
+            data: formData,
+            dataType: "json"
+        }).success(function( response ) {
+            if (response.status == 'ok') {
+                alert(response.message);
+            }
+            else
+            {
+                alert('There was an error processing your request');
+            }
+        });
+
+        return false;
+    });
+
+</script>

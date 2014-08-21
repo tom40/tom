@@ -1,0 +1,67 @@
+<?php
+//$this->form->setAction($this->url());
+?>
+<div class="ui-state-default ui-widget-content ui-widget-header">
+	<h3>
+		Assign Typists
+	</h3>
+</div>
+
+<div class="popup-content">
+    <form id="formAssignMultipleTypist">
+    	<?php if($this->mode == 'create'):?>
+    	<input type="hidden" id="assign-multiple-typist-audio_job_id" name="audio_job_id" value="<?php echo $this->escape($this->audioJobId) ?>" />
+    	<div id="assign-multiple-typists-select-split">
+	    	<label for="number_typists">Enter number of typists required:</label>
+			<select name="number_typists" id="number_typists">
+				<option>2</option>
+				<option>3</option>
+				<option>4</option>
+				<option>5</option>
+				<option>6</option>
+			</select>
+
+	    	<a href="#" onclick="splitAudioJob(<?php echo $this->escape($this->audioJobId); ?>, $('#number_typists').val(), 'create');return false;">
+	    		Split job
+	   		</a>
+	   	</div>
+	   	<?php else: ?>
+	   	<a href="#" id="assign-multiple-typist-add-row" onclick="showAssignMultipleTypist(<?php echo $this->escape($this->audioJobId); ?>, 'addRow', parseInt($('#assign-multiple-typist-add-row-count').val())+1);return false;">
+	   		Add new row
+	   	</a>
+        <?php if ($this->displayUnsplitLink($this->audioJobId, Application_Model_User::TYPIST_USER)): ?>
+            &nbsp;
+            <a href="#" id="assign-multiple-typist-unsplit-file" onclick="unsplitMultipleTypist(<?php echo $this->escape($this->audioJobId); ?>);return false;">
+                Unsplit file
+            </a>
+        <?php endif; ?>
+
+	   	<?php endif;?>
+	   	<input type="hidden" id="assign-multiple-typist-add-row-count" name="assign-multiple-typist-add-row-count" value="<?php echo count($this->data) ?>" />
+   		<div id="assign-multiple-typist-list-typists">
+   			<?php if($this->mode == 'edit' || $this->mode == 'addRow'):?>
+	   			<?php echo $this->partial('audio-job/assign-multiple-typist-cell.phtml', array(
+					'data' 			=> $this->data,
+					'audioJobId' 	=> $this->audioJobId,
+					'mode'			=> $this->mode,
+	   			));
+				?>
+   			<?php endif;?>
+   		</div>
+        <table class="data">
+            <tr>
+                <td>
+                    &nbsp;
+                </td>
+                <td style="text-align:center">
+                    <a href="#" onclick="submitAssignMultipleTypist();return false;" <?php if($this->mode == 'create'):?>style="display:none"<?php endif;?> class="button-img">
+                    	<img src="<?php echo $this->baseUrl() .'/images/submit_button.png'?>" title="Save job">
+                    </a>
+                    <a href="#" onclick="$('#job-list-audio-dialog-assign-multiple-typist').dialog('close'); return false;" class="button-img">
+                    	<img src="<?php echo $this->baseUrl() .'/images/cancel_button.png'?>" title="Cancel job">
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>

@@ -1,0 +1,186 @@
+<?php
+$this->form->setAction($this->url());
+
+$formId              = 'formAssignTypist';
+$shiftDayTimesAction = 'ajax-typist-shift-day-times';
+$filterUsersAction   = 'ajax-shift-typists';
+$submitButtonFunc    = 'submitAssignTypist()';
+$dialogId            = 'job-list-audio-dialog-assign-typist';
+
+if ('proofreader' == $this->userType)
+{
+    $formId              = 'formAssignProofreader';
+    $submitButtonFunc    = 'submitAssignProofreader()';
+    $shiftDayTimesAction = 'ajax-proofreader-shift-day-times';
+    $filterUsersAction   = 'ajax-shift-proofreaders';
+    $dialogId            = 'job-list-audio-dialog-assign-proofreader';
+}
+?>
+<script>
+    $( document ).ready( function()
+    {
+        $( '.remove-liability' ).on( 'click', 'a', function()
+        {
+            var parId         = $( this ).parent().attr( 'id' );
+            var audioJobRowId = parId.split( '-' )[1];
+            var audioJobId    = parId.split( '-' )[2];
+
+            $.ajax({
+                type: "GET",
+                url: '/en/default/audio-job/remove-liability/audioJobTypistId/' + audioJobRowId,
+                cache: false,
+                dataType: "json"
+            }).success(function( msg )
+                {
+                    if (msg.status == "ok")
+                    {
+                        $( '#' + parId ).remove();
+
+                        if ( $( 'p.remove-liability' ).length == 0 )
+                        {
+                            $( '#remove-liability-container' ).remove();
+                            $( '#job-list-audio-typist-' + audioJobId + ' .has-substandard' ).remove();
+                        }
+                    }
+                });
+
+            return false;
+        } )
+    } );
+</script>
+<div class="select-job-user-container">
+
+    <div class="ui-state-default ui-widget-content ui-widget-header">
+        <h3> Files </h3>
+    </div>
+    <?php
+    if (!empty($this->user_id))
+    {
+        $stub = (count($this->audioJobs) == 1) ? 'this file' : 'these files';
+        ?>
+        <p class="padding"><a href="#" onclick="unassign('<?php echo $this->escape($this->audioJobId); ?>', '<?php echo $this->userType; ?>');return false;">Un-assign <?php echo $stub; ?></a></p>
+        <?php
+    }
+    foreach ($this->audioJobs as $audioJob)
+    {
+        ?>
+        <p class="padding"><?php echo $audioJob['client_name'] . ': ' . $audioJob['file_name'] . ' - ' . $this->displayAudioJobLength($audioJob['length_seconds']); ?></p>
+        <?php
+    }
+    ?>
+
+	<form id="<?php echo $formId; ?>" method="<?php echo $this->form->getMethod(); ?>" action="<?php echo $this->form->getAction(); ?>">
+       <input type="hidden" name="full_filename" id="full_filename" value="<?php echo $this->fullFileName; ?>" />
+       <?php echo $this->form->id; ?>
+        <?php
+        if ( !empty( $this->subStandard ) &&  1 === count( $this->audioJobs ) )
+        {
+            $usersWord = ( count( $this->subStandard ) > 1 ) ? 'users' : 'user';
+            ?>
+                <div id="remove-liability-container">
+                <p class="padding">The following <?php echo $usersWord; ?> will receive payment at the reduced rate of <?php echo ( 100 * Application_Model_TypistPayrateMapper::SUBSTANDARD_PAYRATE ); ?>%</p>
+            <?php
+            foreach ( $this->subStandard as $row )
+            {
+                ?>
+                <p class="padding remove-liability" id="liability-<?php echo $row['id']; ?>-<?php echo $this->audioJobs[0]['id'] ;?>"><span><?php echo $row['name']; ?>.</span>&nbsp; <a href="#"><img src="/images/icons/delete.png" alt="Remove typist"></a></p>
+                <?php
+            }
+            ?>
+            </div>
+            <?php
+        }
+
+        if ( !empty( $this->currentTypist ) )
+        {
+            ?>
+            <p class="padding">Currently assigned to <strong><?php echo $this->currentTypist['typist_name']; ?></strong>.&nbsp;</p>
+            <p class="padding">
+                Confirm as a substandard return by <?php echo $this->currentTypist['typist_name']; ?> before unassigning file or assigning to another typist.
+                <input type="checkbox" value="<?php echo $this->currentTypist['id']; ?>" name="substandard_payrate[]" id="substandard_payrate" />
+             </p>
+        <?php
+        }
+        ?>
+
+          	<div class="ui-state-default ui-widget-content ui-widget-header">
+				<h3> Assign <?php echo $this->title; ?> </h3>
+			</div>
+               <div class="left-content">
+                   <p>Comment:</p>
+                   <?php echo $this->form->comment; ?>
+               </div>
+               <div class="right-content">
+                   <div class="grouped-item the-due-date">
+                       <p>Due Date:</p>
+                       <?php if (!empty($this->dueDays)): ?>
+                           <select name="due_day" id="change-date-day" onchange="changeDate();">
+                               <?php foreach($this->dueDays as $key => $dayName): ?>
+                                    <option <?php if (isset($this->selectedDueDay) && $dayName == $this->selectedDueDay): ?>selected="selected"<?php endif; ?> value="<?php echo $key; ?>"><?php echo $dayName; ?></option>
+                               <?php endforeach; ?>
+                           </select>
+                       <?php endif; ?>
+                        <?php echo $this->form->due_time; ?>
+                        <img src="<?php echo $this->baseUrl() . '/images/calendar.png'; ?>" id="selectDueDateBtn" />
+                   </div>
+                   <input type="text" name="due_date" id="due_date_select" />
+               </div>
+
+               <h3 class="green-title"><?php echo $this->title; ?></h3>
+
+               <div class="left-content no-bottom-padding">
+                   <p><?php echo $this->title; ?>'s Name</p><?php echo $this->form->search; ?>
+                   <?php
+                   if ($this->hasTrainingFilter)
+                   {
+                   ?>
+                   <p><a href="#" class="toggle-filter">Remove training filter</a></p>
+                   <?php
+                   }
+                   ?>
+               </div>
+
+               <div class="right-content the-due-date no-bottom-padding">
+                   <p>Shift Date:</p>
+                   <?php echo $this->form->shift_day; ?><?php echo $this->form->shift_time; ?>
+               </div>
+
+               <div class="shift-data" id="job-users-list">
+                       <?php echo $this->partial("/_partials/{$this->userView}",
+                           array(
+                                   'usersOnShift' => $this->usersOnShift,
+                                   'otherUsers'   => $this->otherUsers,
+                                   'user_id'      => $this->user_id,
+                                   'shiftId'      => $this->shiftId,
+                                   'audioJobs'    => $this->audioJobs
+                                )
+                           );
+                       ?>
+               </div>
+               <div class="buttons">
+                   <a href="#" onclick="<?php echo $submitButtonFunc;?>;return false;" class="button-img">
+                       <img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() . '/images/submit_button.png' ?>" title="Save job">
+                   </a>
+                   <a href="#" onclick="$('#<?php echo $dialogId; ?>').dialog('close'); return false;" class="button-img cancel">
+                      	Cancel Job
+                   </a>
+               </div>
+    </form>
+</div>
+<?php
+
+$audioJobIds = array();
+foreach ($this->audioJobs as $audioJob)
+{
+    $audioJobIds[] = $audioJob['id'];
+}
+
+echo $this->partial('/_partials/audioJobUserSelectJs.phtml',
+    array(
+            'shiftDayTimesAction' => $shiftDayTimesAction,
+            'filterUsersAction'   => $filterUsersAction,
+            'audioJobIds'         => $audioJobIds,
+            'formId'              => $formId
+        )
+    );
+?>

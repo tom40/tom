@@ -1,0 +1,18 @@
+<tr id="tr-support-<?php echo $this->escape($this->id); ?>">
+	<td>
+		<?php echo $this->escape($this->id); ?>
+	</td>
+    <td>
+		<?php echo $this->escape($this->file_name); ?>
+    </td>
+	<td>
+		<?php echo $this->escape($this->size) ?>
+    </td>
+    <td>
+    	<a href="#" onclick="doSupportFileDownload(<?php echo $this->id; ?>);return false;"><img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/icons/page_white_text.png'?>" title="Download support document"></a>
+    	<?php if($this->supportFileCanArchive):?>
+    	&nbsp;|&nbsp;
+    	<a href="#" onclick="archiveSupport(<?php echo $this->id; ?>);return false;"><img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/icons/page_white_delete.png'?>" title="Delete support document"></a>
+    	<?php endif;?>
+	</td>
+</tr>

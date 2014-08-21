@@ -1,0 +1,43 @@
+<?php echo $this->partial('/_partials/email/_defaultHeader.phtml',
+    array(
+            'appName' => $this->appName,
+            'title'   => 'URGENT! Booking Cancellation'
+         )
+    );
+?>
+
+
+
+Dear <?php echo $this->data['typist_name']?>,<br /><br />
+
+Please stop working on the following transcript as this has now been cancelled.
+<br />
+	<table class="data" style="font-family:helvetica, arial, sans-serif;color:#333;font-size:12px;line-height:18px;margin:0 0 15px;">
+		<tr>
+        	<td class="field">
+            	<label for="name">Audio file name:</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php echo $this->data['file_name']; ?></span>
+            </td>
+		</tr>
+		<tr>
+        	<td class="field">
+            	<label for="name">Deadline:</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php echo date('jS F ga', $this->data['due_date_unix']); ?></span>
+            </td>
+		</tr>
+	</table>
+If you have already started transcribing this file please let the office know and send the document to transcripts@takenotetyping.com
+<br /><br />
+<?php echo $this->partial('/_partials/email/_defaultFooter.phtml',
+    array(
+            'appName' => $this->appName,
+            'appUrl' => $this->appUrl,
+            'showThanksMessage' => true,
+            'customThankYouMessage' => 'Thanks'
+        )
+    );
+?>

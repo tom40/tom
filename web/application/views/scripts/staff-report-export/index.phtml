@@ -1,0 +1,251 @@
+<h1>Staff Work Export</h1>
+<p>Please use the options below to customize your report.</p>
+<div id="invoice-export-container">
+    <form id="formExportInvoice" method="POST" action="<?php echo $this->url(array('controller' => 'staff-report-export', 'action' => 'download'), null, true); ?>">
+        <table class="data">
+            <tr class="first">
+                <td class="field">
+                    <label for="name">Assigned Start Date:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->date_start; ?></span>
+                </td>
+                <td class="field">
+                    <label for="name">Client:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->client_id; ?></span>
+                </td>
+            </tr>
+            <tr class="first">
+                <td class="field">
+                    <label for="name">Assigned End Date:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->date_end; ?></span>
+                </td>
+                <td class="field">
+                    <label for="name">Audio Job Status:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->status_id; ?></span>
+                </td>
+            </tr>
+            <tr class="first">
+                <td class="field">
+                    <label for="title"><?php echo $this->form->user_type->renderLabel(); ?></label>
+                </td>
+                <td class="value checkboxes">
+                    <span class="view" id="usertype_input"><?php echo $this->form->user_type->renderViewHelper(); ?></span>
+                    <br /><br />
+                    <div class="element-error error-inner"><?php echo array_shift($this->form->user_type->getMessages()); ?></div>
+                </td>
+                <td class="field">
+                    <label for="group_by">Group Results By:</label>
+                </td>
+                <td class="checkboxes">
+                    <span class="view" id="usertype_group"><?php echo $this->form->group_by; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <div id="filteredEmailList">
+                        <p class="select-p">
+                            <a href="#" class="select-link" id="select-all">Select all</a> :
+                            <a href="#" class="select-link" id="de-select-all">De-select all</a>
+                        </p>
+                        <div id="filtered_typists">
+                        <h2>Selected Typists (<span id="typist_count"><?php echo count($this->typists); ?></span>)</h2>
+                        <table>
+                            <?php foreach($this->typists as $user): ?>
+                            <tr>
+                                <td>
+                                    <input class="auto-check" type="checkbox" name="typists[]" checked="checked" value="<?php echo $user['id']; ?>"/>
+                                </td>
+                                <td><?php echo $user['user_name']; ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </table>
+                        </div>
+                        <div id="filtered_proofreaders">
+                        <h2>Selected Proofreaders (<span id="proofreader_count"><?php echo count($this->proofreaders); ?></span>)</h2>
+                        <table>
+                            <?php foreach($this->proofreaders as $user): ?>
+                            <tr>
+                                <td>
+                                    <input class="auto-check" type="checkbox" name="proofreaders[]" checked="checked" value="<?php echo $user['id']; ?>"/>
+                                </td>
+                                <td><?php echo $user['user_name']; ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </table>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <table class="data">
+            <tr>
+                <td class="field">
+                    &nbsp;
+                </td>
+                <td>
+                    <input id="submit" class="reg_input_btn" type="image" name="submit" alt="Export" src="/images/export_btn.jpg" />
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script>
+    $(function() {
+        $( "#btn_save" ).button();
+        $( ".invoice-export-date" ).datepicker({dateFormat: 'dd/mm/yy'});
+    });
+</script>
+
+<script language="javascript">
+    $(document).ready(function()
+    {
+        $('div#filteredEmailList').on('click', '.select-link', function()
+        {
+            var id = $(this).attr('id');
+            if ('select-all' === id)
+            {
+                $('.auto-check').prop('checked', true);
+            }
+            else if ('de-select-all' === id)
+            {
+                $('.auto-check').prop('checked', false);
+            }
+            toggleSubmit();
+            return false;
+        });
+
+        function getProofreadersChecked()
+        {
+            var pCount = $('input[type=checkbox]:checked', '#filtered_proofreaders').length;
+            $('#proofreader_count').html(pCount)
+            return pCount;
+        }
+
+        function getTypistsChecked()
+        {
+            var tCount = $('input[type=checkbox]:checked', '#filtered_typists').length;
+            $('#typist_count').html(tCount);
+            return tCount;
+        }
+
+        function toggleTypists(checked)
+        {
+            $('input[type=checkbox]', '#filtered_typists').attr('checked', checked);
+            if (false === checked)
+            {
+                $('#filtered_typists').hide();
+            }
+            else
+            {
+                $('#filtered_typists').show();
+            }
+        }
+
+        function toggleProofreaders(checked)
+        {
+            $('input[type=checkbox]', '#filtered_proofreaders').attr('checked', checked);
+            if (false === checked)
+            {
+                $('#filtered_proofreaders').hide();
+            }
+            else
+            {
+                $('#filtered_proofreaders').show();
+            }
+        }
+
+        function toggleAll()
+        {
+            if ($('#user_type-typists').is(':checked') && $('#user_type-proofreaders').is(':checked'))
+            {
+                $('#user_type-all').attr('checked', true);
+            }
+            else
+            {
+                $('#user_type-all').attr('checked', false);
+            }
+        }
+
+        function toggleSubmit()
+        {
+            var tCount = getTypistsChecked();
+            var pCount = getProofreadersChecked();
+            var obj    = $('#submit');
+
+            if ((pCount + tCount) === 0)
+            {
+                obj.attr('disabled', 'disabled');
+            }
+            else
+            {
+                obj.attr('disabled', false);
+            }
+        }
+
+        function groupBy()
+        {
+            var tCount = getTypistsChecked();
+            var pCount = getProofreadersChecked();
+
+            if (pCount > 0 && tCount === 0)
+            {
+                $('#group_by-proofreaders').attr('checked', 'checked');
+            }
+            else if (pCount === 0 && tCount > 0)
+            {
+                $('#group_by-typists').attr('checked', 'checked');
+            }
+        }
+
+        $('div#filteredEmailList').on('click', 'input[type=checkbox]', function()
+        {
+            getProofreadersChecked();
+            getTypistsChecked();
+            groupBy();
+            toggleSubmit();
+        });
+
+        $('#usertype_input').on('click', '.usertype_select', function()
+        {
+            var obj        = $(this);
+            var value      = obj.val();
+            var isSelected = obj.is(':checked');
+
+            if ('all' === value)
+            {
+                if (true === isSelected)
+                {
+                    $('.usertype_select').attr('checked', true);
+                    toggleProofreaders(true);
+                    toggleTypists(true);
+                }
+                else
+                {
+                    $('.usertype_select').attr('checked', false);
+                    toggleProofreaders(false);
+                    toggleTypists(false);
+                }
+            }
+            else if ('typists' === value)
+            {
+                toggleTypists(isSelected);
+            }
+            else
+            {
+                toggleProofreaders(isSelected);
+            }
+            toggleAll();
+            toggleSubmit();
+            groupBy();
+        });
+    })
+</script>

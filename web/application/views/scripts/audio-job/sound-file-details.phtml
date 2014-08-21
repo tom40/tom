@@ -1,0 +1,50 @@
+<table>
+	<tr>
+    	<td class="field" style="width:100px">
+        	<label for="name">Status:</label>
+		</td>
+        <td class="value">
+        	<span class="view"><?php echo $this->data['file_name']; ?></span>
+        </td>
+	</tr>
+	<tr>
+    	<td class="field">
+        	<label for="name">Type:</label>
+		</td>
+        <td class="value">
+        	<span class="view"><?php echo $this->escape($this->data['mime_type']) ?></span>
+        </td>
+	</tr>
+	<tr>
+    	<td class="field">
+        	<label for="name">Size:</label>
+		</td>
+        <td class="value">
+        	<span class="view"><?php echo $this->data['size']; ?></span>
+        </td>
+	</tr>
+	<tr>
+    	<td class="field">
+        	<label for="name">Length:</label>
+		</td>
+        <td class="value">
+        	<span class="view"><?php echo $this->displayAudioJobLength($this->data['length_seconds']); ?></span>
+        </td>
+	</tr>
+	<tr>
+    	<td class="field">
+        	<label for="name">Uploaded by:</label>
+		</td>
+        <td class="value">
+        	<span class="view"><?php echo $this->data['created_user_name']; ?></span>
+        </td>
+	</tr>
+	<tr>
+    	<td class="field">
+        	<label for="name">Uploaded on:</label>
+		</td>
+        <td class="value">
+        	<span class="view"><?php echo date('jS F Y \a\t g:ia',$this->data['created_date']); ?></span>
+        </td>
+	</tr>
+</table>

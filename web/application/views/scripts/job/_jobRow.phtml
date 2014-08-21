@@ -1,0 +1,92 @@
+<tr id="tr-<?php echo $this->id; ?>" class="
+	<?php  if ($this->status_id == 1): ?>
+
+	<?php endif;?>
+	<?php if (!is_null($this->job_due_date) && $this->job_due_date_unix <= time()  && 'Completed' !== $this->filter) : ?>
+		overdue
+	<?php endif;?>
+	" onclick="location.href='<?php echo $this->url(array('controller' => 'job', 'action' => 'view', 'id' => $this->id), null, true); ?>;'"
+	>
+	<td onclick="stopBubble(event);"><!-- 0 -->
+		<div>
+		<?php echo $this->id; ?>
+		<?php if($this->canEdit):?>
+		<br />
+		<input type="checkbox" name="check-<?php echo $this->escape($this->id)?>" value="<?php echo $this->escape($this->id)?>">
+		<?php endif;?>
+		</div>
+	</td>
+	 <!--  for sorting -->
+	<td><div><?php echo $this->id; ?></div></td><!-- 1 -->
+	<td style="text-align:center"><!-- 2 -->
+		<div>
+			<a href="#" <?php if($this->canEdit):?> onclick="location.href='<?php echo $this->url(array('controller' => 'job', 'action' => 'view', 'id' => $this->id), null, true); ?>;'"<?php endif;?>>
+				<img src="<?php echo $this->baseUrl() .'/images/client_icon.png' ?>" title="Go to Project">
+			</a>
+		</div>
+	</td>
+	<!-- 3 -->
+	<td<?php if($this->canEdit):?> onclick="showPriority(<?php echo $this->escape($this->id); ?>);stopBubble(event);return false;"<?php endif;?> style="text-align: center">
+		<div>
+			<span id="job-list-priority-<?php echo $this->escape($this->id); ?>">
+			<?php echo $this->partial('audio-job/priority-list-cell.phtml', array(
+						'data' => array(
+							'priority_id' 			=> $this->priority_id,
+							'priority_flag_colour'	=> $this->priority_flag_colour,
+							'priority_name'			=> $this->priority_name,
+							'priority_sort_order'	=> $this->priority_sort_order)
+			)); ?>
+			</span>
+		</div>
+	</td>
+	<!-- for sorting -->
+    <td><div><?php echo $this->priority_sort_order; ?></div></td><!-- 4 -->
+    <td>
+        <div>
+            <?php echo $this->partial('/job/_formatProjectDate.phtml', array('projectDate' => $this->job_start_date)); ?>
+        </div>
+    </td><!-- 5 -->
+	<td><!-- 6 -->
+		<div>
+            <?php echo $this->partial('/job/_formatProjectDate.phtml', array('projectDate' => $this->job_due_date)); ?>
+        </div>
+	</td>
+	<!-- for sorting --><!-- 7 -->
+	<td><div><?php echo $this->job_due_date; ?></div></td>
+	<!-- 8 -->
+	<td<?php if($this->canEdit):?> onclick="showStatus(<?php echo $this->escape($this->id); ?>);stopBubble(event);return false;"<?php endif;?>>
+		<div>
+			<span id="job-list-status-<?php echo $this->escape($this->id); ?>">
+				<?php echo $this->escape($this->status); ?>
+			</span>
+		</div>
+	</td>
+	<td><!-- 9 -->
+    	<div>
+			<?php echo $this->escape($this->client); ?>
+			<?php if (!empty($this->primary_user)): ?>
+				<p>Contact: <?php echo $this->escape($this->primary_user); ?></p>
+			<?php endif; ?>
+		</div>
+	</td>
+    <td><!-- 10 -->
+    	<div>
+			<?php echo $this->escape($this->po_number); ?>
+    	</div>
+    </td>
+    <td><!-- 11 -->
+    	<div>
+			<?php echo $this->escape($this->title); ?>
+    	</div>
+    </td>
+    <td><!-- 12 -->
+    	<div>
+    		<?php echo $this->estimated_audio_files?>
+		</div>
+	</td>
+	<td><!-- 13 -->
+		<div>
+    		<?php echo $this->audio_job_count?>
+		</div>
+	</td>
+</tr>

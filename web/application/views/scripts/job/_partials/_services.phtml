@@ -1,0 +1,23 @@
+<?php
+
+if ( ( $this->services instanceof Zend_Db_Table_Rowset || is_array( $this->services ) ) && count( $this->services ) > 0 )
+{
+    ?>
+    <select name="service_id">
+        <option value="0">-- Select --</option>
+    <?php
+    foreach ( $this->services as $service )
+    {
+        $selected = '';
+        if ( $this->serviceId && $this->serviceId == $service->id )
+        {
+            $selected = ' selected="selected"';
+        }
+        ?>
+        <option<?php echo $selected;?> value="<?php echo $service->id;?>"><?php echo $service->name; ?></option>
+        <?php
+    }
+    ?>
+    </select>
+    <?php
+}

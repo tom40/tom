@@ -1,0 +1,44 @@
+@CHARSET "UTF-8";
+
+a.button {
+    background: url(http://localhost:8888/smt-trunk/public/images/dashboard/btn.png) no-repeat 0px 0px;
+    color: #445 !important;
+    cursor: pointer;
+    display: block;
+    float: left;
+    height: 26px;
+/*    margin: 0.5em 0px;*/
+/*    padding: 0px;*/
+    text-decoration: none !important;
+    text-shadow: white 1px 1px 0px;
+}
+/*
+a.button {
+    margin-left: 10px;
+    white-space: nowrap;
+}
+*/
+a.button span {
+    background: url(http://localhost:8888/smt-trunk/public/images/dashboard/btn.png) no-repeat 100% -104px;
+/*    float: left;*/
+    font-size: 100%;
+    height: 26px;
+    margin-left: 13px;
+/*    padding: 6px 13px 6px 0px;*/
+}
+
+a.button:active {
+    background-position: 0px -52px;
+    color: black;
+    text-decoration: none;
+}
+
+a.button:hover {
+    background-position: 0px -26px;
+    color: #223;
+    text-decoration: none;
+}
+a.button:hover {
+    color: #00C;
+    text-decoration: none;
+}

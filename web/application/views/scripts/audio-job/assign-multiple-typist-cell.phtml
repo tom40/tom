@@ -1,0 +1,128 @@
+<div>
+	<table style="font-size: 85%">
+		<thead>
+			<tr>
+				<th>Typist</th>
+				<th>Due date</th>
+				<th style="width:50px">Minute start</th>
+				<th style="width:50px">Minute end</th>
+				<th>Comment</th>
+				<th style="width:100px"></th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach($this->data as $row): ?>
+			<tr id="assign-multiple-typist-<?php echo $this->audioJobId?>-row-<?php echo $row['audioJobIdTypistNumber']?>">
+				<?php if($this->mode == 'create'):?>
+				<?php /*
+					<td id="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-typist-name">
+						<a href="#" onclick="assignMultipleTypist(<?php echo $this->audioJobId?>, <?php echo $row['audioJobIdTypistNumber']?>);return false;">Select typist <?php echo $row['audioJobIdTypistNumber']?></a>
+					</td>
+					<td id="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-due-date">
+						&nbsp;
+					</td>
+					<td><!-- keep the hidden inputs in this row since we don't replace this row html at any point -->
+						<input type="hidden" id="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-id" name="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-id" />
+						<input type="hidden" id="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-current" name="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-current" value="1" />
+						<input type="hidden" id="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-user_id" name="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-user_id" />
+						<input type="hidden" id="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-due_date" name="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-due_date" />
+						<input type="text" id="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-seconds_start" name="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-seconds_start" value="<?php echo $row['seconds_start']?>" style="width:100%" />
+					</td>
+					<td>
+						<input type="text" id="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-seconds_end" name="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-seconds_end" value="<?php echo $row['seconds_end']?>" style="width:100%" />
+					</td>
+					<td>
+						<input type="text" id="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-comment" name="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-comment" style="width:100%" />
+					</td>
+					<td style="text-align:center">
+						<a href="#" onclick="assignMultipleTypist(<?php echo $this->audioJobId?>, <?php echo $row['audioJobIdTypistNumber']?>);return false;">
+							<img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/icons/user_edit.png'?>" title="Change typist"></a>
+						&nbsp;|&nbsp;
+						<a href="#" onclick="removeMultipleTypist(<?php echo $this->audioJobId?>, <?php echo $row['audioJobIdTypistNumber']?>);return false;">
+							<img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/icons/cross.png'?>" title="Remove typist">
+						</a>
+					</td>
+					*/?>
+				<?php else:?>
+					<td id="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-typist-name">
+					<?php if (!isset($row['typist_name']) || $row['typist_name'] == ''):?>
+						<a href="#" onclick="assignMultipleTypist(<?php echo $this->audioJobId?>, <?php echo $row['audioJobIdTypistNumber']?>);return false;">Select typist <?php echo $row['audioJobIdTypistNumber']?></a>
+					<?php else:?>
+						<?php echo $row['typist_name']?>
+					<?php endif;?>
+					</td>
+					<td id="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-due-date">
+					<?php if (!isset($row['typist_name']) || $row['due_date_unix'] == ''):?>
+						&nbsp;
+					<?php else:?>
+						<?php echo date('jS M \a\t H:i', $row['due_date_unix'])?>
+					<?php endif;?>
+					</td>
+					<td><!-- keep the hidden inputs in this row since we don't replace this row html at any point -->
+						<input type="hidden" id="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-id" name="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-id" value="<?php echo $row['id']?>" />
+						<input type="hidden" id="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-current" name="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-current" value="1" />
+						<input type="hidden" id="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-user_id" name="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-user_id" value="<?php echo $row['user_id']?>" />
+						<input type="hidden" id="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-due_date" name="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-due_date" value="<?php echo $row['due_date']?>" />
+						<input type="hidden" id="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-shift_id" name="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-shift_id" value="<?php echo $row['shift_id']?>" style="width:100%" />
+                        <input type="text" id="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-seconds_start" name="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-minutes_start" value="<?php echo $row['minutes_start']?>" style="width:100%" />
+					</td>
+					<td>
+						<input type="text" id="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-seconds_end" name="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-minutes_end" value="<?php echo $row['minutes_end']?>" style="width:100%" />
+					</td>
+					<td>
+						<input type="text" id="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-comment" name="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-comment" value="<?php echo $row['comment']?>" style="width:100%" />
+					</td>
+					<td>
+						<div style="margin-left: 10px;font-size:75%;width:100%">
+						    <span style="margin-top: 5px" title="Receipt confirmed?">R:&nbsp;</span>
+							<span>
+							<?php if($row['accepted']):?>
+								<img src="<?php echo $this->baseUrl(); ?>/images/icons/tick.png" title="Receipt confirmed"/>
+							<?php else:?>
+								<img src="<?php echo $this->baseUrl(); ?>/images/icons/cross.png" title="Receipt not confirmed"/>
+							<?php endif;?>
+							</span>
+							<?php if($row['accepted']):?>
+							<span style="margin-top: 5px" title="Audio downloaded?">D:&nbsp;</span>
+								<span>
+								<?php if($row['downloaded']):?>
+									<img src="<?php echo $this->baseUrl(); ?>/images/icons/tick.png" title="Audio downloaded"/>
+								<?php else:?>
+									<img src="<?php echo $this->baseUrl(); ?>/images/icons/cross.png" title="Audio not downloaded"/>
+								<?php endif;?>
+							</span>
+							<?php endif;?>
+						</div>
+					</td>
+					<td style="text-align:center">
+                        <?php if (!empty($row['user_id'])): ?>
+                            <?php if (!$this->hasUploadedTranscript($this->audioJobId, Application_Model_User::TYPIST_USER, $row['user_id'])): ?>
+                                <span id="typist-<?php echo $this->audioJobId?>-<?php echo $row['audioJobIdTypistNumber']?>-removelink">
+                                    <a href="#" onclick="removeMultipleTypist(<?php echo $row['id']?>, <?php echo $this->audioJobId; ?>, <?php echo $row['audioJobIdTypistNumber']; ?>);return false;">
+                                        <img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/icons/delete.png'?>" title="Remove typist">
+                                    </a>
+                                </span>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                        <?php
+                        if ( !empty( $row['id'] ) && !empty( $row['user_id'] ) )
+                        {
+                        ?>
+						<a href="#" onclick="assignMultipleTypist(<?php echo $this->audioJobId?>, <?php echo $row['audioJobIdTypistNumber']?>, <?php echo $row['id']; ?>);return false;">
+							<img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/icons/user_edit.png'?>" title="Change typist">
+                        </a>
+						<?php
+                        }
+                        /*&nbsp;|&nbsp;
+						<a href="#" onclick="removeMultipleTypist(<?php echo $this->audioJobId?>, <?php echo $row['audioJobIdTypistNumber']?>);return false;">
+							<img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/icons/cross.png'?>" title="Remove typist">
+						</a>
+						*/?>
+					</td>
+				<?php endif;?>
+
+			</tr>
+			<?php endforeach;?>
+		</tbody>
+	</table>
+</div>

@@ -1,0 +1,34 @@
+                        <?php if (isset($this->showThanksMessage) && true === $this->showThanksMessage): ?>
+                            <?php if (isset($this->customThankYouMessage)): ?>
+                                <?php echo $this->customThankYouMessage; ?>
+                            <?php else: ?>
+                                Many thanks
+                            <?php endif; ?>
+                            <br /><br />
+
+
+                            The <?php echo $this->appName; ?> Team
+                            <br /><br />
+                        <?php endif; ?>
+                        </p>
+                    </td>
+				</tr>
+				<tr>
+					<td>
+						<table cellpadding="0" cellspacing="0" border="0" width="600" height="40">
+							<tr>
+								<td height="40" bgcolor="#58585c" align="center" valign="middle" style="font-family:helvetica, arial, sans-serif;color:#ceced2;font-size:11px;">
+									Copyright &copy; <?php echo date('Y'); ?> <a style="text-decoration: none; color: #ceced2;" href="<?php echo $this->appUrl; ?>"><?php echo $this->escape($this->appName); ?></a>. Version <?php echo $this->version(); ?> All rights reserved.
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+
+		</td>
+	</tr>
+</table>
+
+</body>
+</html>

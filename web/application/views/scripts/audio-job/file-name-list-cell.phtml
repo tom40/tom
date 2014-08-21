@@ -1,0 +1,54 @@
+<?php if(!is_null($this->data['internal_comments']) && $this->data['internal_comments'] != ''): ?>
+	<span class="job-comments">
+		<img src="<?php echo $this->baseUrl() .'/images/comment_icon.png'?>" title="Internal comments exist for this job" />
+		<span class="hidden-comments">
+			<h2>Internal Comments</h2>
+			<p>
+				<?php echo $this->data['internal_comments']; ?>
+			</p>
+		</span>
+	</span>
+<?php endif;?>
+<?php
+    if( !empty( $this->data['client_comments'] ) )
+    {
+    ?>
+	<span class="job-comments">
+		<img src="<?php echo $this->baseUrl() . '/images/user_icon.png'?>" title="Client comments exist for this job" />
+		<span class="hidden-comments">
+                <h2>Audio Job Comments</h2>
+                <p>
+                    <?php echo $this->data['client_comments']; ?>
+                </p>
+		</span>
+	</span>
+<?php
+    }
+?>
+<a href="#" onclick="showEdit(<?php echo $this->escape($this->data['id']); ?>);return false;">
+	<?php echo wordwrap($this->data['file_name'], 35, '<br />', true);?>
+</a>
+
+<script>
+
+	(function($)
+    {
+		$.fn.showComments = function()
+        {
+			$(this).hover(function()
+            {
+				$(this).next('span').fadeIn(300);
+			},
+            function()
+            {
+				$(this).next('span').stop(true, false).fadeOut(300);
+			});
+		};
+	})(jQuery);	
+		
+	$(function()
+    {
+		$('.job-comments img').showComments();
+	});
+	
+</script>

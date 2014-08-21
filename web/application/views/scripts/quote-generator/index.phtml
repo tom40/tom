@@ -1,0 +1,260 @@
+<script>
+    $(document).ready(function()
+    {
+
+        $('div#quote-generator').on('change', "#service_id", function()
+        {
+            var turnaround       = $( '#turnaround_time_view' );
+            var speakerNumbers   = $( '#speaker_numbers_view' );
+            var modifiers        = $( '#modifiers_view' );
+
+            var url ="<?php echo $this->url( array( 'controller' => 'quote-generator', 'action' => 'fetch-service-details-edit' ), null, true ); ?>";
+            url += '/service_id/' + $( this ).val();
+
+            $.ajax({
+                type     : 'GET',
+                url      : url,
+                cache    : false,
+                dataType : "json"
+            }).success(function( msg )
+            {
+                speakerNumbers.html( msg.speaker_numbers );
+                turnaround.html( msg.turnaround_times );
+                modifiers.html( msg.modifiers );
+            });
+        });
+
+        $('div#quote-results').on('click', '#edit-quote', function()
+        {
+            $('#quote-results').hide();
+            $('#quote-generator').show();
+        });
+
+        $('div#quote-generator').on('change', 'select[name="what"]', function()
+        {
+            if ('1' == $('select[name="what"]').val())
+            {
+                $('p.what-other').show();
+            }
+            else
+            {
+                $('input[name="what_other"]').val('');
+                $('p.what-other').hide();
+            }
+        });
+
+        $('div#quote-generator').on('click', 'input[name="quote-type"]', function()
+        {
+            var formDiv   = $('div#quote-form-div');
+            var typeInput = $('input[name="type"]');
+            var totalDiv  = $('span#total-hours-generator');
+            var indDiv    = $('span#ind-files-generator');
+            var value     = $('input:radio[name="quote-type"]:checked').val();
+
+            if ('total-hours' === value)
+            {
+                typeInput.val(value);
+                formDiv.show();
+                totalDiv.show();
+                indDiv.hide();
+            }
+            else if ('ind-files' === value)
+            {
+                typeInput.val(value);
+                formDiv.show();
+                totalDiv.hide();
+                indDiv.show();
+            }
+            else
+            {
+                typeInput.val('');
+                formDiv.hide();
+                totalDiv.hide();
+                indDiv.hide();
+            }
+        })
+
+        $('div#quote-generator').on('click', 'a.add-file', function()
+        {
+            var original = $('.file-row:last');
+            var newRow   = original.clone();
+            var count    = $('.file-number', original).html();
+            var newCount = parseInt(count) + 1;
+            $('.file-number', newRow).html(newCount);
+            $('input', newRow).val('');
+            $('a.add-file', original).remove();
+            $('#ind-files-generator').append(newRow);
+            return false;
+        });
+
+        $('div#quote-generator').on('click', '#submit-quote', function()
+        {
+            var url      ="<?php echo $this->url(array('controller' => 'quote-generator', 'action' => 'generate'), null, true); ?>";
+            var formData = $('#quote-form').serialize();
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: formData,
+                cache: false,
+                dataType: "json"
+            }).success(function( msg )
+            {
+                if (msg.status == 'ok')
+                {
+                    $('#quote-generator').hide();
+                    $('#quote-results').html(msg.html).show();
+                }
+                else if (msg.status != 'ok')
+                {
+                    $('#form-error').html(msg.html);
+                }
+            });
+            return false;
+        });
+
+        $('div#quote-generator').on('click', '#email-quote', function()
+        {
+            if (this.checked) {
+                $('#email-holder').show();
+            }
+            else
+            {
+                $('#email-holder').hide();
+            }
+        });
+    });
+
+</script>
+<div id="generator-wrap">
+
+	<img src="/images/utility_cta.png" alt="" id="generator-img" />
+
+	<div id="generator-border">
+		<h1>Service Information & Quote Generator</h1>
+		<div class="green-blank">
+		</div>
+
+		<div id="calc-left">
+			<div class="the-quote-intro">
+				<p>
+					Welcome to the Take Note Quote Generator. A quick and simple way for you to get a quote from us. Here you have 2 options, you can either a) select the approximate number of hours for an estimated cost or b) you can insert individual file durations and find out the exact cost. If you have any questions don&#x27;t hesitate to contact us by chatting to us live or sending an email using the above LIVE CHAT icon. Please remember we round each file up to the nearest 15 minutes for billing and so if you ask for a quote for 1 x 60 min file but it is actually 65, the costs will adjust accordingly.
+				</p>
+				<p>
+					For information on any of the services we offer or to view example transcriptions please click on the &#x27;i&#x27; icon next to any of the service names below. Here you will be able to view our information pack which should help to make your decision on which service is right for you.
+				</p>
+			</div>
+
+			<div id="quote-generator">
+				<span id="form-error"></span>
+				<form id="quote-form">
+
+					<h2>How would you like to base your quote?</h2>
+
+					<div id="how-quote">
+						<input type="hidden" name="type" />
+						<input type="radio" id="total-hours" name="quote-type" value="total-hours" />
+						<label for="total-hours" id="total-hours-label">
+							Total number of hours
+						</label>
+						<input type="radio" id="ind-files" name="quote-type" value="ind-files" />
+						<label for="ind-files">
+							Individual file duration
+						</label>
+					</div>
+
+					<div id="quote-form-div" style="display:none">
+						<input type="hidden" name="quote-type" value="" />
+						<span id="quote-form">
+							<p>
+								<label for="service_id">
+									Service
+								</label>
+								<?php echo $this->form->service_id; ?>
+							</p>
+							<p>
+								<label for="turnaround_time_id">
+									Turn around time
+								</label>
+                                <span class="turnaround_time_view"><?php echo $this->form->turnaround_time_id;?></span>
+							</p>
+							<p>
+                                <label for="speaker_numbers_id">
+                                    Number of Speakers
+                                </label>
+                                <span id="speaker_numbers_view"><?php echo $this->form->speaker_numbers_id;?></span>
+                            </p>
+                            <p>
+                                <label>
+                                    Additional Services
+                                </label>
+                                <br />
+                                <span class="view" id="modifiers_view">
+                                    <?php echo $this->partial( 'job/_partials/_priceModifiersQuote.phtml', 'default',  array( 'service' => $this->service, 'audioJob' => $this->audioJob ) ); ?>
+                                </span>
+                            </p>
+							<p>
+								<label for="what">
+									What are we typing
+								</label>
+								<?php echo $this->form->what; ?>
+							</p>
+							<p class="what-other" style="display: none;">
+								<label for="other">
+									What are we typing - please specify TEST
+								</label>
+								<?php echo $this->form->what_other; ?>
+							</p>
+                            <p>
+								<label for="discount">
+									Discount (%)
+								</label>
+								<?php echo $this->form->discount; ?>
+							</p>
+						</span>
+						</span>
+						<p>
+							<label for="email">Email this quote</label>
+							<input type="checkbox" name="email_quote" id ="email-quote" value="1" />
+						</p>
+                        <p id="email-holder" style="display:none;">
+							<label for="email">Email:</label>
+                            <?php echo $this->form->email; ?>
+						</p>
+						<p class="time-row">
+							<span id="total-hours-generator" style="display:none;">
+								<label class="total-time-label">Total Time*</label>
+								<input type="text" name="total-time-hours" /><label>Hours</label>
+								<input type="text" name="total-time-minutes" /><label>Mins</label>
+							</span>
+						</p>
+
+						<span id="ind-files-generator" style="display:none;">
+							<span class="file-row">
+								<label class="file-title">File <span class="file-number">1</span></label>
+
+								<label>*duration</label>
+								<input type="text" name="ind-time-hours[]" /><label>Hours</label>
+								<input type="text" name="ind-time-minutes[]" /><label>Mins</label>
+								<a href="#" class="button-img add-file">
+									<img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() . '/images/add.png' ?>" title="Add File">
+									Add another file
+								</a>
+							</span>
+						</span>
+						<input type="image" src="/images/get_quote.png" id="submit-quote" value="Get Quote" />
+						<p class="quote-info">*Please note we bill on a per file basis rounded up to the nearest 15 minutes. If the durations are higher or lower than you have approximated the costs will adjust accordingly.</p>
+
+					</div>
+				</form>
+			</div>
+			<div id="quote-results" style="display:none;">
+
+			</div>
+		</div>
+
+		<div id="calc-right">
+            <?php echo $this->partial( 'quote-generator/_serviceDescriptions.phtml', array( 'services' => $this->services, 'additionalServices' => $this->additionalServices ) ); ?>
+		</div>
+
+	</div>
+</div>

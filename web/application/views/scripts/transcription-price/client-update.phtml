@@ -1,0 +1,62 @@
+<h1>Transcription Prices: <?php echo $this->client['name']; ?></h1>
+<p>Client name: <?php echo $this->client['name']; ?></p>
+<div>
+    <p class="validateTips">Form fields marked with * are required.</p>
+    <form id="formCreateTranscriptionPrice" name="transcriptionPrice" method="post" action="">
+        <input type="hidden" name="client_id" value="<?php echo $this->client['id']; ?>" />
+        <?php if ($this->transcriptionPrices): ?>
+            <?php foreach ($this->transcriptionPrices as $transcriptionName => $transcriptions): ?>
+                <h3><?php echo $transcriptionName; ?></h3>
+                <table class="data index transcription-prices-update">
+                    <tr class="first">
+                        <td class="field">
+                            <label for="name">Turnaround Time</label>
+                        </td>
+                        <td style="background:#F6F6F6;">
+                            <label for="name">Price</label>
+                        </td>
+                    </tr>
+                    <?php if (!empty($transcriptions)): ?>
+                        <?php foreach ($transcriptions as $transcription): ?>
+                            <tr class="first">
+                                <td class="field">
+                                    <span class="view"><?php echo $transcription['turnaroundName']; ?></span>
+                                </td>
+                                <td class="value">
+                                    <span class="view">
+                                        <?php $inputFieldName = 'price_' . $transcription['id']; ?>
+                                        <input type="text" name="<?php echo $inputFieldName; ?>" value="<?php echo $transcription['price']; ?>"/>
+                                        <?php if (isset($this->formErrors[$inputFieldName])): ?>
+                                            <br />
+                                            <?php echo $this->formErrors[$inputFieldName]; ?>
+                                        <?php endif; ?>
+                                    </span>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+            <?php endforeach; ?>
+                <tr>
+                    <td class="field">
+                        &nbsp;
+                    </td>
+                    <td>
+                        <a href="#" onclick="formCreateTranscriptionPrice.submit();return false;" class="button-img">
+                            <img src="<?php echo $this->baseUrl() . '/images/submit_button.png' ?>" title="Save job">
+                        </a>
+                        <a href="<?php echo $this->url(array('controller' => 'transcription-price', 'action' => 'index'), null, true); ?>" class="button-img">
+                            <img src="<?php echo $this->baseUrl() . '/images/cancel_button.png' ?>" title="Cancel job">
+                        </a>
+                    </td>
+                </tr>
+            </table>
+        <?php endif; ?>
+    </form>
+</div>
+
+<script>
+    $(function() {
+        $( "#btn_save" ).button();
+        $( "#btn_cancel" ).button();
+    });
+</script>

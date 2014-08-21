@@ -1,0 +1,31 @@
+<?php
+
+$audioJobTypistId = $this->audioJobTypistUserId($this->data['id']);
+
+if (!empty($this->data['typist_count']) && !empty( $audioJobTypistId ) )
+{
+    if(1 == $this->data['typist_count'])
+    {
+    ?>
+        <a href="<?php
+            echo $this->url(array('controller' => 'report', 'action' => 'update', 'tid' => $audioJobTypistId, 'ajid' => $this->data['id']), null, true);
+            ?>">
+            <?php
+            echo $this->getTypistReportImage($audioJobTypistId, $this->data['id']);
+            ?>
+        </a>
+    <?php
+    }
+    else
+    {
+    ?>
+        <a href="<?php echo $this->url(array('controller' => 'report', 'action' => 'select', 'ajid' => $this->data['id']), null, true); ?>"><img src="/images/report_icon.png" alt="report" /></a>
+    <?php
+    }
+}
+else
+{
+    echo '-';
+}
+
+?>

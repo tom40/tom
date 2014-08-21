@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Take Note Typing" default="_build" basedir=".">
+    <property name="source" value="application"/>
+    <property name="ignore" value="pear-*,templates/,Documentation/,Lexer.inc,*.svn,*external/*,*Zend/*" />
+
+    <target name="clean"
+         description="Clean up and create artifact directories">
+
+        <delete dir="${basedir}/_build/code-browser"/>
+        <delete dir="${basedir}/_build/coverage"/>
+        <delete dir="${basedir}/_build/logs"/>
+        <delete dir="${basedir}/_build/pdepend"/>
+        <delete dir="${basedir}/_build/api/application"/>
+        <delete dir="${basedir}/_build/api/tests"/>
+        <delete dir="${basedir}/_build/api/views"/>
+        <delete dir="${basedir}/_build/api"/>
+        <delete dir="${basedir}/_build"/>
+
+        <mkdir dir="${basedir}/_build"/>
+        <mkdir dir="${basedir}/_build/api"/>
+        <mkdir dir="${basedir}/_build/api/application"/>
+        <mkdir dir="${basedir}/_build/api/tests"/>
+        <mkdir dir="${basedir}/_build/api/views"/>
+        <mkdir dir="${basedir}/_build/code-browser"/>
+        <mkdir dir="${basedir}/_build/coverage"/>
+        <mkdir dir="${basedir}/_build/logs"/>
+        <mkdir dir="${basedir}/_build/pdepend"/>
+    </target>
+
+    <target name="phpunit">
+        <exec dir="${basedir}" executable="phpunit" failonerror="on">
+            <arg line="--configuration jenkins.xml tests" />
+        </exec>
+    </target>
+
+    <target name="parallelTasks"
+         description="Run the pdepend, phpmd, phpcpd, phpcs, phpdoc and phploc tasks in parallel using a maximum of 2 threads.">
+        <parallel threadCount="2">
+            <sequential>
+                <antcall target="pdepend"/>
+                <antcall target="phpmd"/>
+            </sequential>
+            <antcall target="phpcpd"/>
+            <antcall target="phpcs"/>
+            <antcall target="phpdoc"/>
+            <!--<antcall target="phpdocTests"/>-->
+            <antcall target="phpdocViews"/>
+            <antcall target="phploc"/>
+        </parallel>
+    </target>
+
+    <target name="pdepend"
+         description="Generate jdepend.xml and software metrics charts using PHP_Depend">
+        <exec executable="pdepend">
+            <arg value="--ignore=${basedir}/application/views" />
+            <arg value="--jdepend-xml=${basedir}/_build/logs/jdepend.xml" />
+            <arg value="--jdepend-chart=${basedir}/_build/pdepend/dependencies.svg" />
+            <arg value="--overview-pyramid=${basedir}/_build/pdepend/overview-pyramid.svg" />
+            <arg path="${source}" />
+        </exec>
+    </target>
+
+    <target name="phpmd"
+         description="Generate pmd.xml using PHPMD">
+        <exec executable="phpmd">
+            <arg path="${source}" />
+            <arg value="xml" />
+            <arg value="${basedir}/tools/phpmd/ruleset.xml" />
+            <arg value="--reportfile" />
+            <arg value="${basedir}/_build/logs/pmd.xml" />
+        </exec>
+    </target>
+
+    <target name="phpcpd"
+         description="Generate pmd-cpd.xml using PHPCPD">
+        <exec executable="phpcpd">
+            <arg value="--suffixes" />
+            <arg value="php" />
+            <arg value="--log-pmd" />
+            <arg value="${basedir}/_build/logs/pmd-cpd.xml" />
+            <arg path="${source}" />
+        </exec>
+    </target>
+
+    <target name="phploc"
+         description="Generate phploc.csv">
+        <exec executable="phploc">
+            <arg value="--count-tests" />
+            <arg value="--suffixes" />
+            <arg value="php" />
+            <arg value="--log-csv" />
+            <arg value="${basedir}/_build/logs/phploc.csv" />
+            <arg path="${source}" />
+        </exec>
+    </target>
+
+    <target name="phpcs"
+         description="Generate checkstyle.xml using PHP_CodeSniffer">
+        <exec executable="phpcs" output="/dev/null">
+            <arg value="--report=checkstyle" />
+            <arg value="--report-file=${basedir}/_build/logs/checkstyle.xml" />
+            <arg value="--standard=OneResult" />
+            <arg path="${source}" />
+        </exec>
+    </target>
+
+    <target name="phpdoc"
+         description="Generate API documentation using PHPDocumentor">
+        <exec executable="phpdoc">
+            <arg value="--directory" />
+            <arg path="${source}" />
+            <arg value="--target" />
+            <arg path="${basedir}/_build/api/application" />
+            <arg line="-q on
+                -ti Take Note Typing API Documentation
+                -pp on
+                -ed ${basedir}/docs/examples
+				-o HTML:frames:DOM/earthli
+				-s off
+				-i pear-*,templates/,views/,layouts/,Documentation/,Lexer.inc,*.svn,*external/*,*Zend/*"
+				/>
+        </exec>
+    </target>
+
+    <target name="phpdocTests"
+         description="Generate API documentation using PHPDocumentor">
+        <exec executable="phpdoc">
+            <arg value="--directory" />
+            <arg path="${basedir}/tests" />
+            <arg value="--target" />
+            <arg path="${basedir}/_build/api/tests" />
+            <arg line="-q on
+                -ti Take Note Typing Tests
+                -pp on
+                -ed ${basedir}/docs/examples
+				-o HTML:frames:DOM/earthli
+				-s off
+				-i *.svn,resources/,env/"
+				/>
+        </exec>
+    </target>
+    <target name="phpdocViews"
+         description="Generate API documentation using PHPDocumentor">
+        <exec executable="phpdoc">
+            <arg value="--directory" />
+            <arg path="${source}/views,${source}/layouts" />
+            <arg value="--target" />
+            <arg path="${basedir}/_build/api/views" />
+            <arg line="-q on
+                -ti Take Note Typing Views
+                -pp on
+                -ed ${basedir}/docs/examples
+				-o HTML:frames:DOM/earthli
+				-s off
+				-i *.svn,resources/,env/"
+				/>
+        </exec>
+    </target>
+    <target name="phpcb"
+         description="Aggregate tool output with PHP_CodeBrowser">
+        <exec executable="phpcb">
+            <arg value="--log" />
+            <arg path="${basedir}/_build/logs" />
+            <arg value="--source" />
+            <arg path="${source}" />
+            <arg value="--output" />
+            <arg path="${basedir}/_build/code-browser" />
+        </exec>
+    </target>
+
+    <target name="lint">
+        <apply executable="php" failonerror="true">
+            <arg value="-l" />
+
+            <fileset dir="${basedir}/application">
+                <include name="**/*.php" />
+                <modified />
+            </fileset>
+
+            <fileset dir="${basedir}/tests">
+                <include name="**/*.php" />
+                <modified />
+            </fileset>
+        </apply>
+    </target>
+
+    <target name="build" depends="clean,parallelTasks,phpcb"/>
+</project>

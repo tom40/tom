@@ -1,0 +1,29 @@
+<?php if (!is_null($this->data['due_date_unix']) && $this->data['due_date_unix'] < time()): ?>
+<span style="color:red">!!</span>
+<?php endif;?>
+<?php echo $this->escape($this->data['proofreader_name']); ?>
+
+<br /><br />
+
+<span style="margin-top: 5px" title="Receipt confirmed?">R:&nbsp;</span>
+<span>
+<?php if($this->data['accepted']):?>
+    <img src="<?php echo $this->baseUrl(); ?>/images/icons/tick.png" title="Receipt confirmed"/>
+    <?php else:?>
+    <a href="#" onclick="proofreaderAccept(<?php echo $this->data['audio_job_id']?>, <?php echo $this->data['id']?>);return false;">
+        <img src="<?php echo $this->baseUrl(); ?>/images/icons/cross.png" title="Receipt not confirmed"/>
+    </a>
+    <?php endif;?>
+</span>
+<?php if($this->data['accepted']):?>
+<span style="margin-top: 5px" title="Audio downloaded?">D:&nbsp;</span>
+<span>
+    <?php if($this->data['downloaded']):?>
+    <img src="<?php echo $this->baseUrl(); ?>/images/icons/tick.png" title="Audio downloaded"/>
+    <?php else:?>
+    <a href="#" onclick="proofreaderConfirmDownload(<?php echo $this->data['audio_job_id']?>, <?php echo $this->data['id']?>);return false;">
+        <img src="<?php echo $this->baseUrl(); ?>/images/icons/cross.png" title="Audio not downloaded"/>
+    </a>
+    <?php endif;?>
+</span>
+<?php endif;?>

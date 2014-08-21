@@ -1,0 +1,21 @@
+<span style="display:none;" id="due-date-value-<?php echo $this->data['id']?>">
+	<?php echo date('d/m/Y', $this->data['due_date_unix'])?>
+</span>
+<span style="width:100%">
+    <?php if ($this->data['canEdit'])
+    {
+    ?>
+        <a href="#" onclick="showDueDate('<?php echo $this->data['id']; ?>', '<?php echo date('Y-m-d H:i:00',$this->data['due_date_unix']); ?>', 'update-due-date'); return false;">
+            <?php echo date('jS M \a\t H:i', $this->data['due_date_unix']) ?>
+        </a>
+    <?php
+    }
+    else
+    {
+    ?>
+        <?php echo date('jS M \a\t H:i', $this->data['due_date_unix']) ?>
+    <?php
+    }
+    ?>
+</span>
+

@@ -1,0 +1,67 @@
+<script>
+    $('document').ready(function()
+    {
+        $('#tbl_transcription_types').on('click', '.delete-transaction-type', function()
+        {
+            var confirmDelete = confirm("Are you sure you want to delete this Transcription Type?");
+            if (confirmDelete == true)
+            {
+                var link = $(this);
+                var components = link.attr('id').split('-');
+                var id = components[1];
+                $('#delete-form-' + id).submit();
+            }
+            return false;
+        });
+    });
+</script>
+
+<h1>Transcription type default turnaround times</h1>
+
+<div id="table-utility">
+	<div id="utility-links">
+		<a href="<?php echo $this->url(array('controller' => 'transcription-type', 'action' => 'add'), null, true); ?>" class="no-icon">
+			Add new transcription type
+		</a>
+	</div>
+</div>
+    <table class="dataTable index not-fixed-height" id="tbl_transcription_types">
+        <tr>
+            <th><div>Transcription Type</div></th>
+            <th><div>Turnaround Time</div></th>
+            <th><div>&nbsp;</div></th>
+            <th><div>&nbsp;</div></th>
+        </tr>
+        <?php if (!empty($this->transcriptionTypes)): ?>
+            <?php foreach($this->transcriptionTypes as $transcriptionType): ?>
+                <tr>
+                    <td><div><?php echo $transcriptionType['name']; ?></div></td>
+                    <td><div><?php echo $transcriptionType['turnaround_time']; ?>&nbsp;</div></td>
+                    <td>
+                    	<div>
+							<a href="<?php echo $this->url(array('controller' => 'transcription-type', 'action' => 'edit', 'id' => $transcriptionType['id'])); ?>">
+								Edit
+							</a>
+						</div>
+                    </td>
+                    <td>
+                        <?php
+                        if ($transcriptionType['canDelete'])
+                        {
+                        ?>
+                    	<div>
+                            <form method="POST" action="<?php echo $this->url(array('controller' => 'transcription-type', 'action' => 'delete'), null, true); ?>" id="delete-form-<?php echo $transcriptionType['id'] ;?>">
+                                <input type="hidden" name="transaction-type-id" value="<?php echo $transcriptionType['id'] ;?>" />
+                            </form>
+							<a href="#" id="delete-<?php echo $transcriptionType['id'] ;?>" class="confirm-delete delete-transaction-type">
+								<img src="<?php echo $this->baseUrl() .'/images/icons/delete.png'?>" title="Delete transcription type">
+							</a>
+						</div>
+                        <?php
+                        }
+                        ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </table>

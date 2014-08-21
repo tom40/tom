@@ -1,0 +1,88 @@
+<?php
+if (isset($this->transcriptionType))
+{
+?>
+<h1>Transcription Type: <?php echo $this->transcriptionType['name']; ?> Select default turnaround time</h1>
+<?php
+}
+else
+{
+?>
+<h1>Add Transcription Type</h1>
+<?php
+}
+?>
+<form method="<?php echo $this->form->getMethod(); ?>" action="<?php echo $this->form->getAction(); ?>" id="transcription-type-form">
+        <?php echo $this->form->id; ?>
+        <table class="data">
+        	<?php echo $this->form->id->renderViewHelper(); ?>
+            <tr class="first">
+                <td class="field">
+                    <label for="name"><?php echo $this->form->name->renderLabel(); ?></label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->name->renderViewHelper(); ?></span>
+                    <?php echo $this->form->name->renderErrors(); ?>
+                </td>
+            </tr>
+            <tr class="first">
+                <td class="field">
+                    <label for="description"><?php echo $this->form->description->renderLabel(); ?></label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->description->renderViewHelper(); ?></span>
+                    <?php echo $this->form->description->renderErrors(); ?>
+                </td>
+            </tr>
+            <tr class="first">
+                <td class="field">
+                    <label for="training_code"><?php echo $this->form->training_code->renderLabel(); ?></label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->training_code->renderViewHelper(); ?></span>
+                    <?php echo $this->form->training_code->renderErrors(); ?>
+                </td>
+            </tr>
+            <tr class="first">
+                <td class="field">
+                    <label for="turnaround_times"><?php echo $this->form->turnaround_times->renderLabel(); ?></label>
+                </td>
+                <td class="value checkboxes">
+                    <span class="view"><?php echo $this->form->turnaround_times->renderViewHelper(); ?></span>
+                    <?php echo $this->form->turnaround_times->renderErrors(); ?>
+                </td>
+            </tr>
+            <tr class="first">
+                <td class="field">
+                    <label>Typist Pay Rates: pence per minute (42 = £0.42)</label>
+                </td>
+                <td class="value">
+                    <?php
+                    foreach ($this->payrateGrades as $prId => $prName)
+                    {
+                        $element = $this->form->getElement("payrate" . $prId);
+                    ?>
+                    <span class="view"><p><?php echo $prName ;?></p><?php echo $element->renderViewHelper(); ?></span>
+                    <?php
+                        echo $element->renderErrors();
+                    }
+                    ?>
+                </td>
+            </tr>
+            <tr class="first">
+                <td class="field">
+                    <label for="title"><?php echo $this->form->turnaround_id->renderLabel(); ?></label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->turnaround_id->renderViewHelper(); ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field"></td>
+                <td class="value">
+                    <div class="element-error error-inner"><input id="submit" class="reg_input_btn button-img" type="image" src="/images/save_button.png" alt="Save" name="submit"></div>
+                    <a href="<?php echo $this->url(array('controller' => 'transcription-type', 'action' => 'index')); ?>" class="button-img"><img src="<?php echo $this->baseUrl() .'/images/cancel_button.png'?>" alt="cancel" /></a>
+                </td>
+            </tr>
+        </table>
+    </form>

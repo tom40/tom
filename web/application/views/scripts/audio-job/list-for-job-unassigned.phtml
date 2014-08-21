@@ -1,0 +1,348 @@
+<script>
+
+    (function($)
+    {
+        $.fn.showComments = function()
+        {
+            $(this).hover(function()
+                {
+                    $(this).next('span').fadeIn(300);
+                },
+                function()
+                {
+                    $(this).next('span').stop(true, false).fadeOut(300);
+                });
+        };
+    })(jQuery);
+
+    $(function()
+    {
+        $('.job-comments img').showComments();
+    });
+
+</script>
+
+<div id="table-utility<?php echo $this->customClass; ?>">
+	<div id="utility-links">
+		<div id="util-filter">
+            <h2>Un-assigned Files</h2>
+		</div>
+	</div>
+</div>
+
+<iframe id="ifr_download" src="" style="display: none;"></iframe>
+
+<div id="job-list-audio-dialog" style="display: none">
+	<div id="job-list-audio-dialog-tabs"  style="font-size:0.85em">
+		<ul>
+			<li><a href="#job-list-audio-dialog-tabs-1">File details</a></li>
+			<li><a href="#job-list-audio-dialog-tabs-2">Download history</a></li>
+		</ul>
+		<div id="job-list-audio-dialog-tabs-1">
+			<p>Loading...</p>
+		</div>
+		<div id="job-list-audio-dialog-tabs-2">
+			<p>File download history goes here...</p>
+		</div>
+	</div>
+</div>
+
+<div id="job-list-transcription-dialog" style="display: none">
+	<span id="job-list-transcription-dialog-container" class="view"></span>
+</div>
+
+<div id="job-list-support-dialog" style="display: none">
+	<span id="job-list-support-dialog-container" class="view"></span>
+</div>
+
+<div id="job-list-audio-container" style="width:100%">
+	<form id="job-list-audio-form">
+	<table class="index" id="job-list-audio-tbl_audiojobs">
+		<thead>
+			<tr>
+				<th style="width:40px">ID</th>
+				<th>&nbsp;</th>
+				<th style="width:160px">
+					Status
+				</th>
+				<th style="width:250px">File name</th>
+				<th>
+					Service
+				</th>
+				<th style="width:75px">Length</th>
+                <th>Client due date</th>
+                <th>&nbsp;</th>
+				<th style="width:200px">Comment</th>
+				<th style="width:100px">Audio</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php echo $this->partialLoop('audio-job/_listForJobRowUnassigned.phtml', $this->audioJobs); ?>
+		</tbody>
+		<tfoot id="footer-search">
+			<tr>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th><input type="text" name="search_status" value="Search status" class="search_init ui-widget-content ui-corner-all" /></th>
+				<th><input type="text" name="search_title" value="Search file name" class="search_init ui-widget-content ui-corner-all" /></th>
+				<th>&nbsp;</th>
+                <th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+                <th>&nbsp;</th>
+				<th>&nbsp;</th>
+			</tr>
+		</tfoot>
+	</table>
+	</form>
+</div>
+<script>
+var asInitVals = new Array();
+var audioJobTable;
+
+
+//var audioJobTable;
+$(document).ready(function() {
+
+	$('#job-list-audio-dialog').dialog({
+		autoOpen: false,
+		title: 'File information...',
+		modal: true,
+		width: 400,
+		height: 400
+	});
+	$('#job-list-audio-dialog-tabs').tabs();
+
+	$('#job-list-transcription-dialog').dialog({
+		autoOpen: false,
+		title: 'View transcription files',
+		modal: true,
+		width: 700,
+		height: 550
+	});
+
+	$('#job-list-support-dialog').dialog({
+		autoOpen: false,
+		title: 'View support documents',
+		modal: true,
+		width: 700,
+		height: 550
+	});
+
+    audioJobTable = $('#job-list-audio-tbl_audiojobs').dataTable({
+    	"iDisplayLength": 50,
+        "bJQueryUI": true,
+	    "bAutoWidth": false,
+        "bPaginate": false,
+        "sPaginationType": "full_numbers",
+        //"bStateSave": true,
+        "oLanguage": {
+            "sSearch": "Search all columns:",
+            "sEmptyTable": "No audio jobs available"
+        },
+        "aaSorting" : [[1, "asc"]],
+        "aoColumnDefs": [
+						{ "iDataSort": 1		, "aTargets": [ 0 ] }, // id sort
+             			{ "bVisible" : false	, "aTargets": [ 1, 7 ] },
+                        { "iDataSort": 7		, "aTargets": [ 6 ] },
+             			{ "sType"	 : "numeric", "aTargets": [ 1 ] },
+             			{ "bSortable": false	, "aTargets": [ 4, 8, 9 ] }
+        ]
+    });
+
+    $('#job-list-audio-tbl_audiojobs').on('click', '.DataTables_sort_wrapper', function()
+    {
+       $('#job-list-audio-tbl_audiojobs tr').removeClass('lead-audio-job');
+       $('#job-list-audio-tbl_audiojobs tr').removeClass('child-audio-job');
+    });
+
+    $("tfoot input").keyup( function () {
+        /* Filter on the column (the index) of this element */
+        // note: add +4 to the index.value as there is no input in col 0 so the index of the text input doesn't match the index of the column being queried
+        audioJobTable.fnFilter(this.value, $("tfoot input").index(this)+2);
+    } );
+
+
+    /*
+     * Support functions to provide a little bit of 'user friendlyness' to the textboxes in
+     * the footer
+     */
+    $("tfoot input").each( function (i) {
+        asInitVals[i] = this.value;
+    } );
+
+    $("tfoot input").focus( function () {
+        if ( this.className == "search_init ui-widget-content ui-corner-all" )
+        {
+            this.className = "";
+            this.value = "";
+        }
+    } );
+
+    $("tfoot input").blur( function (i) {
+        if ( this.value == "" )
+        {
+            this.className = "search_init ui-widget-content ui-corner-all";
+            this.value = asInitVals[$("tfoot input").index(this)];
+        }
+    } );
+
+    $('#btn_do_filter').click( function() {
+    	toggleFilterCheckboxes();
+    });
+
+} );
+
+function stopBubble(event) {
+   	if (event){
+   		event.stopPropagation();
+   	} else {
+   		window.event.cancelBubble = true;
+  	}
+}
+
+function toggleFilterCheckboxes() {
+
+	// check at least one of the filter boxes is checked
+	if ($('#chk_filter:checked').length == 0) {
+		alert('Please select at least one filter option');
+		return false;
+	}
+
+	var checkValues = $('input[name=chk_filter]').map(function() {
+        return $(this).val() +"/" + ($(this)[0].checked ? 1 : 0);
+    }).get();
+
+    var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'list-typist'), null, true); ?>";
+
+    $.each(checkValues, function(i, val){
+        url += "/chk_" + val;
+    });
+
+	window.location.href = url;
+}
+
+function showSoundFile(audio_job_id)
+{
+	$('#job-list-audio-dialog').dialog('open');
+	$('#job-list-audio-dialog-tabs-1').html('<p>Loading...</p>');
+
+	var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'show-sound-file-details'), null, true); ?>/audio_job_id/" + audio_job_id;
+	$.ajax({
+		type: "GET",
+	  	url: url,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg ) {
+	  	$("#job-list-audio-dialog-tabs-1").html(msg.html);
+	  	$("#job-list-audio-dialog-tabs-2").html(msg.html_history);
+	});
+}
+
+function showTranscriptionFiles(audio_job_id)
+{
+	$('#job-list-transcription-dialog').dialog('open');
+
+	var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'show-transcription-file-list'), null, true); ?>/audio_job_id/" + audio_job_id;
+	$.ajax({
+		type: "GET",
+	  	url: url,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg ) {
+	  	$("#job-list-transcription-dialog-container").html(msg.html);
+	  	$( "#job-list-transcription-dialog-btn_cancel" ).button();
+	});
+}
+
+function doSoundFileDownload(audio_job_id)
+{
+	var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'download'), null, true); ?>/id/" + audio_job_id;
+	window.location.href = url;
+}
+
+function doTranscriptionFileDownload(transcription_file_id)
+{
+	var url ="<?php echo $this->url(array('controller' => 'transcription-file', 'action' => 'download'), null, true); ?>/id/" + transcription_file_id;
+  	window.location.href = url;
+}
+
+function doSupportFileDownload(support_file_id)
+{
+	var url ="<?php echo $this->url(array('controller' => 'support-file', 'action' => 'download'), null, true); ?>/id/" + support_file_id;
+  	window.location.href = url;
+}
+
+function typistAccept(audio_job_id, audio_jobs_typists_id)
+{
+	var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'accept-typist'), null, true); ?>/audio_job_id/" + audio_job_id + "/id/" + audio_jobs_typists_id;
+	$.ajax({
+		type: "GET",
+	  	url: url,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg ) {
+		$("#job-list-audio-typist-" + audio_job_id).html(msg.html);
+	});
+}
+
+function typistConfirmDownload(audio_job_id, audio_jobs_typists_id)
+{
+	var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'confirm-download-typist'), null, true); ?>/audio_job_id/" + audio_job_id + "/id/" + audio_jobs_typists_id;
+
+
+
+	$.ajax({
+		type: "GET",
+	  	url: url,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg ) {
+		$("#job-list-audio-typist-" + audio_job_id).html(msg.html);
+	});
+}
+
+function showSupportFiles(job_id) {
+
+	if (job_id === "undefined") {
+		alert("No support document selected");
+		return false;
+	}
+
+	var url ="<?php echo $this->url(array('controller' => 'support-file', 'action' => 'list'), null, true); ?>"
+	url += "/job_id/" + job_id;
+
+	$('#job-list-support-dialog').dialog('open');
+
+	$.ajax({
+		type: "GET",
+	  	url: url,
+	  	cache: false,
+	  	dataType: "json"
+	}).success(function( msg ) {
+		if (msg.status == "ok") {
+			$("#job-list-support-dialog-container").html(msg.html);
+		  	$( "#job-list-support-dialog-btn_cancel" ).button();
+		} else {
+			alert("We're sorry - there was an error retrieving the support documents for this project");
+		}
+
+	});
+}
+
+function launchEdit(source, title, width)
+{
+    if (width == undefined)
+    {
+        width = 1000;
+    }
+    height = 600;
+    var left = (screen.width - width) / 2;
+    var top  = (screen.height - height) / 2;
+    infoWindow = window.open(source, title, "width=" + width + ", height=" + height + ", location=no, menubar=no, resizable=yes, scrollbars=yes, status=yes, titlebar=no, toolbar=no, top="+top+", left="+left);
+    if (infoWindow.opener == null)
+    {
+        infoWindow.opener = self;
+    }
+}
+</script>

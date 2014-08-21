@@ -1,0 +1,2 @@
+#!/bin/sh
+php /srv/www/takenote.webapp/scripts/zf-cli.php -e production -a /shift-operations/no-shift-reminders

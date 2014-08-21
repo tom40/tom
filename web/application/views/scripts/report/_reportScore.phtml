@@ -1,0 +1,5 @@
+<?php if (!empty($this->totalScore)): ?>
+    <?php echo $this->formatScore($this->totalScore); ?>/<?php echo $this->formatScore($this->maxScore); ?>
+<?php else: ?>
+    not set
+<?php endif; ?>

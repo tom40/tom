@@ -1,0 +1,761 @@
+@CHARSET "UTF-8";
+
+body {
+    background-color: #fff;
+    color: #000;
+    font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+    font-size: 8pt;
+    margin: 0px;
+    width: 100%;
+}
+
+#container {
+    border: none;
+    clear: both;
+    margin: 0 5px;
+    padding: 0 5px;
+    line-height: 130%; /* This is the parent container for YUI tabs. Set at 130% or else top border cut off */
+}
+
+img {
+    border: 0 none;
+    vertical-align: middle;
+}
+
+h1,
+h1.header {
+    color: #000;
+    font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+    line-height: 180%;
+    font-size: 16px;
+    font-weight: normal;
+}
+
+h2,
+h3 {
+    color: #000;
+    font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+    margin-top: 25px;
+}
+
+h3 {
+    border-bottom: 1px solid #000;
+}
+
+h4 {
+    color: #000;
+    font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+    font-size: 8pt;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+ul {
+    type: circle;
+}
+
+.navigation {
+    color: black;
+    font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+    font-size: 8pt;
+    line-height: 180%;
+    margin: 0;
+}
+
+/* General font families for common tags */
+font,
+th,
+td,
+p,
+li {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+/* General hyperlinks */
+a:link,
+a:active,
+a:visited {
+    color: #000;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #000;
+    text-decoration: underline;
+}
+
+/* Copyright and bottom info */
+div#footer {
+    border-top: 1px solid #cfcfcf;
+    margin-top: 30px;
+    width: 100%;
+}
+
+div#footer div {
+    color: #666;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 9px;
+    letter-spacing: 0;
+    padding: 5px 5px 5px 10px;
+}
+
+a.copyright:link,
+a.copyright:visited {
+    color: #666;
+    text-decoration: none;
+}
+
+a.copyright:hover {
+    color: #666;
+    text-decoration: underline;
+}
+
+/* archived */
+.archived,
+tr.archived td {
+    color: #666;
+}
+
+a.archived:link,
+a.archived:visited {
+    color: #666;
+    text-decoration: none;
+}
+
+a.archived:hover {
+    color: #666;
+    text-decoration: underline;
+}
+
+/* deleted */
+
+.deleted,
+tr.deleted td {
+    color: #666;
+    text-decoration: line-through;
+}
+
+/* editlinktip */
+
+span.editlinktip {
+    border-bottom: 1px dashed #ccc;
+    cursor: help;
+    text-decoration: none;
+}
+
+a.editlinktip {
+    border-bottom: 1px dashed #ccc;
+    cursor: help;
+    text-decoration: none;
+}
+
+div.print_button {
+    margin: 10px;
+    text-align: right;
+}
+
+div.save_button {
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* user-bar */
+
+.header-bar-separator {
+    clear: both;
+    height: 3px;
+    width: 100%;
+}
+
+#user-bar {
+    margin: 0;
+    padding: 0;
+}
+
+#user-bar .user,
+#user-bar .logout {
+    float: right;
+    margin: 5px 10px;
+    padding: 0;
+    text-align: right;
+    white-space: nowrap;
+}
+
+#user-bar .user {
+    margin: 10px 10px;
+}
+
+#user-bar .logout {
+    margin: 5px 10px;
+}
+
+/* breadcrumbs */
+
+#breadcrumb-bar {
+    background-color: #fff;
+    border-bottom: 1px solid #a3a3a3;
+    height: 24px;
+    margin: 0 0 10px 0;
+}
+
+#breadcrumb-bar .breadcrumbs {
+    color: #000;
+    float: left;
+    font-size: 11px;
+    margin-left: 10px;
+    padding-top: 6px;
+    white-space: nowrap;
+    width: 80%;
+}
+
+#breadcrumb-bar .breadcrumbs a {
+    color: #000;
+}
+
+#breadcrumb-bar .option-buttons {
+    float: right;
+    margin: 3px 10px 0 0;
+    position: relative;
+    text-align: right;
+}
+
+
+/* Buttons */
+
+.button-bar {
+    margin: 10px 0;
+    text-align: right;
+    width: 100%;
+}
+
+.button-bar p {
+    text-align: right;
+}
+
+.button-bar a {
+    margin-left: 10px;
+    text-decoration: none;
+}
+
+
+.button-bar a:hover {
+    color: #0000cc;
+    text-decoration: none;
+}
+
+a.button {
+    margin-left: 10px;
+    white-space: nowrap;
+}
+
+a.button:hover {
+    color: #0000cc;
+    text-decoration: none;
+}
+
+.left {
+    text-align: left;
+}
+
+.center {
+    text-align: center;
+}
+
+.right {
+    text-align: right;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.clear {
+    clear: both;
+}
+
+.hidden {
+    display: none;
+}
+
+.overdue {
+    color: #BE4031;
+}
+
+
+/*
+ * datatable.css
+ */
+
+.datatable {
+    background-color: #fff;
+    border: 1px solid #7f7f7f;
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+}
+
+/*----- Table Header -----*/
+
+.datatable thead tr {
+    background: #d8d8da url(./images/sprite.png) repeat-x 0 0;
+    border: 1px solid #7f7f7f;
+    height: 24px;
+}
+
+.datatable thead th,
+.datatable thead td {
+    font-weight: normal;
+    padding: 4px 10px;
+}
+
+.datatable thead td {
+    font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+    font-size: inherit;
+    font-weight: normal;
+    vertical-align: middle;
+}
+
+.datatable .row0 {
+    background-color: #fff;
+}
+
+.datatable .row1 {
+    background-color: #edf5ff;
+}
+
+/*----- Table Body -----*/
+
+.datatable tbody td {
+    padding: 4px 10px;
+    vertical-align: middle;
+}
+
+/*----- Table Footer -----*/
+
+.datatable tfoot tr {
+    background: #d8d8da url(./images/sprite.png) repeat-x 0 0;
+    border: 1px solid #7f7f7f;
+    height: 24px;
+}
+
+.datatable tfoot td {
+    font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+    font-size: inherit;
+    font-weight: normal;
+    padding: 4px 10px;
+    vertical-align: middle;
+}
+
+/*----- Table General -----*/
+
+.datatable th,
+.datatable td {
+    border: none;
+    border-right: 1px solid #cbcbcb; /* inner column border */
+}
+
+.datatable th.dt-right,
+.datatable td.dt-right {
+    border: none;
+    border-right: 1px solid #7f7f7f; /* inner column border */
+}
+
+.datatable td.dt-left {
+    border-left: 1px solid #7f7f7f;
+}
+
+
+.column-2,
+.column-3,
+.column-4 {
+    clear: both;
+    float: none;
+    margin: 0;
+    padding: 0;
+}
+
+.column,
+.column-double {
+    float: left;
+}
+
+.column-1 .column {
+    width: 100%;
+}
+
+.column-2 .column {
+    width: 50%;
+}
+
+.column-3 .column {
+    width: 33%;
+}
+
+.column-4 .column {
+    width: 25%;
+}
+
+.column-3 .column-double {
+    width: 66%;
+}
+
+.column-4 .column-double {
+    width: 50%;
+}
+
+/* Table column widths */
+.width1   { width: 1%; }
+.width5   { width: 5%; }
+.width10  { width: 10%; }
+.width15  { width: 15%; }
+.width20  { width: 20%; }
+.width25  { width: 25%; }
+.width30  { width: 30%; }
+.width33  { width: 33%; }
+.width34  { width: 34%; }
+.width35  { width: 35%; }
+.width40  { width: 40%; }
+.width45  { width: 45%; }
+.width50  { width: 50%; }
+.width55  { width: 55%; }
+.width60  { width: 60%; }
+.width65  { width: 65%; }
+.width66  { width: 66%; }
+.width70  { width: 70%; }
+.width75  { width: 75%; }
+.width80  { width: 80%; }
+.width85  { width: 85%; }
+.width90  { width: 90%; }
+.width95  { width: 95%; }
+.width99  { width: 99%; }
+.width100 { width: 100%; }
+
+.color-block {
+    height: 10px;
+    margin: 0 auto;
+    text-align: center;
+    vertical-align: middle;
+    width: 10px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+
+
+/* Dashboard */
+
+.clear.spacer {
+    height: 10px;
+}
+
+.column-2 .column.first {
+    padding-right: 10px;
+    width: 48%;
+}
+
+.column-2 .column.first .frame {
+    padding-right: 10px;
+}
+
+.column-2 .column.last .frame {
+    padding-left: 10px;
+}
+
+.module-title {
+    background: #a5a8ab url(../../images/sprite.png) repeat-x 0 0;
+    border: 1px solid #7f7f7f;
+    color: #000;
+    margin: 0;
+    padding: 4px;
+}
+
+.module-title a {
+    color: #000;
+}
+
+.module-title.dashboard {
+    background: #666 url(../../images/sprite.png) repeat-x 0 -100px;
+    border: 1px solid #666;
+    color: #fff;
+    margin: 0;
+    padding: 4px;
+}
+
+.module-title.dashboard a {
+    color: #fff;
+}
+
+table.stats {
+    border-collapse: collapse;
+    margin: 0 auto;
+    width: 100%;
+}
+
+table.stats tr.row0 td {
+    background-color: #fff;
+}
+
+table.stats tr.row1 td {
+    background-color: #f9f9f9;
+}
+
+table.stats tr.highlight td {
+    background-color: #ffff9c;
+}
+
+table.stats th,
+table.stats td {
+    border: 1px solid #bbb;
+    padding: 2px 6px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+table.stats th {
+    border-top: 0;
+}
+
+table.stats th.figure,
+table.stats td.figure {
+    text-align: right;
+}
+
+.stats .center {
+    text-align: center;
+}
+
+table.stats th {
+    background-color: #e5e5e5;
+    font-weight: normal;
+    padding: 3px 6px;
+}
+
+table.stats div {
+    padding: 0;
+}
+
+
+/* Progress 100 */
+
+.progress100,
+.yui-dt-liner .progress100 {
+    background-color: #fff;
+    border: 1px solid #e9e9e9;
+    margin-bottom: 1px;
+    margin-top: 1px;
+    padding: 0;
+    position: relative;
+    width: 100px;
+}
+
+.progress100 .bar,
+.yui-dt-liner .progress100 .bar {
+    background-color: #666;
+    display: block;
+    font-weight: normal;
+    height: 14px;
+    line-height: 14px;
+    position: relative;
+    text-align: center;
+}
+
+.progress100 .bar.green,
+.yui-dt-liner .progress100 .bar.green {
+    background-color: #5ea159;
+}
+
+.progress100 .bar.red,
+.yui-dt-liner .progress100 .bar.red {
+    background-color: #be432a;
+}
+
+.progress100 .bar span,
+.yui-dt-liner .progress100 .bar span {
+    color: #000;
+}
+
+.progress100Description {
+    line-height: 20px;
+    margin-top: 3px;
+}
+
+.progress100Description img {
+    vertical-align: middle;
+}
+
+
+/* FlashMessenger */
+
+.action-error-messages,
+.action-alert-messages,
+.action-info-messages {
+    background-color: #ffebe8;
+    border-color: #cc0000;
+    -moz-border-radius: 3px 3px 3px 3px;
+    border-style: solid;
+    border-width: 1px;
+    color: #333;
+    margin-bottom: 16px;
+    padding: 12px;
+    width: 429px;
+}
+
+.action-alert-messages {
+    background-color: #faeecb;
+    border-color: #f3ce62;
+}
+
+.action-info-messages {
+    background-color: #ffffe0;
+    border-color: #e6db55;
+}
+
+
+p.required {
+    font-style: italic;
+}
+
+p.required span,
+span.required {
+    color: #fc8721;
+    font-size: 120%;
+    font-weight: normal;
+    margin-left: 2px;
+    vertical-align: top;
+}
+
+
+/* errorlinktip */
+
+span.errorlinktip {
+    color: #cc0000;
+    cursor: help;
+    text-decoration: none;
+}
+
+span.errorlinktip p.required span,
+span.errorlinktip span.required {
+    color: #e04e49;
+}
+
+
+p,
+li,
+thead,
+tbody {
+    font-size: 11px;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+}
+
+td {
+    padding: 6px 9px;
+}
+
+.bd td {
+    padding: 3px 9px;
+}
+
+td.field {
+    background-color: #f6f6f6;
+    border-bottom: 1px solid #e9e9e9;
+    border-right: 1px solid #e9e9e9;
+    color: #333;
+    font-weight: normal;
+    min-height: 25px;
+    padding: 6px 9px;
+    text-align: right;
+    vertical-align: top;
+    width: 160px;
+}
+
+.bd td.field {
+    width: auto;
+}
+
+tr.first td.field {
+    border-top: 1px solid #e9e9e9;
+}
+
+table.repeated {
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+}
+
+div.separator {
+    height: 25px;
+}
+
+/* overlib */
+
+#overDiv tbody tr td {
+    padding: 1px;
+}
+
+#overDiv tbody tr td tbody tr td {
+    padding: 6px 9px;
+}
+
+/* Report > Movements Report */
+
+table.movements th,
+table.movements td {
+    font-weight: normal;
+    padding: 4px 10px;
+}
+
+table.movements tr.subheader {
+    background: #d8d8da;
+    border: 1px solid #7f7f7f;
+}
+
+table.movements tr.subheader td {
+    font-weight: bold
+}
+
+
+.treetable tr.risk {
+    display: none;
+}
+
+.treetable tr.tier.highlighted td {
+    background-color: #e2e2e6;
+}
+
+.treetable tbody tr.objective.highlighted td {
+    background-color: #ffeeb8;
+}
+
+.treetable tbody tr.risk.highlighted td {
+    background-color: #ffffcc;
+}
+
+
+/* Tooltip reskinning */
+.yui-skin-sam .yui-tt {
+    visibility:hidden;
+    position:absolute;
+    color:#e2e2e6;
+    background-color:#e2e2e6;
+    font-family:arial,helvetica,verdana,sans-serif;
+    padding:2px;
+    border:1px solid #e2e2e6;
+    font:100% sans-serif;
+    width:auto;
+}
+
+.yui-skin-sam .yui-tt-shadow {
+	background-color: #e2e2e6;
+}
+
+.yui-skin-sam .yui-tt .bd {
+    background-color: #e2e2e6;
+    color:#000000;
+    border-color: #C4BEBE #A5A5A5 #A5A5A5;
+}

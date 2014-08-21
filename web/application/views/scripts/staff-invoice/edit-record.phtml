@@ -1,0 +1,204 @@
+<script>
+
+    $( 'body' ).on( 'change', '.service_id_view select', function()
+    {
+        var turnaround       = $( '.turnaround_time_view' );
+        var speakerNumbers   = $( '.speaker_numbers_view' );
+        var modifiers        = $( '.modifiers_view' );
+
+        var url ="<?php echo $this->url( array( 'controller' => 'audio-job', 'action' => 'fetch-service-details-edit', 'audio_job_id' => $this->id ), null, true ); ?>";
+        url += '/service_id/' + $( this ).val();
+
+        $.ajax({
+            type     : 'GET',
+            url      : url,
+            cache    : false,
+            dataType : "json"
+        }).success(function( msg )
+        {
+            speakerNumbers.html( msg.speaker_numbers );
+            turnaround.html( msg.turnaround_times );
+            modifiers.html( msg.modifiers );
+        });
+    });
+
+    $( 'body' ).on( 'change', '#audio_calculate', function()
+    {
+        if ( $( this).is( ':checked' ) )
+        {
+            $( '#pay_per_minute' ).attr( 'disabled', true );
+        }
+        else
+        {
+            $( '#pay_per_minute' ).attr( 'disabled', false );
+        }
+    } );
+
+</script>
+
+<div class="ui-state-default ui-widget-content ui-widget-header">
+    <h3>Edit Record</h3>
+</div>
+
+<?php
+$this->form->setAction($this->url());
+?>
+
+<div id="edit-service">
+    <form id="formEditRecord" action="/en/default/staff-invoice/edit" method="POST">
+        <input type="hidden" name="invoice_id" value="<?php echo $this->invoiceId; ?>" />
+        <table class="data">
+            <?php
+            if ( $this->isAdHoc )
+            {
+            ?>
+            <tr class="first">
+                <td class="field">
+                    <label for="name">Name:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->name; ?></span>
+                </td>
+            </tr>
+            <?php
+            }
+            else
+            {
+            ?>
+            <tr class="first">
+                <td class="field">
+                    <label for="name">Name:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->record->getName(); ?></span>
+                </td>
+            </tr>
+                <?php
+                if ( empty( $this->hideServices ) )
+                {
+                    if ( $this->record->hasService() )
+                    {
+                        ?>
+                        <tr class="first">
+                            <td class="field">
+                                <label for="name">Service:</label>
+                            </td>
+                            <td class="value">
+                                <span class="view service_id_view"><?php echo $this->form->service_id; ?></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="field">
+                                <label for="name">Default number of speakers:</label>
+                            </td>
+                            <td class="value">
+                                <span class="view speaker_numbers_id"><?php echo $this->form->speaker_numbers_id; ?></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="field">
+                                <label for="name">Turnaround time:</label>
+                            </td>
+                            <td class="value">
+                                <span class="view turnaround_time_view"><?php echo $this->form->turnaround_time_id; ?></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>Additional Services:</label>
+                            </td>
+                            <td>
+                            <span class="view modifiers_view">
+                                <?php echo $this->partial( 'job/_partials/_priceModifiers.phtml', 'default',  array( 'service' => $this->record->getService(), 'modifiers' => unserialize( $this->record->price_modifiers ) ) ); ?>
+                            </span>
+                            </td>
+                        </tr>
+                    <?php
+                    }
+                    else
+                    {
+                        ?>
+                        <tr>
+                            <td class="field">
+                                <label for="name">Transcription type:</label>
+                            </td>
+                            <td class="value">
+                                <span class="view"><?php echo $this->form->transcription_type_id; ?></span>
+                            </td>
+                        </tr>
+                    <?php
+                    }
+                    ?>
+                    <tr>
+                        <td class="field">
+                            <label for="name">Auto Calculate Price:</label>
+                        </td>
+                        <td class="value">
+                            <span class="view"><input type="checkbox" name="calculate_price" id="audio_calculate" value="1" /></span>
+                        </td>
+                    </tr>
+                <?php
+                }
+            }
+            if ( 1 == $this->count )
+            {
+            ?>
+            <tr class="first">
+                <td class="field">
+                    <label for="minutes_worked">Minutes worked:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->minutes_worked; ?></span>
+                </td>
+            </tr>
+            <?php
+            }
+            ?>
+            <tr class="first">
+                <td class="field">
+                    <label for="pay_per_minute">Pence per minute:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->pay_per_minute; ?></span>
+                </td>
+            </tr>
+            <?php
+            if ( $this->isAdHoc )
+            {
+                ?>
+                <tr class="first">
+                    <td class="field">
+                        <label>Or</label>
+                    </td>
+                    <td class="value">
+                        &nbsp;
+                    </td>
+                </tr>
+                <tr class="first">
+                    <td class="field">
+                        <label for="total">Amount Due:</label>
+                    </td>
+                    <td class="value">
+                        <span class="view"><?php echo $this->form->total; ?></span>
+                    </td>
+                </tr>
+                <?php
+            }
+            ?>
+
+            <tr>
+                <td>
+                    &nbsp;
+                </td>
+                <td>
+                    <a href="#" class="button-img" onclick="processEditRecord( <?php echo ( !empty( $this->id ) ) ? $this->id : 'false'; ?> ); return false;">
+                        <img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() . '/images/submit_button.png' ?>" title="Edit Record">
+                    </a>
+                    <a href="#" class="button-img" onclick="$('#job-list-record-dialog-edit').dialog('close'); return false;">
+                        <img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() . '/images/cancel_button.png' ?>" title="Cancel Edit">
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>

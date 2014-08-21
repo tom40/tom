@@ -1,0 +1,40 @@
+@CHARSET "UTF-8";
+
+.pagination {
+    clear: both;
+    color: #3666D4;
+    height: 50px;
+    margin: 10px 0;
+    text-align: center;
+    width: 100%;
+}
+
+.pagination .pages,
+.pagination .summary {
+    margin: 10px 0;
+    text-align: center;
+}
+
+.pagination a {
+    border: 1px solid #CCDBE4;
+    color: #3666D4;
+    margin: 0 3px 0 0;
+    padding: 3px 8px 1px 8px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.pagination span {
+    border: 0;
+    color: #3666D4;
+    margin: 0 5px 0 0;
+    padding: 2px 8px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.pagination a:hover {
+    background-color: #204fab;
+    border-color: #204fab;
+    color: #fcfcfc;
+}

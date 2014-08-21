@@ -1,0 +1,2 @@
+#!/bin/sh
+php /Library/WebServer/Projects/takenote.trunk/scripts/zf-cli.php -e development -a /archive/purge

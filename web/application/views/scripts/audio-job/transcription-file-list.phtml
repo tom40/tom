@@ -1,0 +1,93 @@
+<div>
+	<div class="ui-state-default ui-widget-content ui-widget-header">
+		<h3>
+			Transcription Files
+		</h3>
+	</div>
+
+<div class="popup-content">
+	<?php if (count($this->data) == 0):?>
+		<p>No transcript files exist</p>
+	<?php else:?>
+		<table class="index dataTable not-fixed-height not-fixed-height-th">
+			<thead>
+				<tr>
+					<th><div>File name</div></th>
+					<th><div>Size</div></th>
+					<th><div>Type</div></th>
+					<th><div>Time Taken</div></th>
+                    <?php
+                        if ($this->showComments)
+                        {
+                    ?>
+					<th><div>Comment</div></th>
+                    <?php
+                        }
+                    ?>
+					<th><div>Created By</div></th>
+					<th><div>Created Date</div></th>
+					<th><div>Download</div></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach($this->data as $row):?>
+				<tr id="transcription-tr-<?php echo $row['id'] ?>">
+					<td class="field">
+						<span class="view"><?php echo $row['file_name']; ?></span>
+					</td>
+					<td class="field">
+						<span class="view"><?php echo $row['size']; ?></span>
+					</td>
+					<td class="field">
+						<span class="view"><?php echo $row['mime_type']; ?></span>
+					</td>
+					<td class="field">
+						<span class="view"><?php echo $this->displayAudioJobLength($row['minutes_taken'] * 60); ?></span>
+					</td>
+                    <?php
+                        if ($this->showComments)
+                        {
+                    ?>
+					<td class="field">
+						<span class="view"><?php echo $row['comment']; ?></span>
+					</td>
+                    <?php
+                        }
+                    ?>
+					<td class="field">
+						<span class="view"><?php echo $row['user']; ?></span>
+					</td>
+					<td class="value">
+						<span class="view"><?php echo date('d.m.y \a\t g:ia',$row['created_date_unix']); ?></span>
+					</td>
+					<td>
+						<a href="#" onclick="doTranscriptionFileDownload(<?php echo $row['id']?>);return false;">
+						<img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/icons/page.png'?>" title="Download"></a>
+						<?php if($this->canArchive):?>
+						&nbsp;|&nbsp;
+						<a href="#" onclick="archiveTranscript(<?php echo $row['id']?>);return false;">
+							<img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/icons/page_delete.png'?>" title="Delete">
+						</a>
+						<?php endif;?>
+					</td>
+				</tr>
+				<?php endforeach;?>
+			</tbody>
+		</table>
+	<?php endif;?>
+		<?php
+			if (!empty($this->clientUserColleagues))
+			{
+			   echo $this->partial('/audio-job/_clientUserColleagues.phtml',
+									array(
+										'colleagues' => $this->clientUserColleagues,
+										'audioJobId' => $this->audioJobId
+									)
+			   );
+			}
+		?>
+			<a href="#" onclick="$('#job-list-transcription-dialog').dialog('close'); return false;" class="button-img">
+				<img src="<?php echo $this->baseUrl() .'/images/cancel_button.png'?>" title="Cancel job">
+			</a>
+	</div>
+</div>

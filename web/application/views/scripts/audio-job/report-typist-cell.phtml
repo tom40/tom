@@ -1,0 +1,5 @@
+<?php if (!empty($this->reportId)): ?>
+    <a href="<?php echo $this->url(array('controller' => 'report', 'action' => 'view', 'id' => $this->reportId), null, true); ?>">
+        <img src="/images/report_icon_complete.png" alt="report" />
+    </a>
+<?php endif; ?>

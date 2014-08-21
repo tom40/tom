@@ -1,0 +1,116 @@
+<?php
+$this->form->setAction($this->url());
+?>
+
+<div id="login-box">
+	<h1>
+		<img src="/images/logo2.png" alt="Take Note" />
+	</h1>
+	<h2>
+		Login to Take Note
+		<img src="/images/secure.png" alt="Secure" />
+	</h2>
+    <?php echo $this->flashMessenger(); ?>
+    <form name="formLogin" method="<?php echo $this->form->getMethod(); ?>" action="<?php echo $this->form->getAction(); ?>" autocomplete="off">
+
+		<input id="username" type="text" value="<?php echo $this->form->username->getValue(); ?>" name="username" placeholder="Username" />
+		<?php echo $this->form->username->renderErrors(); ?>
+
+        <input id="password" type="password" value="" name="password" placeholder="Password" />
+        <?php echo $this->form->password->renderErrors(); ?>
+
+		<div id="passphrase-wrap">
+			<input id="pass_phrase" type="password" value="" name="pass_phrase_1" />
+
+			<input class="no-icon" type="password" value="" name="pass_phrase_2" />
+
+
+			<input class="no-icon last" type="password" value="" name="pass_phrase_3" />
+		</div>
+
+        <?php if (isset($this->passPhraseErrors) && !empty($this->passPhraseErrors)): ?>
+            <ul class="errors">
+                <li><?php echo $this->passPhraseErrors; ?></li>
+            </ul>
+        <?php endif; ?>
+
+		<div class="info no-js" id="login-info">
+			Passphrase
+			<div>
+				<p>For added security we can offer a third-tier of security encryption via a ‘passphrase’. By default this is switched off, but should you wish to activate it please contact <a href='&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#98;&#111;&#111;&#107;&#105;&#110;&#103;&#115;&#64;&#116;&#97;&#107;&#101;&#110;&#111;&#116;&#101;&#116;&#121;&#112;&#105;&#110;&#103;&#46;&#99;&#111;&#109;'>&#98;&#111;&#111;&#107;&#105;&#110;&#103;&#115;&#64;&#116;&#97;&#107;&#101;&#110;&#111;&#116;&#101;&#116;&#121;&#112;&#105;&#110;&#103;&#46;&#99;&#111;&#109;</a></p>
+	        </div>
+	    </div>
+
+		<a href="#" onclick="formLogin.submit();return false;" class="submit">
+			<img src="<?php echo $this->baseUrl() .'/images/login_button.png'?>" title="Login">
+		</a>
+
+        <a href="<?php echo $this->url(array('module' => 'default', 'controller' => 'amnesia'), null, true); ?>" id="forgotten-password">Forgot Password or Passphrase</a>
+
+	</form>
+</div>
+<script>
+	$(function() {
+		$( "#btn_save" ).button();
+
+		$('#login-box').find('input[type="text"], textarea').each(function(){
+			this.defaultValue = this.value;
+			$(this).click(function(){
+				if(this.value == this.defaultValue){
+					$(this).val("");
+				}
+			});
+			$(this).blur(function(){
+				if(this.value == ""){
+					$(this).val(this.defaultValue);
+				}
+			});
+		});
+
+		if(!Modernizr.input.placeholder){
+
+			$('[placeholder]').focus(function() {
+				var input = $(this);
+				if (input.val() == input.attr('placeholder')) {
+					input.val('');
+					input.removeClass('placeholder');
+				}
+			}).blur(function() {
+				var input = $(this);
+				if (input.val() == '' || input.val() == input.attr('placeholder')) {
+					input.addClass('placeholder');
+					input.val(input.attr('placeholder'));
+				}
+			}).blur();
+
+			$('[placeholder]').parents('form').submit(function() {
+				$(this).find('[placeholder]').each(function() {
+					var input = $(this);
+					if (input.val() == input.attr('placeholder')) {
+						input.val('');
+					}
+				})
+			});
+
+		}
+
+		// Info popup
+		$('#login-box .info').hover(function(){
+			$(this).removeClass('no-js');
+		});
+
+		$('#login-box .info').hover(function(){
+			$('#login-box .info div').stop(false, true).fadeIn(500);
+		}, function(){
+			$('#login-box .info div').stop(false, true).fadeOut(500);
+		});
+
+		// Hide / Show Passphrase
+		$('#login-info').click(function(){
+			$('#passphrase-wrap').slideToggle(200);
+		});
+
+
+
+	});
+</script>

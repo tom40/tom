@@ -1,0 +1,1 @@
+Copy the contents of /migrate/bin/ to the location set in the application.ini file for 'migration.framework'

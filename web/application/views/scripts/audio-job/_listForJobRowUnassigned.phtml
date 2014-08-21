@@ -1,0 +1,107 @@
+<?php
+$class = '';
+?>
+<tr class="<?php echo $class; ?> 
+	<?php  if ($this->status_id == 1): ?>
+
+	<?php endif;?>
+	<?php if (!is_null($this->client_due_date_unix) && $this->client_due_date_unix <= time()) : ?>
+		overdue
+	<?php endif;?>
+
+	<?php if (!$this->current) : ?>
+		background-color: #D3D3D3;
+	<?php endif;?>
+
+	">
+	<td> <!-- 0 -->
+		<div>
+			<?php echo $this->id; ?>
+		</div>
+	</td>
+	<td>
+		<div>
+			<?php echo $this->id; ?>
+		<div>
+	</td><!-- 1 --><!--  for sorting -->
+	<td>
+		<div><!-- 2 -->
+			<span id="job-list-audio-status-<?php echo $this->escape($this->id); ?>">
+				<?php echo $this->escape($this->status); ?>
+			</span>
+		</div>
+	</td>
+    <td> <!-- 3 -->
+    	<div>
+			<?php echo wordwrap($this->file_name, 35, '<br />', true);?>
+            <?php if(!is_null($this->internal_comments) && $this->internal_comments != ''): ?>
+                <span class="job-comments">
+		<img src="<?php echo $this->baseUrl() .'/images/comment_icon.png'?>" title="Internal comments exist for this job" />
+		<span class="hidden-comments">
+			<h2>Internal Comments</h2>
+			<p>
+                <?php echo $this->internal_comments; ?>
+            </p>
+		</span>
+	</span>
+            <?php endif;?>
+    	</div>
+    </td>
+    <td><!-- 6 -->
+		<div>
+			<span style="font-size: 100%;">
+				<?php
+                echo $this->transcription_type;
+                if ( !empty( $this->service_id ) )
+                {
+                    echo '<br />' . $this->speaker_numbers . ' SPEAKERS' . '<br />' . $this->additional_services;
+                }
+                ?>
+			</span>
+		</div>
+    </td>
+	<td><!-- 7 -->
+		<div>
+			<?php if (!is_null($this->minutes_start)): ?>
+			<?php echo $this->escape(($this->minutes_end - $this->minutes_start)); ?>m
+			<?php else:?>
+			<?php echo $this->displayAudioJobLength($this->length_seconds); ?>
+			<?php endif;?>
+		</div>
+    </td>
+    <td>
+        <div>
+			<span id="job-list-audio-due-date-<?php echo $this->escape($this->id); ?>">
+			<?php echo $this->partial('audio-job/due-date-list-cell.phtml', array(
+                'data' => array(
+                    'id'				=> $this->id,
+                    'due_date_unix' 	=> $this->client_due_date_unix,
+                    'due_days'			=> $this->due_days,
+                    'due_hours'			=> $this->due_hours,
+                    'canEdit'			=> false,
+                )
+            )); ?>
+			</span>
+        </div>
+    </td>
+    <td><div><?php echo $this->client_due_date_unix?></div></td>
+    <td>
+    	<div>
+			<?php if (!is_null($this->minutes_start)): ?>
+			This file is split. Please transcribe from the beginning of minute <?php echo ($this->minutes_start)?> to the beginning of minute <?php echo ($this->minutes_end)?>.
+			<?php endif;?>
+			<?php echo $this->escape($this->comment) ?>
+		</div>
+    </td>
+    <td class="centre-image"> <!-- 9 -->
+    	<div>
+			<?php echo $this->partial('audio-job/sound-file-list-cell.phtml', array(
+				'data' => array(
+					'id'						=> $this->id,
+					'link'						=> $this->link
+				)
+
+			)); ?>
+		</div>
+	</td>
+</tr>

@@ -1,0 +1,23 @@
+<?php
+
+if ( count( $this->speakerNumbers ) > 0 )
+{
+    ?>
+    <select name="speaker_numbers_id">
+        <option value="0">-- Select --</option>
+        <?php
+        foreach ( $this->speakerNumbers as $speakerNumber )
+        {
+            $selected = '';
+            if ( $this->speakerNumbersId && $this->speakerNumbersId == $speakerNumber->getSpeakerNumber()->id )
+            {
+                $selected = ' selected="selected"';
+            }
+            ?>
+            <option<?php echo $selected;?> value="<?php echo $speakerNumber->getSpeakerNumber()->id;?>"><?php echo $speakerNumber->getSpeakerNumber()->name; ?></option>
+        <?php
+        }
+        ?>
+    </select>
+<?php
+}

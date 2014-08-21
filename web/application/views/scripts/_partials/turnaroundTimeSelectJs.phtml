@@ -1,0 +1,45 @@
+<script>
+    $(document).ready(function()
+    {
+        $('body').on('change', "#transcription_type_id", function()
+        {
+            var selected = $('#transcription_type_id').val();
+            if (selected != null && selected != 0) {
+                var url ="<?php echo $this->url(array('controller' => 'quote-generator', 'action' => 'trans-turnaround-ajax'), null, true); ?>";
+                url += "/id/" + selected;
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    cache: false,
+                    dataType: "json"
+                }).success(function( response ) {
+                    if (response.status == "OK")
+                    {
+                        if (response.message != null)
+                        {
+                            $('#turnaround_time_id')
+                                .find('option')
+                                .remove()
+                                .end();
+
+                            $.each(response.message, function(key, value)
+                            {
+                                $('#turnaround_time_id')
+                                    .append($('<option></option>')
+                                    .attr('value', value.key)
+                                    .text(value.value));
+                            });
+
+                            $('#turnaround_time_id').val(response.selected);
+                        }
+                        else
+                        {
+                            //$('#turnaround_time_id').val(0);
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>

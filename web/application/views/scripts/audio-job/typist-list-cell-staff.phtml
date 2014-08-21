@@ -1,0 +1,29 @@
+	<?php if (!is_null($this->data['typist_due_date']) && $this->data['typist_due_date'] < time()): ?>
+	<span style="color:red">!!</span>
+	<?php endif;?>
+	<?php echo $this->escape($this->data['typist_name']); ?>
+	
+	<br /><br />
+	
+    <span style="margin-top: 5px" title="Receipt confirmed?">R:&nbsp;</span>
+	<span>
+	<?php if($this->data['accepted']):?>
+		<img src="<?php echo $this->baseUrl(); ?>/images/icons/tick.png" title="Receipt confirmed"/>
+	<?php else:?>
+		<a href="#" onclick="typistAccept(<?php echo $this->data['id']?>, <?php echo $this->data['audio_jobs_typists_id']?>);return false;">
+			<img src="<?php echo $this->baseUrl(); ?>/images/icons/cross.png" title="Receipt not confirmed"/>
+		</a>
+	<?php endif;?>
+	</span>
+	<?php if($this->data['accepted']):?>
+	<span style="margin-top: 5px" title="Audio downloaded?">D:&nbsp;</span>
+	<span>
+		<?php if($this->data['downloaded']):?>
+		<img src="<?php echo $this->baseUrl(); ?>/images/icons/tick.png" title="Audio downloaded"/>
+		<?php else:?>
+		<a href="#" onclick="typistConfirmDownload(<?php echo $this->data['id']?>, <?php echo $this->data['audio_jobs_typists_id']?>);return false;">
+			<img src="<?php echo $this->baseUrl(); ?>/images/icons/cross.png" title="Audio not downloaded"/>
+		</a>	
+		<?php endif;?>
+	</span>
+	<?php endif;?>

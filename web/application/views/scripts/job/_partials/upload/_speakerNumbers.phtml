@@ -1,0 +1,7 @@
+Speakers:<br />
+<select name="speakers[]" required style="width:150px" onchange="$(this).css('background-color', 'inherit')">
+    <option value="">-- select --</option>
+    <?php foreach($this->speakerNumbers as $key => $option): ?>
+        <option value="<?php echo $key?>" <?php if($this->job['speaker_numbers_id'] == $key):?>selected<?php endif;?>><?php echo $option?></option>
+    <?php endforeach;?>
+</select>

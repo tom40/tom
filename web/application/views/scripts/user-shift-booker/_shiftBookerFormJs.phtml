@@ -1,0 +1,39 @@
+<script type="text/javascript">
+    $('#on_holiday').click(function(){
+        if ($(this).is(':checked')) {
+            $('.shift-selector').hide();
+        }
+        else
+        {
+            $('.shift-selector').show();
+        }
+    });
+
+    function processShiftBookerForm()
+	{
+		var formData = $('#shiftBookerForm').serializeArray();
+		var url      = "<?php echo $this->url(array('controller' => 'user-shift-booker', 'action' => 'ajax-create-shift'), null, true); ?>";
+
+		$.ajax({
+			type: "POST",
+		  	url:  url,
+		  	data: formData,
+		  	cache: false,
+		  	dataType: "json"
+		}).success(function( response ) {
+            $('#select-shift-dialog-container').html(response.html);
+            if (response.status == 'ok') {
+                $('#select-shift-dialog').dialog('close');
+                $('#calendar').fullCalendar( 'refetchEvents' );
+            }
+		});
+	}
+
+    function closeShiftDialog()
+    {
+        $('#select-shift-dialog').dialog('close');
+        $('#calendar').fullCalendar( 'refetchEvents' )
+        return false;
+    }
+
+</script>

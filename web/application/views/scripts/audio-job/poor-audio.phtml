@@ -1,0 +1,32 @@
+<div>
+    <div class="ui-state-default ui-widget-content ui-widget-header">
+        <h3> File Poor Audio % Modifier </h3>
+    </div>
+    <p class="padding">The audio job price and typist pay rates will be modified by this percentage value</p>
+    <div id="poor_audio_error"></div>
+    <form class="poor-audio-form" id="poorAudioForm" action="/audiojob_id/<?php echo $this->id; ?>">
+    <table class="data">
+        <tr class="first">
+            <td class="field">
+                <label for="poor_audio">Poor Audio Rate % for Audio Job <?php echo $this->id; ?></label>
+            </td>
+            <td class="value">
+                <input type="text" name="poor_audio" id="poor_audio_modifier" value="<?php echo ( $this->poor_audio > 0 ) ? ( $this->poor_audio - 1 ) * 100 : '0'; ?>" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                &nbsp;
+            </td>
+            <td>
+                <a href="#" class="button-img" onclick="processPoorAudio(<?php echo $this->id; ?>); return false;">
+                    <img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() . '/images/submit_button.png' ?>" title="Save Poor Audio">
+                </a>
+                <a href="#" class="button-img" onclick="$('#job-list-audio-dialog-poor-audio').dialog('close'); return false;">
+                    <img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() . '/images/cancel_button.png' ?>" title="Cancel">
+                </a>
+            </td>
+        </tr>
+    </table>
+</form>
+</div>

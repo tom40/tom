@@ -1,0 +1,24 @@
+<?php echo $this->partial('/_partials/email/_defaultHeader.phtml',
+    array(
+            'appName'               => $this->appName,
+            'title'                 => $this->appName . ' Shiftbooker reminder',
+            'headerImagePath'       => $this->headerImagePath
+        )
+    );
+?>
+
+We can see that you have not yet filled out your shiftbooker for next week. Please login to the portal and do this today and remember you are required to take on 2 shifts per week to stay on the Take Note books.
+If there is any reason why you cannot complete your shifts next week please email transcripts@takenotetyping.com to let us know.
+
+                            <br />
+                            <br />
+                            <?php if (isset($this->appUrl)): ?><a href="<?php echo $this->appUrl; ?>"><?php echo $this->appUrl; ?></a><br /> <?php endif; ?>
+<?php echo $this->partial('/_partials/email/_defaultFooter.phtml',
+    array(
+            'appName' => $this->appName,
+            'appUrl' => $this->appUrl,
+            'showThanksMessage'     => true,
+            'customThankYouMessage' => 'Thank You'
+        )
+    );
+?>

@@ -1,0 +1,160 @@
+<style type="text/css">
+
+
+#recent_items div.recent_items {
+    margin-left: -6px;
+    width: 200px;
+    padding-left: 10px;
+}
+
+
+#recent_items a.recent_item {
+    border-bottom: ;
+    display: block;
+    line-height: 1em;
+    overflow: hidden;
+    padding: 5px 6px;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+#recent_items a.recent_item:link, #recent_items a.recent_item:visited {
+    color: black;
+}
+
+#recent_items a.recent_item:hover, #recent_items a.recent_item:visited:hover {
+    background-color: #EFEDE7;
+}
+
+.sprite {
+    background-repeat: no-repeat;
+    border: none;
+    display: inline-block;
+    height: 0px;
+    overflow: hidden;
+    padding: 0px;
+    text-decoration: none !important;
+    vertical-align: middle;
+}
+
+img.avatar, span.avatar {
+/*    border: 1px solid #E6E6E6;*/
+    padding: 0px;
+}
+
+#recent_items span.avatar {
+    background-color: white !important;
+    float: left;
+    padding-top: 32px !important;
+    text-indent: -9000px;
+    width: 32px !important;
+}
+
+#recent_items h4 {
+    margin: 0;
+    padding: 0;
+}
+
+#recent_items h5 {
+    color: #444;
+    font-size: 13px;
+    font-weight: normal;
+    line-height: 1.3;
+    margin: 4px 0px 3px;
+    text-shadow: white 0px 1px 1px;
+    white-space: nowrap;
+}
+
+
+#recent_items h5, #recent_items h6 {
+    line-height: 1em;
+    margin-left: 42px;
+}
+
+
+#recent_items h5, #recent_items h6 {
+    line-height: 1em;
+    margin-left: 42px;
+    padding: 0;
+}
+
+#recent_items h6 {
+    color: #888;
+    font-size: 10px;
+    font-weight: normal;
+    margin: 0px;
+    margin-left: 42px;
+}
+
+#recent_items a.recent_item:link, #recent_items a.recent_item:visited {
+    color: black;
+}
+
+#recent_items a.recent_item:hover, #recent_items a.recent_item:visited:hover {
+    background-color: #EFEDE7;
+}
+
+#recent_items a.recent_item.selected, #recent_items a.recent_item.selected:hover {
+    background: #E5E5E5;
+}
+
+#recent_items h4 {
+    padding-left: 10px;
+    color: #999999;
+    font-size: 85%;
+    text-shadow: 0 1px 1px #FFFFFF;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-family: "Lucida Grande","Lucida Sans Unicode",helvetica,arial,verdana,sans-serif;
+    margin-bottom: 10px;
+}
+
+#recent_items h6 {
+    font-style: normal;
+    font-size: 77%;
+}
+
+#recent_items hr {
+    border-color: #DAD8D4 -moz-use-text-color #FFFFFF;
+    border-left: medium none;
+    border-right: medium none;
+    border-style: solid none;
+    border-width: 1px medium;
+    margin: 1em -30px 1em 0;
+    width: 245px;
+
+}
+
+
+#recent_items span.sprite {
+    background: url(<?php echo $this->baseUrl(); ?>/images/highrise_sprites.png) no-repeat -112px -148px;
+    border: 1px solid #e6e6e6;
+    padding-top: 32px;
+    width: 32px;
+}
+
+#recent_items span.sprite.issue {
+    background: url(<?php echo $this->baseUrl(); ?>/images/istockphoto_11344786-social-media-blog-icon-set-optima-series-small.jpg) no-repeat -59px -149px;
+    padding-top: 32px;
+    width: 32px;
+}
+
+#recent_items span.sprite.task {
+    background: url(<?php echo $this->baseUrl(); ?>/images/istockphoto_12614031-business-office-icon-set-small.jpg) no-repeat -102px -149px;
+    padding-top: 32px;
+    width: 32px;
+}
+
+</style>
+
+
+
+
+<!-- recent -->
+<div id="recent_items">
+    <hr />
+    <h4>Recently viewed</h4>
+    <div class="recent_items">
+        <?php echo $this->partialLoop('nav/_recentItemRow.phtml', $this->recentItems); ?>
+    </div>
+</div>

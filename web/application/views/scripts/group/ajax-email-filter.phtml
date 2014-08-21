@@ -1,0 +1,25 @@
+<p class="select-p">
+    <a href="#" class="select-link" id="select-all">Select all</a> :
+    <a href="#" class="select-link" id="de-select-all">De-select all</a>
+</p>
+<?php echo $this->partial('/group/_filteredEmailCheckbox.phtml',
+        array(
+            'title'        => 'Selected Typists',
+            'checkboxName' => 'typistSelectionList',
+            'data'         => $this->filteredTypists,
+            'selectAll'    => isset($this->selectAll) ? $this->selectAll : false,
+            'selected'     => isset($this->typistSelectionList) ? $this->typistSelectionList : null
+        )
+    );
+?>
+
+<?php echo $this->partial('/group/_filteredEmailCheckbox.phtml',
+        array(
+            'title'        => 'Selected Proofreaders',
+            'checkboxName' => 'proofreaderSelectionList',
+            'data'         => $this->filteredProofreaders,
+            'selectAll'    => isset($this->selectAll) ? $this->selectAll : false,
+            'selected'     => isset($this->proofreaderSelectionList) ? $this->proofreaderSelectionList : null
+        )
+    );
+?>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8">
+
+<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+Remove this if you use the .htaccess -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+
+<?php $this->headTitle()->append('Take Note'); ?>
+
+    <?php $this->headTitle()->setSeparator(' | '); ?>
+    <?php echo $this->headTitle(); ?>
+
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!--  Mobile viewport optimized: j.mp/bplateviewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Place favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+    <link rel="shortcut icon" href="<?php echo $this->baseUrl(); ?>/favicon.ico">
+    <link rel="apple-touch-icon" href="<?php echo $this->baseUrl(); ?>/apple-touch-icon.png">
+
+    <!-- CSS : implied media="all" -->
+    <?php $this->headLink()->prependStylesheet($this->baseUrl() . '/css/buttons.css?v=2'); ?>
+    <?php $this->headLink()->prependStylesheet($this->baseUrl() . '/css/tasks.css?v=2'); ?>
+    <?php $this->headLink()->prependStylesheet($this->baseUrl() . '/css/style2.css?v=2'); ?>
+    <?php $this->headLink()->prependStylesheet($this->baseUrl() . '/css/style.css?v=2'); ?>
+
+   <?php $this->headLink()->prependStylesheet($this->baseUrl() . '/css/anytime/anytimec.css'); ?>
+
+   <?php echo $this->headLink(); ?>
+
+
+    <link rel="stylesheet" href="<?php echo $this->baseUrl(); ?>/css/ui-redmond/jquery-ui-1.8.20.custom.css">
+    <link rel="stylesheet" href="<?php echo $this->baseUrl(); ?>/css/oocss/template.css">
+    <link rel="stylesheet" href="<?php echo $this->baseUrl(); ?>/css/default/common.css">
+    <script src="<?php echo $this->baseUrl(); ?>/js/jquery/jquery-1.7.2.min.js"></script>
+    <script src="<?php echo $this->baseUrl(); ?>/js/jquery-ui/jquery-ui-1.8.20.custom.min.js"></script>
+    <script src="<?php echo $this->baseUrl(); ?>/js/dataTables/jquery.dataTables.min.js"></script>
+    <script src="<?php echo $this->baseUrl(); ?>/js/anytime/anytimec.js"></script>
+    <script src="<?php echo $this->baseUrl(); ?>/js/moment/moment-v.1.6.2.min.js"></script>
+    <script src="<?php echo $this->baseUrl(); ?>/js/modernizr.js"></script>
+    <script src="<?php echo $this->baseUrl(); ?>/js/takenote.js"></script>
+    <?php echo $this->headScript(); ?>
+
+</head>
+
+<body>
+
+<div id="container" class="page auth">
+
+
+    <div class="body">
+
+        <div id="page">
+            <div class="main" style="padding-left: 10px;padding-right: 10px">
+                <?php echo $this->layout()->content; ?>
+            </div><!-- /main -->
+
+        </div>
+
+    </div><!-- /body -->
+
+    <div class="foot">
+        <div id="footer">
+            <div>
+                Copyright &copy;
+                <?php if (date('Y') > 2012) : ?>
+                    2011 -
+                <?php endif;?>
+                <?php echo date('Y'); ?>
+                <a href="http://www.takenotetyping.com" title="Go to Take Note home page" target="_blank" class="copyright">Take Note</a>. <?php echo $this->version(); ?>
+                All rights reserved.
+            </div>
+        </div>
+    </div>
+
+</div><!--! end of #container -->
+</body>
+</html>

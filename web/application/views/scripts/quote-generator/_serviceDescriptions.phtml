@@ -1,0 +1,28 @@
+<h2>Service Information</h2>
+<table>
+<?php
+foreach ( $this->services as $service )
+{
+?>
+    <tr>
+        <td class="field"><strong><?php echo $service->name; ?></strong></td>
+        <td class="value"><?php echo $service->description; ?></td>
+    </tr>
+<?php
+}
+?>
+</table>
+<h2>Additional Service Information</h2>
+<table>
+    <?php
+    foreach ( $this->additionalServices as $additionalService )
+    {
+        ?>
+        <tr>
+            <td class="field"><strong><?php echo $additionalService->name; ?></strong></td>
+            <td class="value"><?php echo $additionalService->description; ?></td>
+        </tr>
+    <?php
+    }
+    ?>
+</table>

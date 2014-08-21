@@ -1,0 +1,71 @@
+<?php echo $this->partial('/_partials/email/_defaultHeader.phtml',
+    array(
+            'appName' => $this->appName,
+            'title'   => 'You have been granted access to a project in the Take Note Portal'
+        )
+    );
+?>
+Hi <?php echo $this->receiverName;?><br /><br />
+Just a quick email to let you know a colleague has granted you access to a project in the
+Take Note Portal as below. This means you will able to view the project when you login and
+add audio or view transcripts as required.
+
+<?php if (!empty($this->viewData)): ?>
+	<table class="data" style="font-family:helvetica, arial, sans-serif;color:#333;font-size:12px;line-height:18px;margin:0 0 15px;">
+ 		<tr class="first">
+        	<td class="field">
+            	<label for="name">Project lead:</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php echo $this->viewData['primary_user']; ?></span>
+            </td>
+		</tr>
+		<tr>
+        	<td class="field">
+            	<label for="name">Project Name:</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php echo $this->viewData['title']; ?></span>
+            </td>
+		</tr>
+		<tr>
+        	<td class="field">
+            	<label for="name">Default service required:</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php if (isset($this->viewData['transcription_name'])) echo $this->viewData['transcription_name']; ?></span>
+            </td>
+		</tr>
+		<tr>
+        	<td class="field">
+            	<label for="name">Total files:</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php echo $this->viewData['audio_job_count']; ?></span>
+            </td>
+		</tr>
+        <tr>
+        	<td class="field">
+            	<label for="name">Start date::</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php echo date('g.ia d.m.y', strtotime($this->viewData['job_start_date'])); ?></span>
+            </td>
+		</tr>
+        <tr>
+        	<td class="field">
+            	<label for="name">Due date::</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php echo date('g.ia d.m.y',  strtotime($this->viewData['job_due_date'])); ?></span>
+            </td>
+		</tr>
+	</table>
+<?php endif;?>
+If you have any queries please don't hesitate to get in touch.
+<?php echo $this->partial('/_partials/email/_defaultFooter.phtml',
+    array(
+            'appName' => $this->appName
+        )
+    );
+?>

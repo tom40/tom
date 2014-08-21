@@ -1,0 +1,29 @@
+<script>
+$(document).ready(function()
+{
+    $('.delete').click(function()
+    {
+		var url ="<?php echo $this->url(array('controller' => 'shift-booker', 'action' => 'delete-shift-admin'), null, true); ?>";
+
+		$.ajax({
+			type: "POST",
+		  	url: url,
+		  	data: 'shiftId=<?php echo $this->shiftId;?>&userType=<?php echo $this->userType;?>',
+		  	cache: false,
+		  	dataType: "json"
+		}).success(function()
+        {
+            $('#shift-booker').dialog('close');
+            var url ="<?php echo $this->url(array('controller' => 'shift-booker', 'action' => 'list'), null, true); ?>";
+            window.location.href = url;
+		});
+    });
+})
+</script>
+<div class="ui-state-default ui-widget-content ui-widget-header">
+	<h3 style="padding:5px">
+		Delete shift for <?php echo $this->user['name']; ?>
+	</h3>
+</div>
+
+<p class="padding15"><a href="#" class="delete"><img src="/images/delete_button.png" alt="Delete" /></a></p>

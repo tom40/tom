@@ -1,0 +1,10 @@
+<?php if(!empty($this->data['due_date_unix'])):?>
+<a href="#" onclick="showDueDate('<?php echo $this->data['id']; ?>', '<?php echo date('Y-m-d H:i:s', $this->data['due_date_unix']); ?>', '<?php echo $this->data['type']; ?>'); return false;">
+    <?php
+    echo date('jS M \a\t H:i', $this->data['due_date_unix']);
+?>
+    </a>
+<?php
+    else:
+        echo '-';
+        endif;?>

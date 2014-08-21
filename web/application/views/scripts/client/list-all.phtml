@@ -1,0 +1,84 @@
+<h1 class="page-title">Clients</h1>
+
+<div id="table-utility">
+	<div id="utility-links">
+		<a href="<?php echo $this->url(array('controller' => 'client', 'action' => 'create'), null, true); ?>" class="no-icon">
+			Add new client
+		</a>
+	</div>
+</div>
+
+<div id="container" style="width:100%">
+	<table class="index not-fixed-height" id="tbl_clients">
+	<thead>
+		<th>ID</th>
+		<th>Client</th>
+		<th>Telephone</th>
+        <th>Service Groups</th>
+		<th>&nbsp;</th>
+	</thead>
+	<tbody>
+		<?php
+        echo $this->partial( 'client/_clientRow.phtml', array( 'clients' => $this->clients ) );
+        ?>
+	</tbody>
+	<tfoot id="footer-search">
+				<tr>
+					<th>&nbsp;</th>
+					<th><input type="text" name="search_browser" value="Search client name" class="search_init" /></th>
+					<th>&nbsp;</th>
+					<th>&nbsp;</th>
+                    <th>&nbsp;</th>
+				</tr>
+			</tfoot>
+	</table>
+</div>
+<script>
+var asInitVals = new Array();
+$(document).ready(function() {
+
+	$('.flashmessenger').delay(2000).fadeOut('slow');
+
+    var oTable = $('#tbl_clients').dataTable({
+        "bJQueryUI": true,
+        "bPaginate": false,
+        "sPaginationType": "full_numbers",
+        "bStateSave": true,
+        "oLanguage": {
+            "sSearch": "Search all columns:",
+            "sEmptyTable": "No clients available"
+        }
+    });
+
+    $("tfoot input").keyup( function () {
+        /* Filter on the column (the index) of this element */
+        // note: add +1 to the index.value as there is no input in col 0 so the index of the text input doesn't match the index of the column being queried
+        oTable.fnFilter(this.value, $("tfoot input").index(this)+1);
+    } );
+
+
+    /*
+     * Support functions to provide a little bit of 'user friendlyness' to the textboxes in
+     * the footer
+     */
+    $("tfoot input").each( function (i) {
+        asInitVals[i] = this.value;
+    } );
+
+    $("tfoot input").focus( function () {
+        if ( this.className == "search_init" )
+        {
+            this.className = "";
+            this.value = "";
+        }
+    } );
+
+    $("tfoot input").blur( function (i) {
+        if ( this.value == "" )
+        {
+            this.className = "search_init";
+            this.value = asInitVals[$("tfoot input").index(this)];
+        }
+    } );
+} );
+</script>

@@ -1,0 +1,29 @@
+<tr>
+    <td class="field"><span class="view"><?php echo $this->areaName; ?>(<?php echo $this->formatScore($this->maxAreaScore); ?>)</span></td>
+    <td>
+        <div class="element-error error-inner">
+            <input type="hidden" name="<?php echo $this->identifier; ?>[id]" value="<?php echo $this->criteriaId; ?>" />
+            <input type="text" name="<?php echo $this->identifier; ?>[score]" value="<?php echo $this->formatScore($this->formData['score']); ?>" />
+            <br />
+            <span>
+                <?php if (isset($this->errors['score'])): ?>
+                    <span class="report-error"><?php echo $this->errors['score']; ?></span>
+                <?php endif; ?>
+            </span>
+        </div>
+    </td>
+    <td>
+        <span class="view">
+            <textarea name="<?php echo $this->identifier; ?>[comment]"><?php echo $this->formData['comment']; ?></textarea>
+            <br />
+            <span>
+                <?php if (isset($this->errors['comment'])): ?>
+                    <?php echo $this->errors['comment']; ?>
+                <?php endif; ?>
+            </span>
+        </span>
+    </td>
+    <td>
+        <span class="view"><?php echo $this->criteria; ?></span>
+    </td>
+</tr>

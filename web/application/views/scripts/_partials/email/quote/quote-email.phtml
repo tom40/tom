@@ -1,0 +1,23 @@
+<?php
+echo $this->partial(
+    '/_partials/email/_defaultHeader.phtml',
+    array(
+        'appName' => $this->appName,
+        'title'   => $this->appName . ' Quote'
+    )
+);
+
+echo $this->partial(
+    'quote-generator/_quote-body.phtml',
+    'default',
+    $this->viewData
+);
+
+echo $this->partial(
+    '/_partials/email/_defaultFooter.phtml',
+    array(
+        'appName' => $this->appName,
+        'appUrl'  => $this->appUrl
+    )
+);
+?>

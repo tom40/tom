@@ -1,0 +1,21 @@
+<?php
+
+if ( $this->service instanceof Application_Model_Service_Row && count( $this->service->getServicePriceModifiers() ) > 0 )
+{
+    foreach ( $this->service->getServicePriceModifiers() as $priceModifier )
+    {
+        $checked = '';
+        if ( ( is_array( $this->modifiers ) && in_array( $priceModifier->id, $this->modifiers ) ) )
+        {
+            $checked = ' checked="checked"';
+        }
+        ?>
+        <span style="width:100px; clear:both; display:block;">
+            <span style="float: left; width:80px;">
+                <?php echo $priceModifier->getPriceModifier()->name; ?>
+            </span>
+            <input<?php echo $checked;?> type="checkbox" name="price_modifiers_<?php echo $priceModifier->id; ?>[]" value="<?php echo $priceModifier->id; ?>" />
+        </span>
+    <?php
+    }
+}

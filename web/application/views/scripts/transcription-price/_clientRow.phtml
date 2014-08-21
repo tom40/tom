@@ -1,0 +1,22 @@
+<tr id="tr-<?php echo $this->id; ?>">
+	<td>
+		<div>
+			<?php echo $this->escape($this->id); ?>
+		</div>
+	</td>
+    <td>
+    	<div>
+			<?php echo $this->escape($this->name); ?>
+    	</div>
+    </td>
+    <td>
+    	<div>
+        	<a href="<?php echo $this->url(array('controller' => 'transcription-price', 'action' => 'client-update', 'id' => $this->id), null, true); ?>" class="to_person">Prices</a>
+    	</div>
+    </td>
+    <td>
+    	<div>
+       		<a href="<?php echo $this->url(array('controller' => 'transcription-price', 'action' => 'client-transcription-type', 'id' => $this->id), null, true); ?>" class="to_person">Add Transcription Type</a>
+    	</div>
+    </td>
+</tr>

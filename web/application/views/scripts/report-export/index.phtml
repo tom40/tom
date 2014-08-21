@@ -1,0 +1,53 @@
+<h1>Invoice Export</h1>
+<p>Please use the options below to customize your report.</p>
+<div id="invoice-export-container">
+    <form id="formExportInvoice" method="POST" action="<?php echo $this->url(array('controller' => 'report-export', 'action' => 'download'), null, true); ?>">
+        <table class="data">
+            <tr class="first">
+                <td class="field">
+                    <label for="name">Start Date:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->date_start; ?></span>
+                </td>
+                <td class="field">
+                    <label for="name">Client:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->client_id; ?></span>
+                </td>
+            </tr>
+            <tr class="first">
+                <td class="field">
+                    <label for="name">End Date:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->date_end; ?></span>
+                </td>
+                <td class="field">
+                    <label for="name">Status:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->status_id; ?></span>
+                </td>
+            </tr>
+        </table>
+        <table class="data">
+            <tr>
+                <td class="field">
+                    &nbsp;
+                </td>
+                <td>
+                    <input id="submit" class="reg_input_btn" type="image" name="submit" alt="Export" src="/images/export_btn.jpg" />
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script>
+    $(function() {
+        $( "#btn_save" ).button();
+        $( ".invoice-export-date" ).datepicker({dateFormat: 'dd/mm/yy'});
+    });
+</script>

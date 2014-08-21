@@ -1,0 +1,57 @@
+<?php echo $this->partial('/_partials/email/_defaultHeader.phtml',
+    array(
+            'appName' => $this->appName,
+            'title'   => 'Completed transcript'
+         )
+    );
+?>
+Dear <?php echo $this->data['created_by']?>
+<br />
+<br />
+We are pleased to inform you that the below project has now been completed and you should now have received all of your transcripts. If you are missing any please do not hesitate to let us know and we will be happy to resend.
+<br />
+
+	<table class="data" style="font-family:helvetica, arial, sans-serif;color:#333;font-size:12px;line-height:18px;margin:0 0 15px;">
+		<tr class="first">
+        	<td class="field">
+            	<label for="name">Project ID:</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php echo $this->data['id']; ?></span>
+            </td>
+		</tr>
+		<tr>
+        	<td class="field">
+            	<label for="name">Project title:</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php echo $this->data['title']; ?></span>
+            </td>
+		</tr>
+ 		<tr>
+        	<td class="field">
+            	<label for="name">Project PO/reference:</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php echo $this->data['po_number']; ?></span>
+            </td>
+		</tr>
+		<tr>
+        	<td class="field">
+            	<label for="name">Audio files/transcripts:</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php echo $this->data['audio_job_count'] ?></span>
+            </td>
+		</tr>
+	</table>
+We do hope you are happy with the service we have provided and look forward to working with you again soon. We always value feedback so if you have any comments or suggestions please do let us know.
+<br /><br />
+<?php echo $this->partial('/_partials/email/_defaultFooter.phtml',
+    array(
+            'appName' => $this->appName,
+            'appUrl' => $this->appUrl,
+            'showThanksMessage' => true
+        )
+    );
+?>

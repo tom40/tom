@@ -1,0 +1,27 @@
+<?php echo $this->partial('/shift-booker/_manageShiftForm.phtml',
+    array(
+            'form'       => $this->form,
+            'shift'      => $this->shift,
+            'userType'   => $this->userType,
+            'formAction' => $this->formAction
+        )
+    );
+?>
+<br />
+<a href="<?php echo $this->url(array('controller' => 'shift-booker', 'action' => 'manage-shifts'), null , true); ?>" class="button-img">
+	<img src="/images/manage_shifts_button.png" alt="Manage Shifts" />
+</a>
+<a href="<?php echo $this->url(array('controller' => 'shift-booker', 'action' => 'delete-shift', 'usertype' => $this->userType, 'id' => $this->shift['id']), null , true); ?>" id="confirmShiftDelete" class="button-img">
+	<img src="/images/delete_button.png" alt="Delete Shift" />
+</a>
+
+<script type="text/javascript">
+    $('#confirmShiftDelete').click(function() {
+       if (confirm("Are you sure you wish to delete this shift? If any staff members have this shift booked it will be removed from their calendar"))
+       {
+           return true;
+       }
+
+       return false;
+    });
+</script>

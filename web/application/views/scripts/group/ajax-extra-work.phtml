@@ -1,0 +1,10 @@
+<?php if ($this->extraWork): ?>
+    <h2>Jobs</h2>
+    <table>
+        <?php foreach ($this->extraWork as $job): ?>
+            <tr>
+                <td><?php echo $job['transcription_type']; ?> - <?php echo $this->displayAudioJobLength($job['length_seconds']); ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
+<?php endif; ?>

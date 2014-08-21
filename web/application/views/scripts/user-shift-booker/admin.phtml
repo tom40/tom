@@ -1,0 +1,74 @@
+<div id="shift-calendar">
+
+	<h1>Shift Calendar</h1>
+	<?php $this->headLink()->prependStylesheet($this->baseUrl() . '/js/fullcalendar/fullcalendar.css'); ?>
+	<?php $this->headLink()->prependStylesheet($this->baseUrl() . '/js/fullcalendar/fullcalendar.print.css'); ?>
+	<?php $this->headScript()->appendFile( '/js/fullcalendar/fullcalendar.min.js', 'text/javascript'); ?>
+    <div id="shiftbooker-holder">
+    		<form method="post" id="admin-user-shift-form">
+                <label>Select a user: </label>
+                <select name="userid" id="userid">
+                    <option value="0">select...</option>
+                    <?php if (!empty($this->userList)): ?>
+                        <?php foreach ($this->userList as $user): ?>
+                            <option value="<?php echo $user['key']; ?>" <?php if ($this->currentUserId == $user['key']): ?>selected="selected"<?php endif; ?>>
+                                <?php echo $user['value']; ?>
+                            </option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </select>
+                <div id="user-type-holder" <?php if (empty($this->dualUserTypeSelect)): ?>style="display:none"<?php endif; ?>>
+                    <label>Select user type: </label>
+                    <select name="usertype" id="userTypeSelect">
+                        <option value="typist" <?php if ('typist' == $this->userType): ?>selected="selected"<?php endif; ?>>Typist</option>
+                        <option value="proofreader" <?php if ('proofreader' == $this->userType): ?>selected="selected"<?php endif; ?>>Proofreader</option>
+                    </select>
+                </div>
+                <input type="hidden" name="dualusertype" id="dualUserType" value="<?php if (true == $this->dualUserTypeSelect):?>1<?php endif;?>" />
+                <input type="submit" value="Display" />
+            </form>
+    </div>
+    <?php if (!empty($this->currentUserId)): ?>
+        <div id='loading' style='display:block'>loading...</div>
+        <?php echo $this->partial('/user-shift-booker/_calendar.phtml', array('userType' => $this->userType, 'userId' => $this->currentUserId)); ?>
+    <?php endif; ?>
+</div>
+<script type='text/javascript'>
+    $(document).ready(function() {
+        $('#userid').change(function() {
+            $('#user-type-holder').hide();
+            $('#dualUserType').val('0');
+            var userId   = $('#userid').val();
+            var userType = fetchUserType(userId);
+            if (userType == 'typist')
+            {
+                $('#usertype').val('typist');
+                $('#userTypeSelect option[value="typist"]').attr('selected', 'selected');
+                $('#userTypeSelect option[value="proofreader"]').removeAttr("selected");
+            }
+            else if (userType == 'proofreader')
+            {
+                $('#usertype').val('proofreader');
+                $('#userTypeSelect option[value="proofreader"]').attr('selected', 'selected');
+                $('#userTypeSelect option[value="typist"]').removeAttr("selected");
+            }
+            else if (userType == 'both')
+            {
+                $('#user-type-holder').show();
+                $('#dualUserType').val('1');
+            }
+        });
+
+        function fetchUserType(userId)
+        {
+            var url ="<?php echo $this->url(array('controller' => 'user-shift-booker', 'action' => 'ajax-fetch-user-type'), null, true); ?>";
+            return $.ajax({
+                type: "GET",
+                url: url,
+                data: {userid: userId},
+                cache: false,
+                async: false
+            }).responseText;
+        }
+    });
+</script>

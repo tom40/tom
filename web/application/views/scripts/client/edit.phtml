@@ -1,0 +1,150 @@
+<script>
+$( 'document' ).ready( function()
+{
+
+    $( '#formCreateClient' ).on( 'change', 'input[name="service_groups[]"]', function()
+    {
+        var serviceGroups = $( 'input[name="service_groups[]"]:checkbox:checked' ).map( function(){ return this.value; } ).get();
+
+        var url ="<?php echo $this->url( array( 'controller' => 'client', 'action' => 'show-additional-services', 'id' => $this->data['id'] ), null, true ); ?>";
+
+        $.ajax({
+            type     : 'POST',
+            url      : url,
+            data     : { service_groups : serviceGroups },
+            cache    : false,
+            dataType : "json"
+        }).success(function( msg )
+        {
+            $( '#additional_services_view' ).html( msg.html );
+        });
+    } )
+
+});
+</script>
+
+<h1>Editing client ID <?php echo $this->data['id']?>: <?php echo $this->data['name']?></h1>
+
+<?php
+$this->form->setAction($this->url());
+?>
+
+<div>
+    <p class="validateTips">Form fields marked with * are required.</p>
+    <form id="formCreateClient" method="<?php echo $this->form->getMethod(); ?>" action="<?php echo $this->form->getAction(); ?>">
+    	<?php echo $this->form->id; ?>
+        <table class="data">
+        	<tr class="first">
+                <td class="field">
+                    <label for="name">Name:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->name; ?></span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="field">
+                    <label for="name">Telephone:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->telephone; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="name">Address:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->address; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="name">Postcode:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->postcode; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="name">Client comments:</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->comments; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="name">Discount (%):</label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->discount; ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="service_groups">Service Groups:</label>
+                </td>
+                <td>
+                    <span class="view">
+                        <?php
+                        foreach ( $this->serviceGroups as $serviceGroup )
+                        {
+                            $checked = '';
+                            if ( $this->data->hasServiceGroup( $serviceGroup->id ) )
+                            {
+                                $checked = ' checked="checked"';
+                            }
+                            ?>
+                            <p class="operative-search">
+                                <input type="checkbox" name="service_groups[]" value="<?php echo $serviceGroup->id;?>"<?php echo $checked;?> />
+                                <?php echo $serviceGroup->name; ?>
+                            </p>
+                        <?php
+                        }
+                        ?>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="additional_services">Additional Services</label>
+                </td>
+                <td>
+                    <span class="view" id="additional_services_view">
+                        <?php
+                        echo $this->partial( 'client/_partials/_services.phtml', 'default', array( 'data' => $this->data, 'services' => $this->services ) );
+                        ?>
+                    </span>
+                </td>
+            </tr>
+	    <table class="data">
+            <tr>
+            	<td class="field">
+            		&nbsp;
+            	</td>
+                <td>
+                    <?php //echo $this->form->submit; ?>
+                    <a href="#" onclick="formCreateClient.submit();return false;" class="button-img">
+                    	<img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/submit_button.png'?>" title="Save job">
+                    </a>
+                    <a href="<?php echo $this->url(array('controller' => 'client', 'action' => 'list-all'), null, true); ?>" class="button-img">
+                    	<img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/cancel_button.png'?>" title="Cancel job">
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<script>
+	$(function() {
+		$( "#btn_save" ).button();
+		$( "#btn_cancel" ).button();
+		$( "#job_due_date" ).datepicker({dateFormat: 'dd/mm/yy'});
+
+
+	});
+</script>

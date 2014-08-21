@@ -1,0 +1,41 @@
+<h1>Report</h1>
+<?php if ($this->canView): ?>
+<p>Typist: <?php echo $this->reportInfo['typist_name']; ?>
+    <br />
+Audio File: <?php echo $this->reportInfo['file_name']; ?></p>
+<input type="hidden" name="report_id" value="<?php echo $this->reportInfo['id']; ?>" />
+<table class="data update-report">
+    <tr>
+        <th>
+            <h2>Area</h2>
+            (and points available out of <?php echo $this->formatScore($this->maxScore); ?>)
+        </th>
+        <th><h2>Points awarded</h2></th>
+        <th><h2>Comments</h2></th>
+        <th><u><h2>How to obtain maximum score</h2></u></th>
+    </tr>
+    <?php foreach ($this->reportCriteria as $report): ?>
+        <?php
+        echo $this->partial('/report/_reportData.phtml', array(
+                'comment'      => $report['comment'],
+                'score'        => $report['userScore'],
+                'areaName'     => $report['area'],
+                'maxAreaScore' => $report['score'],
+                'criteria'     => $report['criteria']
+            )
+        );
+        ?>
+    <?php endforeach; ?>
+    <tr class="report-totals"">
+        <td class="field">Total:</td>
+        <td>
+            <?php echo $this->partial('/report/_reportScore.phtml', array('totalScore' => $this->reportInfo['total_score'], 'maxScore' => $this->maxScore)); ?>
+        </td>
+        <td><?php echo $this->reportInfo['comment']; ?></td>
+        <td>&nbsp;</td>
+    </tr>
+</table>
+    <a href="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'list-typist'), null, true); ?>"><img src="/images/backtoaudio_button.png" alt="Back" /></a>
+<?php else: ?>
+    <p>You are not authorised to view this report</p>
+<?php endif; ?>

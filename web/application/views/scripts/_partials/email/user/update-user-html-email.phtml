@@ -1,0 +1,28 @@
+<st<?php echo $this->partial('/_partials/email/_defaultHeader.phtml',
+    array(
+            'appName' => $this->appName,
+            'title' => 'Account Update'
+        )
+    );
+?>
+
+        Dear <?php echo $this->name; ?><br /><br />
+        <?php echo $this->escape($this->translate('Your details have been updated for the account below.')); ?><br /><br />
+
+        <strong><?php echo $this->escape($this->translate('Username')); ?>:</strong> <?php echo $this->escape($this->username); ?><br />
+        <?php if (isset($this->password) && !empty($this->password)): ?>
+            <strong><?php echo $this->escape($this->translate('Password')); ?>:</strong> <?php echo $this->escape($this->password); ?><br />
+        <?php endif; ?>
+        <br />
+        <?php echo $this->escape($this->translate('Please login and review the changes.')); ?><br /><br />
+
+        <?php echo $this->escape($this->translate('You can login at')); ?>:<br />
+        <a href="<?php echo $this->appUrl; ?>"><?php echo $this->appUrl; ?></a>
+
+<?php echo $this->partial('/_partials/email/_defaultFooter.phtml',
+    array(
+            'appName' => $this->appName,
+            'appUrl' => $this->appUrl
+        )
+    );
+?>

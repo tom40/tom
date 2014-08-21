@@ -1,0 +1,24 @@
+<?php echo $this->partial('/_partials/email/_defaultHeader.phtml',
+    array(
+            'appName' => $this->appName,
+            'title'   => 'Welcome to the Take Note Portal'
+        )
+    );
+?>
+    <?php echo $this->escape($this->translate('Hi and Welcome to the Take Note Portal! A new account has been created for you and your login details are shown below. ')); ?><br /><br />
+
+    <strong><?php echo $this->escape($this->translate('Username')); ?>:</strong> <?php echo $this->escape($this->username); ?><br />
+    <strong><?php echo $this->escape($this->translate('Password')); ?>:</strong> <?php echo $this->escape($this->password); ?><br /><br />
+
+    <?php echo $this->escape($this->translate("Please note: If you are uploading sensitive material, we can set you up with an extra layer of security when logging on to our system, via a 3 word passphrase. If this is of interest of if you have any other issues please don't hesitate to get in touch using either "));?><a href="mailto:bookings@takenotetyping.com"><?php echo $this->escape($this->translate('bookings@takenotetyping.com'));?></a> <?php echo $this->escape($this->translate('or 0207 928 1048. ')); ?>:<br /><br />
+    
+    <?php echo $this->escape($this->translate('Thanks'));?><br/>
+    <?php echo $this->escape($this->translate('The Take Note Team'));?>
+
+<?php echo $this->partial('/_partials/email/_defaultFooter.phtml',
+    array(
+            'appName' => $this->appName,
+            'appUrl' => $this->appUrl
+        )
+    );
+?>

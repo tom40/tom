@@ -1,0 +1,76 @@
+<script>
+    $('document').ready(function()
+    {
+        $('#tbl_groups').on('click', '.delete-groups', function()
+        {
+            var confirmDelete = confirm("Are you sure you want to delete this service group?");
+            if (confirmDelete == true)
+            {
+                var link = $(this);
+                var components = link.attr('id').split('-');
+                var id = components[1];
+                $('#delete-form-' + id).submit();
+            }
+            return false;
+        });
+    });
+</script>
+
+<h1>Service Groups</h1>
+
+<div id="table-utility">
+    <div id="utility-links">
+        <a href="<?php echo $this->url(array('controller' => 'services', 'action' => 'edit-group'), null, true); ?>" class="no-icon">
+            Add new service group
+        </a>
+    </div>
+</div>
+<table class="dataTable index not-fixed-height" id="tbl_groups">
+    <thead>
+        <tr>
+            <th><div>Service Group</div></th>
+            <th><div>Edit</div></th>
+            <th><div>Delete</div></th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php if( count( $this->groups ) > 0 ): ?>
+        <?php foreach( $this->groups as $group ): ?>
+            <tr>
+                <td><div><?php echo $group->name; ?></div></td>
+                <td>
+                    <div>
+                        <a href="<?php echo $this->url( array( 'controller' => 'services', 'action' => 'edit-group', 'id' => $group->id ) ); ?>">
+                            Edit
+                        </a>
+                    </div>
+                </td>
+                <td>
+                    <?php
+                    if ( $group->canDelete() )
+                    {
+                        ?>
+                        <div>
+                            <form method="POST" action="<?php echo $this->url( array( 'controller' => 'services', 'action' => 'delete-group' ), null, true ); ?>" id="delete-form-<?php echo $group->id; ?>">
+                                <input type="hidden" name="group_id" value="<?php echo $group->id; ?>" />
+                            </form>
+                            <a href="#" id="delete-<?php echo $group->id; ?>" class="confirm-delete delete-groups">
+                                <img src="<?php echo $this->baseUrl() .'/images/icons/delete.png'?>" title="Delete group">
+                            </a>
+                        </div>
+                    <?php
+                    }
+                    ?>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    <?php endif; ?>
+    </tbody>
+    <tfoot>
+        <tr id="footer-search">
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+        </tr>
+    </tfoot>
+</table>

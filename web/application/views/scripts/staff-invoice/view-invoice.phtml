@@ -1,0 +1,786 @@
+<div id="project-details">
+    <div id="project-info">
+        <p>
+            Invoice: <?php echo $this->invoice->name?><br />
+        </p>
+    </div>
+
+    <div class="project-status">
+        <p class="first">
+            <span>Status</span><?php echo $this->invoice->getStatusName(); ?>
+        </p>
+        <p>
+            <span>Typist</span><?php echo $this->invoice->getStaffName(); ?>
+        </p>
+    </div>
+
+    <div class="project-status">
+        <p class="first">
+            <span>From</span><?php echo date('d/m/Y', strtotime($this->invoice->date_start)); ?>
+        </p>
+        <p>
+            <span>To</span><?php echo date('d/m/Y', strtotime($this->invoice->date_end)); ?>
+        </p>
+    </div>
+
+    <div class="project-status">
+        <p class="first">
+            <span>Amount Due</span>&pound;<?php echo number_format($this->invoice->getTotalAmountDue(), 2); ?>
+        </p>
+    </div>
+
+</div>
+<p><a id="toggle-comments" href="#">Hide Comments</a></p>
+<div id="invoice-comments-container">
+    <?php
+    if ( count( $this->invoice->getComments() ) > 0 )
+    {
+    ?>
+    <div id="invoice-comments">
+        <?php
+        foreach ( $this->invoice->getComments() as $comment )
+        {
+            ?>
+            <div>
+                <p class="comment-list"><?php echo nl2br( $comment->comment ); ?></p>
+                <p><?php echo date( 'd/m/Y', strtotime( $comment->created_date ) ); ?> by <?php echo $comment->getUser()->name; ?></p>
+            </div>
+            <?php
+        }
+        ?>
+    </div>
+    <?php
+    }
+    ?>
+
+    <div id="invoice-comment-form">
+        <form method="POST" action="/en/default/staff-invoice/submit-comment/id/<?php echo $this->invoice->id; ?>">
+            <label>Comment</label>
+            <textarea name="invoice_comment" id="invoice_comment"></textarea>
+            <input class="btn" type="submit" value="Submit Comment" />
+        </form>
+    </div>
+</div>
+<?php
+
+if ( $this->isStaff )
+{
+    $transitions = $this->invoice->getStaffTransitions();
+}
+else
+{
+    $transitions = $this->invoice->getAdminTransitions();
+}
+?>
+
+<div class="invoice-status-forms">
+<?php
+
+if ( count( $transitions ) > 0 )
+{
+    ?>
+    <h2 id="change-invoice">Change Invoice Status</h2>
+    <?php
+}
+
+foreach ( $transitions as $text => $id )
+{
+    ?>
+    <form id="pay-invoice" method="POST" action="/en/default/staff-invoice/transition-invoice/id/<?php echo $this->invoice->id ?>">
+        <input type="hidden" value="<?php echo $id ;?>" name="status_id" />
+        <input class="btn" type="submit" value="<?php echo $text; ?>" />
+    </form>
+    <?php
+}
+
+if ( $this->invoice->canDelete( $this->isStaff ) )
+{
+?>
+    <form id="delete-invoice" method="POST" action="/en/default/staff-invoice/delete-invoice">
+        <input type="hidden" value="<?php echo $this->invoice->id ?>" name="invoice_id" />
+        <input class="btn delete" type="submit" value="Delete" onclick="return confirmDeleteInvoice();" />
+    </form>
+<?php
+}
+
+?>
+</div>
+
+
+<div id="job-list-audio-dialog-status" style="display: none">
+    <span id="job-list-audio-dialog-status-container" class="view"></span>
+</div>
+
+<div id="job-list-audio-dialog-edit" style="display: none">
+    <span id="job-list-audio-dialog-edit-container" class="view"></span>
+</div>
+
+<div id="job-list-record-dialog-edit" style="display: none">
+    <span id="job-list-record-dialog-edit-container" class="view"></span>
+</div>
+<?php
+if ( !$this->typistOnly )
+{
+?>
+<div id="table-utility" class="ad-hoc">
+
+    <div id="utility-links" class="invoice">
+        <a href="#" class="ad-hoc-link">
+            <img style="vertical-align:text-top; padding: 0px 0px 3px 2px" src="<?php echo $this->baseUrl() .'/images/edit_audio_icon.png'?>" title="Create ad-hoc payment">
+            Create Ad-hoc payment
+        </a>
+    </div>
+</div>
+<?php
+}
+?>
+<div id="container" class="view-invoice-table">
+    <table class="index not-fixed-height" id="tbl_invoices">
+        <thead>
+            <th>ID</th>
+            <th>File Name</th>
+            <th>Date Assigned</th>
+            <th>Status</th>
+            <th>Service</th>
+            <th>Minutes Worked</th>
+            <th>PPM</th>
+            <th>Amount Due</th>
+            <th>Accuracy</th>
+            <?php
+            if ( !$this->isStaff )
+            {
+            ?>
+                <th>Delete/Remove</th>
+            <?php
+            }
+            ?>
+        </thead>
+        <tbody>
+
+        <?php
+        foreach ( $this->invoice->getRecords() as $record )
+        {
+            ?>
+            <tr>
+                <td>
+                    <div>
+                        <?php
+                            if ( !$record->isAdHoc() )
+                            {
+                            echo $record->getAudioJob()->id;
+                        ?>
+                            <br />
+                            <input type="checkbox" class="record-checkbox" name="check-<?php echo $this->escape( $record->id )?>" value="<?php echo $this->escape( $record->id )?>">
+                        <?php
+                            }
+                            else
+                            {
+                        ?>
+                            Ad-hoc
+                        <?php
+                            }
+                        ?>
+                    </div>
+                </td>
+                <td>
+                <?php
+                    if ( $this->isStaff )
+                    {
+                        echo $record->getName();
+                    }
+                    else
+                    {
+                        if ( !$record->isAdHoc() )
+                        {
+                    ?>
+                    <a href="<?php echo $this->url( array( 'controller' => 'job', 'action' => 'view', 'id' => $record->getAudioJob()->job_id ), null, true ); ?>"><img src="<?php echo $this->baseUrl() .'/images/client_icon.png' ?>" title="Go to Invoice"></a>
+                        <?php
+                        }
+                        ?>
+                    <a href="#" onclick="showEditRecord('<?php echo $record->id; ?>', '<?php echo $this->invoice->id; ?>');return false;"><?php echo $record->getName(); ?></a>
+                    <?php
+                    }
+                ?>
+                </td>
+                <td>
+                    <?php echo date( 'd/m/Y', strtotime( $record->created_date ) ); ?>
+                </td>
+                <td>
+                    <?php
+                    if ( !$record->isAdHoc() )
+                    {
+                    ?>
+                    <span id="job-list-audio-status-<?php echo $this->escape( $record->getAudioJob()->id ); ?>">
+				        <?php echo $this->escape( $record->getAudioJobStatus() ); ?>
+			        </span>
+                    <?php
+                    }
+                    else
+                    {
+                        echo '-';
+                    }
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    echo $record->getServiceName();
+                    if ( $record->hasService() )
+                    {
+                    ?>
+                    <br/>
+                    <?php
+                        echo $record->getSpeakerNumbers()->name;
+                    ?>
+                    Speakers<br/>
+                    <?php
+                        echo $record->getTurnaroundTime()->name;
+                    ?>
+                        <br/>
+                    <?php
+                        echo $record->getAdditionalServicesString();
+                    }
+                    ?>
+                </td>
+                <td><?php echo $record->getMinutesWorked();?></td>
+                <td><?php echo $record->getPricePerMinute();?></td>
+                <td>&pound;<?php echo number_format( $record->getAmountDue(), 2 );?></td>
+                <td class="mark-accuracy">
+                    <?php
+                    if ( $record->isInaccurate() )
+                    {
+                    ?>
+                    <a href="#" onclick="markAccuracy( '0', '<?php echo $record->id; ?>' );return false;">
+                            <img src="<?php echo $this->baseUrl() .'/images/icons/cross.png'?>" title="Mark as accurate" />
+                        </a>
+                    <?php
+                    }
+                    else
+                    {
+                    ?>
+                        <a href="#" onclick="markAccuracy( '1', '<?php echo $record->id; ?>' );return false;">
+                            <img src="<?php echo $this->baseUrl() .'/images/icons/tick.png'?>" title="Mark as inaccurate" />
+                        </a>
+                    <?php
+                    }
+                    ?>
+                </td>
+                <?php
+                if ( !$this->isStaff )
+                {
+                    ?>
+                    <td class="mark-accuracy">
+                        <a class="remove-invoice" href="#" onclick="deleteRemoveRecord( 'remove', '<?php echo $record->id; ?>' );return false;">
+                            <img src="<?php echo $this->baseUrl() .'/images/remove_icon.png'?>" title="Remove record from this invoice" />
+                        </a>
+                        <?php if ( !$record->isAdHoc() )
+                        {
+                        ?>
+                        <a href="#" onclick="deleteRemoveRecord( 'delete', '<?php echo $record->id; ?>' );return false;">
+                            <img src="<?php echo $this->baseUrl() .'/images/delete_icon.png'?>" title="Delete record from all invoicing" />
+                        </a>
+                        <?php
+                        }
+                        ?>
+                    </td>
+                    <?php
+                }
+                ?>
+
+            </tr>
+        <?php
+        }
+        ?>
+        <tfoot id="footer-search">
+        <tr>
+            <th>&nbsp;</th>
+            <th><input type="text" name="search_name" value="Search user name" class="search_init" /></th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+            <?php if (!$this->isStaff)
+            {
+            ?>
+                <th>&nbsp;</th>
+            <?php
+            }
+            ?>
+        </tr>
+        </tfoot>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    var asInitVals = new Array();
+    var oTable;
+    $(document).ready(function()
+    {
+
+        $( '.ad-hoc-link' ).click( function()
+        {
+            $( '.record-checkbox' ).attr( 'checked', false )
+            showEditRecord( false, '<?php echo $this->invoice->id; ?>' );
+            return false;
+        });
+
+        $( '#toggle-comments' ).click( function()
+        {
+            $( "#invoice-comments-container" ).slideToggle( "slow", function ()
+            {
+                $( '#toggle-comments' ).text( $( this ).is( ':hidden' )? 'Show Comments' : 'Hide Comments' );
+            });
+        });
+        $('#job-list-audio-dialog-status').dialog({
+            autoOpen: false,
+            title: 'Select status',
+            closeOnEscape: false,
+            modal: true,
+            width: 400,
+            height: 400
+        });
+
+        $('#job-list-audio-dialog-edit').dialog({
+            autoOpen: false,
+            title: 'Edit audio job',
+            closeOnEscape: false,
+            modal: true,
+            width: 600,
+            height: 600
+        });
+
+        $('#job-list-record-dialog-edit').dialog({
+            autoOpen: false,
+            title: 'Edit  record',
+            closeOnEscape: false,
+            modal: true,
+            width: 600,
+            height: 600
+        });
+
+        oTable = $('#tbl_invoices').dataTable({
+            "bJQueryUI": true,
+            "sPaginationType": "full_numbers",
+            "bPaginate": false,
+            "bStateSave": true,
+            "fnStateSave": function ( oSettings, oData )
+            {
+                try
+                {
+                    localStorage.setItem( 'DataTables_' + window.location.pathname, JSON.stringify( oData ) );
+                }
+                catch( e )
+                {
+                    return false;
+                }
+            },
+            "fnStateLoad": function (oSettings)
+            {
+                try
+                {
+                    var storedData = localStorage.getItem( 'DataTables_' + window.location.pathname );
+                    if ( typeof storedData === 'string' )
+                    {
+                        return JSON.parse( storedData );
+                    }
+                }
+                catch( e )
+                {
+                    return false;
+                }
+            },
+            "oLanguage": {
+                "sSearch": "Search all columns:",
+                "sEmptyTable": "No invoice records available"
+            }
+        });
+
+        $("tfoot input").keyup( function () {
+            /* Filter on the column (the index) of this element */
+            // note: add +1 to the index.value as there is no input in col 0 so the index of the text input doesn't match the index of the column being queried
+            oTable.fnFilter(this.value, $("tfoot input").index(this)+1);
+        } );
+
+        $("tfoot input").keyup( function () {
+            /* Filter on the column (the index) of this element */
+            // note: add +1 to the index.value as there is no input in col 0 so the index of the text input doesn't match the index of the column being queried
+            oTable.fnFilter(this.value, $("tfoot input").index(this)+1);
+        } );
+
+
+        /*
+         * Support functions to provide a little bit of 'user friendlyness' to the textboxes in
+         * the footer
+         */
+        $("tfoot input").each( function (i) {
+            asInitVals[i] = this.value;
+        } );
+
+        $("tfoot input").focus( function () {
+            if ( this.className == "search_init" )
+            {
+                this.className = "";
+                this.value = "";
+            }
+        } );
+
+        $("tfoot input").blur( function (i) {
+            if ( this.value == "" )
+            {
+                this.className = "search_init";
+                this.value = asInitVals[$("tfoot input").index(this)];
+            }
+        } );
+    });
+
+    function confirmDeleteInvoice()
+    {
+        return confirm( 'Are you sure you want to delete this invoice' );
+    }
+
+    function deleteRemoveRecord( action, recordId )
+    {
+        var message;
+        if ( 'delete' === action )
+        {
+            message = 'Are you sure you want to delete this record.&nbsp; Once deleted, this can not be restored and will not be included in future invoices';
+        }
+        else
+        {
+            message = 'Are you sure you want to remove this record from the invoice.  It can be included in new invoices.';
+        }
+
+        var conf = confirm( message );
+        var data = {
+            recordId : recordId,
+            action   : action
+        };
+
+        var url = '/en/default/staff-invoice/delete-record';
+
+        if ( true === conf )
+        {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: data,
+                cache: false,
+                dataType: "json"
+            }).success(function( msg )
+            {
+                _reloadPage();
+            });
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    function markAccuracy( accuracy, recordId )
+    {
+        var message;
+        if ( '0' === accuracy )
+        {
+            message = 'Are you sure you want to mark this record as accurate';
+        }
+        else
+        {
+            message = 'Are you sure you want to mark this record as inaccurate';
+        }
+
+        var conf = confirm( message );
+        var data = {
+            recordId : recordId,
+            accuracy : accuracy
+        };
+
+        var url = '/en/default/staff-invoice/accuracy';
+
+        if ( true === conf )
+        {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: data,
+                cache: false,
+                dataType: "json"
+            }).success(function( msg )
+                {
+                    _reloadPage();
+                });
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    function _getRecordIdStrings( recordId )
+    {
+        if ( recordId !== 'undefined' )
+        {
+            $( 'input[name="check-' + recordId + '"]' ).attr( 'checked', 'checked' );
+        }
+
+        var recordIdArrayRaw   = $('input', oTable.fnGetNodes()).serializeArray();
+        var recordIdArray      = [];
+
+        $( recordIdArrayRaw ).each( function( key, element )
+        {
+            recordIdArray[key] = element.value;
+        });
+
+        var idString = recordIdArray.join( '-' );
+
+        if ( idString.length > 0 )
+        {
+            return idString;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    function showStatus( audioJobId, isStaff )
+    {
+        var idString = _getRecordIdStrings( audioJobId );
+
+        if (false === idString )
+        {
+            alert("No audio file selected");
+            return false;
+        }
+
+        $('#job-list-audio-dialog-status').dialog('open');
+
+        var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'show-edit-statuses'), null, true); ?>"
+
+        if ( false == isStaff )
+        {
+            url += "/audio_job_id/" + idString;
+        }
+        else
+        {
+            url += "/staff/typist/audio_job_id/" + idString;
+        }
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            cache: false,
+            dataType: "json"
+        }).success(function( msg )
+            {
+                $("#job-list-audio-dialog-status-container").html(msg.html);
+                return false;
+            });
+        return false;
+    }
+
+    function showEdit( audioJobId )
+    {
+        var idString = _getRecordIdStrings( audioJobId );
+
+        if (false === idString )
+        {
+            alert("No audio file selected");
+            return false;
+        }
+
+        $('#job-list-audio-dialog-edit').dialog( 'open' );
+
+        var url ="<?php echo $this->url( array( 'controller' => 'audio-job', 'action' => 'edit', 'is-invoice' => 1 ), null, true); ?>"
+        url += "/id/" + idString;
+
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            cache: false,
+            dataType: "json"
+        }).success(function( msg )
+            {
+                $("#job-list-audio-dialog-edit-container").html( msg.html );
+            });
+    }
+
+    function processEdit()
+    {
+        var idString = _getRecordIdStrings();
+        var conf     = _confirmEdit( idString );
+        if (false === conf)
+        {
+            return false;
+        }
+
+        var formData = $('#formEditAudioJob').serializeArray();
+
+        var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'edit'), null, true); ?>";
+        url += '/id/' + idString;
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: formData,
+            cache: false,
+            dataType: "json"
+        }).success(function( msg )
+            {
+                if (msg.status == "ok")
+                {
+                    $('#job-list-audio-dialog-edit').dialog('close');
+                    _reloadPage();
+                } else
+                {
+                    $('#job-list-audio-dialog-edit-container').html(msg.html);
+                }
+            });
+    }
+
+    function showEditRecord( recordId, invoiceId )
+    {
+        var idString = _getRecordIdStrings( recordId );
+
+        $('#job-list-record-dialog-edit').dialog( 'open' );
+
+        var url ="<?php echo $this->url( array( 'controller' => 'staff-invoice', 'action' => 'edit-record' ), null, true); ?>"
+
+        url += "/invoice-id/" + invoiceId;
+
+        if ( false !== idString )
+        {
+            url += "/record-id/" + idString;
+        }
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            cache: false,
+            dataType: "json"
+        }).success(function( msg )
+            {
+                $("#job-list-record-dialog-edit-container").html( msg.html );
+            });
+    }
+
+    function processEditRecord( recordId )
+    {
+        var idString = _getRecordIdStrings( recordId );
+
+        if ( false !== recordId )
+        {
+            var conf = confirm('Are you sure you want to amend this record');
+            if ( false === conf )
+            {
+                return false;
+            }
+        }
+
+        var formData = $('#formEditRecord').serializeArray();
+
+        var url ="<?php echo $this->url(array('controller' => 'staff-invoice', 'action' => 'edit-record'), null, true); ?>";
+
+        if ( false !== idString )
+        {
+            url += "/record-id/" + idString;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: formData,
+            cache: false,
+            dataType: "json"
+        }).success(function( msg )
+            {
+                if (msg.status == "ok")
+                {
+                    $('#job-list-record-dialog-edit').dialog('close');
+                    _reloadPage();
+                } else
+                {
+                    $('#job-list-record-dialog-edit-container').html(msg.html);
+                }
+            });
+    }
+
+    /**
+     * Reloads the page, here as problems arising in Chrome
+     *
+     * @return void
+     */
+    function _reloadPage()
+    {
+        window.location.reload();
+    }
+
+    /**
+     * Perform a standard check where multiple audio jobs are about to be edited
+     *
+     * @returns {boolean}
+     */
+    function _confirmEdit( idString )
+    {
+        var idArray = idString.split( '-' );
+        if ( idArray.length > 1 )
+        {
+            var conf = confirm('Are you sure you want to amend ' + idArray.length + ' audio jobs (' + idString +')');
+            return conf;
+        }
+        return true;
+    }
+
+    function processStatus(status_id, status, show_warning)
+    {
+        var idString = _getRecordIdStrings();
+
+        if (false === idString )
+        {
+            alert("No audio file selected");
+            return false;
+        }
+
+        var idLength = idString.split('-').length;
+
+        if(show_warning)
+        {
+            var c = confirm("Are you sure you wish to change to status '" + status + "?");
+            if (c == false) {
+                return false;
+            }
+        }
+
+        if (!_confirmEdit( idString ))
+        {
+            return false;
+        }
+
+        var url ="<?php echo $this->url(array('controller' => 'audio-job', 'action' => 'update-status'), null, true); ?>";
+        url += "/id/" + idString;
+
+        var formData = [];
+        formData.push({'name' : 'status_id', 'value' : status_id });
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: formData,
+            cache: false,
+            dataType: "json"
+        }).success(function( msg )
+            {
+                if (msg.status == "ok")
+                {
+                    $('#job-list-audio-dialog-status').dialog('close');
+                    _reloadPage();
+                } else {
+                    alert(msg.error);
+                }
+            });
+    }
+</script>

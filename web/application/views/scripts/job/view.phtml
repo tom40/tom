@@ -1,0 +1,387 @@
+<div id="project-details">
+	<?php if($this->canEdit  && $this->job['archived'] == '0'):?>
+		<div id="edit-project">
+			<a href="#" onclick="location.href='<?php echo $this->url(array('controller' => 'job', 'action' => 'edit', 'id' => $this->job['id']), null, true); ?>;'">
+				Edit this<br />
+				project
+			</a>
+		</div>
+	<?php endif; ?>
+
+	<div id="project-info">
+		<p>
+			Project number <?php echo $this->job['id']?><br />
+			<strong><?php echo $this->job['client']; ?> (<?php echo $this->job['title']; ?>)</strong>
+		</p>
+	</div>
+
+	<div class="project-status">
+		<p class="first">
+			<span>Status</span><?php echo $this->job['status']; ?>
+		</p>
+		<p>
+			<span>Primary User</span><?php echo $this->job['primary_user']; ?>
+		</p>
+	</div>
+
+	<div class="project-status large">
+		<p class="first">
+			<span>Due Date</span><?php echo date('d/m/Y', strtotime($this->job['job_due_date'])); ?>
+		</p>
+		<p>
+			<span>Expected No. of audio files</span><?php echo $this->job['estimated_audio_files']; ?>
+		</p>
+	</div>
+
+	<div class="project-status">
+		<p class="first">
+			<span>Running Total</span>&pound<?php echo number_format($this->job['price-discount'], 2); ?>
+            <br/>
+            Ex. VAT
+		</p>
+        <?php
+        if ($this->job['discount'] > 0)
+        {
+        ?>
+		<p>
+			<span>Discount</span><?php echo $this->job['discount']; ?>%
+		</p>
+        <?php
+        }
+        ?>
+	</div>
+
+</div>
+
+<div>
+
+
+	<div id="job-view-tabs">
+		<ul>
+			<li><a href="#job-view-tabs-1">Sound Files (<?php echo $this->job['audio_job_count']?>)</a></li>
+			<li><a href="#job-view-tabs-2">Support Documents (<?php echo $this->job['support_file_count']?>)</a></li>
+			<li><a href="#job-view-tabs-3">Client Comments <?php if(is_null($this->job['client_comments']) || $this->job['client_comments'] == ''): ?> (None)<?php endif;?></a></li>
+			<li><a href="#job-view-tabs-4">Internal Comments <?php if(is_null($this->job['internal_comments']) || $this->job['internal_comments'] == ''): ?> (None)<?php endif;?></a></li>
+		</ul>
+		<div id="job-view-tabs-1">
+			<div id="project-utility">
+                <?php
+                if ( $this->job['archived'] == '0' )
+                {
+                ?>
+				<?php if(!$this->canEdit):?>
+					<a href="#" onclick="showChangeRequest(<?php echo $this->job['id']; ?>);return false;">
+						<img src="<?php echo $this->baseUrl() .'/images/edit_audio_icon.png'?>" title="Edit this job">
+						Request change to project
+					</a>
+				<?php endif; ?>
+
+				<?php if($this->canUpload):?>
+					<a href="#" onclick="launchEdit('<?php echo $this->url(array('controller' => 'job', 'action' => 'upload', 'id' => $this->job['id']), null, true); ?>')">
+						<img src="<?php echo $this->baseUrl() .'/images/new_audio_icon.png'?>" title="Add new sound file">
+						Upload new audio file(s)
+					</a>
+
+					<a href="#" onclick="showLinkCreate(<?php echo $this->job['id']; ?>); return false">
+						<img src="<?php echo $this->baseUrl() .'/images/audio_icon_white.png'?>" title="Link new sound file">
+						Link new audio file(s)
+					</a>
+                <?php endif; ?>
+                <?php
+                }
+                ?>
+                 <?php if ($this->isAdmin): ?>
+					<a href="#" onclick="adHocCharges(<?php echo $this->job['id']; ?>); return false">
+						<img src="<?php echo $this->baseUrl() .'/images/audio_icon_white.png'?>" title="Ad-hoc charge">
+						Ad-hoc charge(s)
+					</a>
+				<?php endif;?>
+			</div>
+			<?php echo $this->render('audio-job/' . $this->audioJobPhtml . '.phtml')?>
+            <?php
+                if ( $this->isAdmin && isset($this->adHocCharges) && count($this->adHocCharges) > 0 )
+                {
+                    echo $this->partial(
+                        'job/_adHocCharges.phtml',
+                        'default',
+                        array('adHocCharges' => $this->adHocCharges)
+                    );
+                }
+            ?>
+		</div>
+		<div id="job-view-tabs-2">
+			<div id="project-utility">
+				<?php if($this->canUpload  && $this->job['archived'] == '0'):?>
+					<a href="#" onclick="launchEdit('<?php echo $this->url(array('controller' => 'support-file', 'action' => 'upload', 'job_id' => $this->job['id']), null, true); ?>')">
+						<img style="vertical-align:text-top; padding: 0px 0px 3px 2px" src="<?php echo $this->baseUrl() .'/images/icons/application_add.png'?>" title="Add new support file">
+						&nbsp;
+						Add new support document(s)
+					</a>
+				<?php endif;?>
+			</div>
+			<div style="font-size:0.85em">
+				<?php echo $this->render('support-file/list-for-job.phtml')?>
+			</div>
+		</div>
+		<div id="job-view-tabs-3">
+			<p>
+			<?php echo nl2br($this->job['client_comments']); ?>
+			</p>
+		</div>
+		<div id="job-view-tabs-4">
+			<p>
+			<?php echo nl2br($this->job['internal_comments']); ?>
+			</p>
+		</div>
+
+	</div>
+</div>
+
+<div id="job-dialog-link-file" style="display: none; width:900px;">
+	<span id="job-dialog-link-file-container" class="view"></span>
+</div>
+
+<div id="job-dialog-adhoc" style="display: none">
+	<span id="job-dialog-adhoc-container" class="view"></span>
+</div>
+
+<div id="job-dialog-change-request" style="display: none">
+	<span id="job-dialog-change-request-container" class="view"></span>
+</div>
+
+<script>
+	$(document).ready(function() {
+		$('#job-view-tabs').tabs({selected: <?php echo $this->tabId?>});
+
+		$('#job-dialog-link-file').dialog({
+			autoOpen: false,
+			title: 'Create audio file link',
+            closeOnEscape: false,
+			modal: true,
+			width: 600,
+			height: 530
+		});
+
+		$('#job-dialog-adhoc').dialog({
+			autoOpen: false,
+			title: 'Add ad-hoc charge',
+            closeOnEscape: false,
+			modal: true,
+			width: 600,
+			height: 530,
+            close: function()
+            {
+                closeAdHoc();
+            }
+		});
+
+		$('#job-dialog-change-request').dialog({
+			autoOpen: false,
+			title: 'Request change to project',
+            closeOnEscape: false,
+			modal: true,
+			width: 600,
+			height: 400
+		});
+
+	});
+
+	<?php if(!$this->canEdit):?>
+	function showChangeRequest(job_id)
+	{
+
+		$('#job-dialog-change-request').dialog('open');
+
+		var url ="<?php echo $this->url(array('controller' => 'job', 'action' => 'change-request'), null, true); ?>"
+		url += "/id/" + job_id;
+
+		if (job_id === undefined) {
+			// do nothing
+			return false;
+		}
+
+		$.ajax({
+			type: "GET",
+		  	url: url,
+		  	cache: false,
+		  	dataType: "json"
+		}).success(function( msg ) {
+		  	$("#job-dialog-change-request-container").html(msg.html);
+		});
+	}
+
+	function processChangeRequest()
+	{
+		var formData = $('#formJobChangeRequest').serializeArray();
+
+		var url ="<?php echo $this->url(array('controller' => 'job', 'action' => 'change-request'), null, true); ?>";
+
+		$.ajax({
+			type: "POST",
+		  	url: url,
+		  	data: formData,
+		  	cache: false,
+		  	dataType: "json"
+		}).success(function( msg ) {
+
+			if (msg.status == "ok") {
+				$('#job-dialog-change-request-container').html(msg.html);
+				$( "#btn_close" ).button();
+			} else {
+				$('#job-dialog-change-request-container').html(msg.html);
+			}
+		});
+	}
+
+	<?php endif;?>
+
+	function showLinkCreate(job_id)
+	{
+
+		$('#job-dialog-link-file').dialog('open');
+
+		var url ="<?php echo $this->url(array('controller' => 'job', 'action' => 'link-create'), null, true); ?>"
+		url += "/id/" + job_id;
+
+		if (job_id === undefined) {
+			// do nothing
+			return false;
+		}
+
+		$.ajax({
+			type: "GET",
+		  	url: url,
+		  	cache: false,
+		  	dataType: "json"
+		}).success(function( msg ) {
+		  	$("#job-dialog-link-file-container").html(msg.html);
+		});
+	}
+
+	function adHocCharges(job_id)
+	{
+		$('#job-dialog-adhoc').dialog('open');
+
+		var url ="<?php echo $this->url(array('controller' => 'job', 'action' => 'ad-hoc'), null, true); ?>"
+		url += "/job_id/" + job_id;
+
+		if (job_id === undefined)
+        {
+			return false;
+		}
+
+		$.ajax({
+			type: "GET",
+		  	url: url,
+		  	cache: false,
+		  	dataType: "json"
+		}).success(function( msg ) {
+		  	$("#job-dialog-adhoc-container").html(msg.html);
+		});
+	}
+
+    function processAdHocCharges()
+    {
+        var form     = $('#formAdHocCharge');
+		var formData = form.serializeArray();
+
+		var url ="<?php echo $this->url(array('controller' => 'job', 'action' => 'ad-hoc'), null, true); ?>";
+
+		$.ajax({
+			type: "POST",
+		  	url: url,
+		  	data: formData,
+		  	cache: false,
+		  	dataType: "json"
+		}).success(function( msg ) {
+            if (msg.status !== 'ok')
+            {
+                alert('Please enter a valid price');
+            }
+            else
+            {
+                $('#job-dialog-adhoc-container').html(msg.html);
+                var form = $('#formAdHocCharge');
+                $('input[name="price"]', form).val('');
+                $('textarea[name="description"]', form).val('');
+            }
+		});
+    }
+
+    function closeAdHoc()
+    {
+        window.location.reload();
+    }
+
+    function deleteAdhoc(jobId)
+    {
+        var conf = confirm("Are you sure you want to delete this ad-hoc charge");
+        if (conf !== true)
+        {
+            return false;
+        }
+
+		var url  ="<?php echo $this->url(array('controller' => 'job', 'action' => 'delete-ad-hoc'), null, true); ?>";
+        var data = {'job_id' : jobId};
+		$.ajax({
+			type: "POST",
+		  	url: url,
+		  	data: data,
+		  	cache: false,
+		  	dataType: "json"
+		}).success(function(msg) {
+            if (msg.status === 'ok')
+            {
+                $('#adhoc' + jobId).hide();
+            }
+            else
+            {
+                alert('There was a problem deleting this ad-hoc charge');
+            }
+		});
+    }
+
+    function deleteForm(formId)
+    {
+        $('#' + formId).remove();
+        var mainForm = $('#formJobCreateLink');
+        var numForms = $('.clonable-form').length;
+        $('input[name="num_forms"]', mainForm).val(numForms);
+    }
+
+    function populateLinkForm()
+    {
+        if ($('#form-data').length > 0)
+        {
+            $('span', '#form-data').each(function ()
+            {
+                var field = $(this).attr('field');
+                var value = $(this).attr('data');
+                $('#' + field).val(value);
+            });
+        }
+    }
+
+	function doSupportFileDownload(support_file_id)
+	{
+		var url ="<?php echo $this->url(array('controller' => 'support-file', 'action' => 'download'), null, true); ?>/id/" + support_file_id;
+	  	window.location.href = url;
+	}
+
+	function launchEdit(source, title,  width)
+	{
+	    if (width == undefined)
+	    {
+	        width = 1000;
+	    }
+	    height = 600;
+	    var left = (screen.width - width) / 2;
+	    var top  = (screen.height - height) / 2;
+	    infoWindow = window.open(source, title, "width="+width+", height="+height+", location=no, menubar=no, resizable=yes, scrollbars=yes, status=yes, titlebar=no, toolbar=no, top="+top+", left="+left);
+	    if (infoWindow.opener == null)
+	    {
+	        infoWindow.opener = self;
+	    }
+	    infoWindow.focus();
+	}
+</script>

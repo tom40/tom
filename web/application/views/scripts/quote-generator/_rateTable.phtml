@@ -1,0 +1,109 @@
+<?php
+    $headerSet       = false;
+    $firstImgClass   = 'title-info';
+    $firstTableClass = 'first';
+    $infoPackLoc     = $this->baseUrl() . '/infopack/Info_Pack_2013.pdf';
+?>
+<?php if ($this->transPrices): ?>
+<?php foreach ($this->transPrices as $transcriptionName => $transcriptions): ?>
+<div class="rate-table">
+    <a href="<?php echo $infoPackLoc; ?>">
+        <img src="/images/info.png" class="<?php echo $firstImgClass; ?>" alt="info" />
+    </a>
+    <table cellpadding="0" cellspacing="0" class="<?php echo $firstTableClass; ?>">
+        <?php if (!$headerSet): ?>
+        <tr>
+                    <th>
+                        Service
+                    </th>
+                    <th>
+                        Turnaround
+                    </th>
+                    <th>
+                        Cost Per<br />
+                        Hour
+                    </th>
+                    <th>
+                        Cost Per 15<br />
+                        Min. Increment
+                    </th>
+                </tr>
+        <?php
+            $headerSet       = true;
+            $firstImgClass   = '';
+            $firstTableClass = '';
+            endif;
+        ?>
+        <?php if (!empty($transcriptions)): ?>
+        <?php $class = ''; ?>
+        <?php foreach ($transcriptions as $transcription): ?>
+            <?php $class = ('even' == $class) ? '' : 'even'; ?>
+            <tr class="<?php echo $class; ?>">
+                <td>
+                    <?php echo $transcriptionName; ?>
+                </td>
+                <td>
+                    <?php echo $transcription['turnaroundName']; ?>
+                </td>
+                <td>
+                    <?php echo $this->displayPrice(($transcription['price'] * 4), true); ?>
+                </td>
+                <td>
+                    <?php echo $this->displayPrice($transcription['price']); ?>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+        <?php endif; ?>
+    </table>
+</div>
+<?php endforeach; ?>
+<?php endif; ?>
+
+<?php if ($this->servicePrices): ?>
+    <div class="rate-table">
+        <a href="<?php echo $infoPackLoc; ?>">
+            <img src="/images/info.png" class="<?php echo $firstImgClass; ?>" alt="info" />
+        </a>
+        <table cellpadding="0" cellspacing="0" class="<?php echo $firstTableClass; ?>">
+            <?php if (!$headerSet): ?>
+            <tr>
+                        <th>
+                            Service
+                        </th>
+                        <th>
+                            Turnaround
+                        </th>
+                        <th>
+                            Cost Per<br />
+                            Hour
+                        </th>
+                        <th>
+                            Cost Per 15<br />
+                            Min. Increment
+                        </th>
+                    </tr>
+            <?php
+                $headerSet = true;
+                endif;
+            ?>
+            <?php $class = ''; ?>
+            <?php foreach ($this->servicePrices as $service): ?>
+                <?php $class = ('even' == $class) ? '' : 'even'; ?>
+                <tr class="<?php echo $class; ?>">
+                    <td>
+                        <?php echo $this->escape($service['name']); ?>
+                    </td>
+                    <td>
+                        Any
+                    </td>
+                    <td>
+                        <?php echo $this->displayPrice(($service['price'] * 4), true); ?> extra per hour
+                    </td>
+                    <td>
+                        <?php echo $this->displayPrice($this->escape($service['price'])); ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    </div>
+<?php endif; ?>

@@ -1,0 +1,83 @@
+<?php if ('update' == $this->formAction): ?>
+    <h1>Update <?php echo ucfirst($this->userType); ?>
+        <?php echo $this->displayShiftRange($this->shift['start_day'], $this->shift['start_time'], $this->shift['end_day'], $this->shift['end_time']); ?></h1>
+<?php else: ?>
+    <h1>Add Shift</h1>
+<?php endif; ?>
+
+<div class="shift-book-search">
+    <form id="formCreateJob" name="formCreateGroup" method="<?php echo $this->form->getMethod(); ?>" action="<?php echo $this->form->getAction(); ?>">
+        <?php echo $this->form->id; ?>
+        <table class="data email-team">
+            <tr class="first" <?php if ('update' == $this->formAction): ?>style="display:none; " <?php endif; ?>>
+                <td class="field">
+                    <label for="title"><?php echo $this->form->user_type->renderLabel(); ?></label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->user_type->renderViewHelper(); ?></span>
+                    <br />
+                    <div class="element-error error-inner"><?php echo array_shift($this->form->user_type->getMessages()); ?></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="title"><?php echo $this->form->start_day->renderLabel(); ?></label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->start_day->renderViewHelper(); ?></span>
+                </td>
+            </tr>
+            <tr class="first">
+                <td class="field">
+                    <label for="title"><?php echo $this->form->start_time->renderLabel(); ?></label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->start_time->renderViewHelper(); ?></span>
+                    <br />
+                    <div class="element-error error-inner"><?php echo array_shift($this->form->start_time->getMessages()); ?></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="title"><?php echo $this->form->end_day->renderLabel(); ?></label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->end_day->renderViewHelper(); ?></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="title"><?php echo $this->form->end_time->renderLabel(); ?></label>
+                </td>
+                <td class="value">
+                    <span class="view"><?php echo $this->form->end_time->renderViewHelper(); ?></span>
+                    <br />
+                    <div class="element-error error-inner"><?php echo array_shift($this->form->end_time->getMessages()); ?></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="field"></td>
+                <td class="value">
+                	<input id="submit" class="reg_input_btn" type="image" src="/images/save_button.png" alt="Save" name="submit">
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script language="javascript">
+    $(document).ready(function()
+    {
+        var rangeDemoFormat = "%H:%i";
+        $("#start_time").AnyTime_picker({
+            format:rangeDemoFormat,
+            placement: "popup",
+            hideInput: false
+        });
+        
+        $("#end_time").AnyTime_picker({
+            format:rangeDemoFormat,
+            placement: "popup",
+            hideInput: false
+        });
+    });
+</script>

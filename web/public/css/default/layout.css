@@ -1,0 +1,35 @@
+.view-options {
+    margin: 15px 0;
+}
+
+
+/*----- Search -----*/
+
+#quick-search {
+    background: #fff url(../../images/icon_search.png) no-repeat scroll 6px 8px;
+    border: solid #fff;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    color: #c0c0c0;
+    font-size: 100%;
+    padding: 5px 10px 5px 22px;
+    width: 50%;
+}
+
+.ui-autocomplete .small {
+    color: #808080;
+    font-size: 77%
+}
+
+.ui-autocomplete {
+    max-height: 220px;
+    overflow-y: auto;
+    overflow-x: hidden;  /* prevent horizontal scrollbar */
+    padding-right: 20px;  /* add padding to account for vertical scrollbar */
+}
+
+/* IE 6 doesn't support max-height so use height instead, but this forces the menu to always be this tall */
+* html .ui-autocomplete {
+    height: 200px;
+}

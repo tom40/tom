@@ -1,0 +1,54 @@
+<?php echo $this->partial('/_partials/email/_defaultHeader.phtml',
+    array(
+            'appName' => $this->appName,
+            'title'   => 'Audio file safely received'
+         )
+    );
+?>
+Dear <?php echo $this->addressee;?><br /><br />
+This is to confirm safe receipt of the below audio file(s) into the Take Note portal. The details are listed below. We will email again shortly to let you know the project has been approved and scheduled for completion. If you have any enquiries in the meantime please don't hesitate to get in touch with the bookings team on <?php echo $this->bookingEmail; ?> or <?php echo $this->bookingTelephone; ?>. <br />
+
+<?php foreach($this->data as $data):?>
+	<table class="data" style="font-family:helvetica, arial, sans-serif;color:#333;font-size:12px;line-height:18px;margin:0 0 15px;">
+ 		<tr class="first">
+        	<td class="field">
+            	<label for="name">File name:</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php echo $data['file_name']; ?></span>
+            </td>
+		</tr>
+		<tr>
+        	<td class="field">
+            	<label for="name">Duration:</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php echo $this->displayAudioJobLength($data['length_seconds']); ?></span>
+            </td>
+		</tr>
+		<tr>
+        	<td class="field">
+            	<label for="name">Service required:</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php echo $data['transcription_type']; ?></span>
+            </td>
+		</tr>
+		<tr>
+        	<td class="field">
+            	<label for="name">Turnaround time:</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php echo $data['turnaround_time']; ?></span>
+            </td>
+		</tr>
+	</table>
+<?php endforeach;?>
+<?php echo $this->partial('/_partials/email/_defaultFooter.phtml',
+    array(
+            'appName' => $this->appName,
+            'appUrl' => $this->appUrl,
+            'showThanksMessage' => true
+        )
+    );
+?>

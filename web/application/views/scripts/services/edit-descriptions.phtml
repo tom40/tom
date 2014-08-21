@@ -1,0 +1,48 @@
+<h1>Edit Service and Modifier Descriptions</h1>
+<form id="editDescriptions" method="post" action="/en/default/services/edit-descriptions">
+    <table class="data">
+        <tr>
+            <th><h3>Service</h3></th>
+            <th><h3>Description</h3></th>
+        </tr>
+        <?php
+        foreach ( $this->services as $service )
+        {
+            ?>
+            <tr>
+                <td class="field"><label><?php echo $service->name; ?></label></td>
+                <td class="value"><textarea name="service_descriptions[<?php echo $service->id; ?>]"><?php echo $service->description;?></textarea></td>
+            </tr>
+            <?php
+        }
+        ?>
+    </table>
+    <table class="data">
+        <tr>
+            <th><h3>Price Modifier</h3></th>
+            <th><h3>Description</h3></th>
+        </tr>
+        <?php
+        foreach ( $this->modifiers as $modifier )
+        {
+            ?>
+            <tr>
+                <td class="field"><label><?php echo $modifier->name; ?></label></td>
+                <td class="value"><textarea name="modifier_descriptions[<?php echo $modifier->id; ?>]"><?php echo $modifier->description;?></textarea></td>
+            </tr>
+        <?php
+        }
+        ?>
+    </table>
+    <table>
+        <tr>
+            <td>
+                <div class="ta-block wide clear">
+                    <a href="#" id="btn_save" onclick="editDescriptions.submit();return false;">
+                        <img src="<?php echo $this->baseUrl() .'/images/submit_button.png'?>" title="Save descriptions">
+                    </a>
+                </div>
+            </td>
+        </tr>
+    </table>
+</form>

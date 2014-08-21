@@ -1,0 +1,24 @@
+<?php echo $this->partial('/_partials/email/_defaultHeader.phtml',
+    array(
+        'appName'         => $this->appName,
+        'title'           => $this->appName . ' Invoice',
+        'headerImagePath' => $this->headerImagePath
+    )
+);
+?>
+A status change for invoice <?php echo $this->data['invoice']->name; ?> has been submitted.
+<br />
+<br />
+New Status: <?php echo $this->data['invoice']->getStatusName(); ?>
+<br />
+<br />
+<a href="<?php echo $this->appUrl . $this->data['invoice']->getUrlStub(); ?>">View Invoice <?php echo $this->data['invoice']->name; ?></a>
+
+
+<?php echo $this->partial( '/_partials/email/_defaultFooter.phtml',
+    array(
+        'appName' => $this->appName,
+        'appUrl' => $this->appUrl
+    )
+);
+?>

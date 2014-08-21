@@ -1,0 +1,26 @@
+<style>
+.link_button {
+	margin-left: 5px;
+    text-align: left;
+    width: 95%;
+}
+</style>
+
+<div>
+	<!-- <button style="width:100%; text-align:left"><img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/icons/add.png'?>"> Create New Job</button> -->
+	<a class="link_button" href="<?php echo $this->url(array('controller' => 'job', 'action' => 'create'), null, true); ?>" class=""><img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/icons/add.png'?>"> Create New Job</a>
+	<a class="link_button" href="<?php echo $this->url(array('controller' => 'job', 'action' => 'list-current'), null, true); ?>" class=""><img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/icons/script.png'?>"> Current Jobs</a>
+	<a class="link_button" href="<?php echo $this->url(array('controller' => 'job', 'action' => 'list-completed'), null, true); ?>" class=""><img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/icons/script_delete.png'?>"> Completed Jobs</a>
+	<a class="link_button" href="<?php echo $this->url(array('controller' => 'client', 'action' => 'list-all'), null, true); ?>" class=""><img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/icons/user_gray.png'?>"> List Clients</a>
+	<a class="link_button" href="<?php echo $this->url(array('controller' => 'user', 'action' => 'list-all'), null, true); ?>" class=""><img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/icons/group.png'?>"> Users</a>
+	<a class="link_button" href="<?php echo $this->url(array('controller' => 'search', 'action' => null), null, true); ?>" class=""><img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/icons/magnifier.png'?>"> Search</a>
+	<a class="link_button" href="<?php echo $this->url(array('controller' => 'report', 'action' => null), null, true); ?>" class=""><img style="vertical-align:text-top;" src="<?php echo $this->baseUrl() .'/images/icons/report.png'?>"> Reports</a>
+</div>
+
+<script>
+	$(function() {
+		$( ".link_button").button();
+	});
+</script>
+
+

@@ -1,0 +1,15 @@
+<span style="display: none;"><?php echo strtotime($this->projectDate); ?></span> <!-- for sorting -->
+<?php
+    $projectYear = date('Y', strtotime($this->projectDate));
+    $currentYear = date('Y');
+
+    // Only display year for old/future years
+    if ($currentYear == $projectYear)
+    {
+        echo date('jS M', strtotime($this->projectDate));
+    }
+    else
+    {
+        echo date('jS M Y', strtotime($this->projectDate));
+    }
+?>

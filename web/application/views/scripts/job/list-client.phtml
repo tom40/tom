@@ -1,0 +1,144 @@
+<h1 class="page-title"><?php echo $this->filter ?> Projects</h1>
+<div id="table-utility<?php echo $this->customClass; ?>">
+	<div id="utility-links">
+		<a href="#" onclick="alert('refresh page')" class="no-icon">
+			Refresh list
+		</a>
+	</div>
+</div>
+
+<div id="container">
+	<!-- <table class="full_width" id="tbl_clients"> -->
+	<table class="index" id="tbl_jobs">
+		<thead>
+			<tr>
+				<th style="width:20px">ID</th>
+				<th>&nbsp;</th>
+				<th style="width:20px">&nbsp;</th>
+				<th style="width:40px; text-align:center">
+					<img style="height:12px; width:12px;" src="<?php echo $this->baseUrl() .'/images/icons/flag_blue.png'?>" title="Job priority">
+					<?php if($this->canEdit):?>
+					<img id="priority-multi-select" style="height:12px; width:12px;" src="<?php echo $this->baseUrl() .'/images/icons/script_lightning.png'?>" title="Quick edit priority">
+					<?php endif;?>
+				</th>
+				<th>&nbsp;</th>
+                <th style="width:90px">
+					Project Start
+					<?php if($this->canEdit):?>
+					<img style="height:12px; width:12px;" src="<?php echo $this->baseUrl() .'/images/icons/script_lightning.png'?>" title="Quick edit client start date">
+					<?php endif;?>
+				</th>
+				<th style="width:90px">
+					Project Due
+					<?php if($this->canEdit):?>
+					<img id="due-date-multi-select" style="height:12px; width:12px;" src="<?php echo $this->baseUrl() .'/images/icons/script_lightning.png'?>" title="Quick edit client due date">
+					<?php endif;?>
+				</th>
+				<th>&nbsp;</th>
+				<th style="width:160px">
+					Status
+					<?php if($this->canEdit):?>
+					<img id="status-multi-select" style="height:12px; width:12px;" src="<?php echo $this->baseUrl() .'/images/icons/script_lightning.png'?>" title="Quick edit status">
+					<?php endif;?>
+				</th>
+                <th>Client</th>
+                <th>PO Number/Invoice Ref</th>
+				<th>Project Title</th>
+				<th style="width:30px">Files due</th>
+				<th style="width:60px">Files received</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php echo $this->partialLoop('job/_jobRowClient.phtml', $this->jobs); ?>
+		</tbody>
+		<tfoot id="footer-search">
+			<tr>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+                <th>&nbsp;</th>
+				<th><input type="text" name="search_status" value="Search status" style="width:90%; font-size: 80%" class="search_init ui-widget-content ui-corner-all" /></th>
+				<th><input type="text" name="search_title" value="Search job title" style="width:90%; font-size: 80%" class="search_init ui-widget-content ui-corner-all" /></th>
+				<th>&nbsp;</th>
+                <th>&nbsp;</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+                <th>&nbsp;</th>
+			</tr>
+		</tfoot>
+	</table>
+</div>
+<script>
+var asInitVals = new Array();
+var jobTable;
+
+$(document).ready(function() {
+
+    jobTable = $('#tbl_jobs').dataTable({
+    	"iDisplayLength": 50,
+        "bJQueryUI": true,
+	    "bAutoWidth": false,
+        "bPaginate": false,
+        "sPaginationType": "full_numbers",
+        //"bStateSave": true,
+        "oLanguage": {
+            "sSearch": "Search all columns:",
+            "sEmptyTable": "No projects available"
+        },
+        "aaSorting" : [[5, "asc"]],
+        "aoColumnDefs": [
+             			{ "iDataSort": 1		, "aTargets": [ 0 ] },
+             			{ "iDataSort": 4		, "aTargets": [ 3 ] },
+             			{ "bVisible" : false	, "aTargets": [ 1,4,7 ] },
+             			{ "sType"	 : "numeric", "aTargets": [ 1 ] },
+             			{ "sType"	 : "numeric", "aTargets": [ 4 ] },
+             			{ "bSortable": false	, "aTargets": [ 2 ] }
+             	    ]
+    });
+
+
+    $("tfoot input").keyup( function () {
+        /* Filter on the column (the index) of this element */
+        // note: add +4 to the index.value as there is no input in col 0 so the index of the text input doesn't match the index of the column being queried
+        jobTable.fnFilter(this.value, $("tfoot input").index(this)+6);
+    } );
+
+
+    /*
+     * Support functions to provide a little bit of 'user friendlyness' to the textboxes in
+     * the footer
+     */
+    $("tfoot input").each( function (i) {
+        asInitVals[i] = this.value;
+    } );
+
+    $("tfoot input").focus( function () {
+        if ( this.className == "search_init ui-widget-content ui-corner-all" )
+        {
+            this.className = "";
+            this.value = "";
+        }
+    } );
+
+    $("tfoot input").blur( function (i) {
+        if ( this.value == "" )
+        {
+            this.className = "search_init ui-widget-content ui-corner-all";
+            this.value = asInitVals[$("tfoot input").index(this)];
+        }
+    } );
+
+} );
+
+function stopBubble(event) {
+   	if (event){
+   		event.stopPropagation();
+   	} else{
+   		window.event.cancelBubble = true;
+  	}
+}
+
+</script>

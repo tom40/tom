@@ -1,0 +1,52 @@
+<h1>Manage Shifts</h1>
+<a href="<?php echo $this->url(array('controller' => 'shift-booker', 'action' => 'shift-booker', 'action' => 'list'), null , true); ?>">
+	<img src="/images/shiftbooker_button.png" alt="Shiftbooker" />
+</a>
+<br /><br />
+<table id="manage-shifts-tables" class="index dataTable not-fixed-height">
+    <thead>
+        <tr>
+            <th><div>Typist Shifts</div></th>
+            <th><div>Proofreader Shifts</div></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="row">
+            	<div>
+					<?php if (!empty($this->typistShifts)): ?>
+						<?php foreach($this->typistShifts as $typistShift): ?>
+							<a href="<?php echo $this->url(array('controller' => 'shift-booker', 'action' => 'update-shift', 'usertype' => 'typist', 'id' => $typistShift['id']), null , true); ?>">
+								<p>
+                                    <?php echo $this->displayShiftRange($typistShift['start_day'], $typistShift['start_time'], $typistShift['end_day'], $typistShift['end_time']); ?>
+                                </p>
+							</a>
+						<?php endforeach; ?>
+					<?php endif; ?>
+                </div>
+            </td>
+            <td>
+            	<div>
+					<?php if ($this->proofreaderShifts): ?>
+						<?php foreach($this->proofreaderShifts as $proofreaderShift): ?>
+							<a href="<?php echo $this->url(array('controller' => 'shift-booker', 'action' => 'update-shift', 'usertype' => 'proofreader', 'id' => $proofreaderShift['id']), null , true); ?>">
+								<p>
+                                    <?php echo $this->displayShiftRange($proofreaderShift['start_day'], $proofreaderShift['start_time'], $proofreaderShift['end_day'], $proofreaderShift['end_time']); ?>
+                                </p>
+							</a>
+						<?php endforeach; ?>
+					<?php endif; ?>
+				</div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<?php echo $this->partial('/shift-booker/_manageShiftForm.phtml',
+    array(
+            'form'       => $this->form,
+            'shift'      => $this->shift,
+            'userType'   => $this->userType,
+            'formAction' => $this->formAction
+        )
+    );
+?>

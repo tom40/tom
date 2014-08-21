@@ -1,0 +1,26 @@
+<?php
+if (Application_Model_UsersShiftMapper::TYPIST_SHIFT == $this->userType) :?>
+    <?php
+    if ( is_array( $this->userId ) )
+    {
+        $typist = $this->userId;
+    }
+    else
+    {
+        $typist = $this->getTypistData($this->userId);
+    }
+    $abilitiesMapper = array (
+        'trained_summaries' => 'S',
+        'trained_notes'     => 'N',
+        'trained_legal'     => 'L',
+        'full'              => 'F',
+        'note_taker'        => 'NT'
+    );
+    foreach ($abilitiesMapper as $ability => $shortCode):
+       if ($typist[$ability] == 1): ?>
+            <?php echo $shortCode; ?>: <img src="/images/icons/tick.png">
+        <?php else: ?>
+            <?php echo $shortCode; ?>: <img src="/images/icons/cross.png">
+        <?php endif; ?>
+    <?php endforeach; ?>
+<?php endif; ?>

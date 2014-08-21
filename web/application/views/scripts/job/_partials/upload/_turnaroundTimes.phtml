@@ -1,0 +1,7 @@
+Turnaround:<br />
+<select class="turnaround" name="turnaround[]" required style="width:150px" onchange="$(this).css('background-color', 'inherit');">
+    <option value="">-- select --</option>
+<?php foreach($this->turnaroundTimes as $key => $option): ?>
+    <option value="<?php echo $key?>" <?php if($this->job['turnaround_time_id'] == $key):?>selected<?php endif;?>><?php echo $option?></option>
+<?php endforeach;?>
+</select>

@@ -1,0 +1,38 @@
+<div class="adhoc-charges">
+	<h2>Ad-hoc Charges</h2>
+    <table class="index dataTable">
+        <tbody>
+            <tr>
+                <th>
+                	<div>
+                    	<p>Description</p>
+                	</div>
+                </th>
+                <th>
+                	<div>
+                    	<p>Price</p>
+                	</div>
+                </th>
+            </tr>
+        <?php
+        foreach ($this->adHocCharges as $adHocCharge)
+        {
+            ?>
+            <tr>
+                <td>
+                	<div>
+                    	<p><?php echo $adHocCharge['description']; ?></p>
+                	</div>
+                </td>
+                <td>
+                	<div>
+                    	<p>&pound;<?php echo number_format($adHocCharge['price'], 2); ?></p>
+                	</div>
+                </td>
+            </tr>
+            <?php
+        }
+        ?>
+        </tbody>
+    </table>
+</div>

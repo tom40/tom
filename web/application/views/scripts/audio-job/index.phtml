@@ -1,0 +1,11 @@
+<h4>Jobs</h4>
+
+<table class="index">
+<thead>
+	<td style="width:20px">ID</td>
+	<td>Title</td>
+	<td>Client</td>
+	<td>&nbsp;</td>
+</thead>
+	<?php echo $this->partialLoop('job/_jobRow.phtml', $this->jobs); ?>
+</table>

@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<ruleset name="OneResult Rulesets"
+    xmlns="http://pmd.sf.net/ruleset/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+    xsi:noNamespaceSchemaLocation=" http://pmd.sf.net/ruleset_xml_schema.xsd">
+    <description>Rulesets for OneResult Projects</description>
+
+    <!--UNUSED CODE RULES-->
+    <rule ref="rulesets/unusedcode.xml/UnusedPrivateField">
+
+    </rule>
+    <rule ref="rulesets/unusedcode.xml/UnusedLocalVariable">
+        <priority>3</priority>
+    </rule>
+    <rule ref="rulesets/unusedcode.xml/UnusedPrivateMethod">
+
+    </rule>
+    <rule ref="rulesets/unusedcode.xml/UnusedFormalParameter">
+
+    </rule>
+    <!--CODE SIZE RULES-->
+    <rule ref="rulesets/codesize.xml/CyclomaticComplexity">
+
+    </rule>
+    <rule ref="rulesets/codesize.xml/NPathComplexity">
+
+    </rule>
+    <rule ref="rulesets/codesize.xml/ExcessiveMethodLength">
+
+    </rule>
+    <rule ref="rulesets/codesize.xml/ExcessiveClassLength">
+
+    </rule>
+    <rule ref="rulesets/codesize.xml/ExcessiveParameterList">
+
+    </rule>
+    <rule ref="rulesets/codesize.xml/ExcessivePublicCount">
+
+    </rule>
+    <rule ref="rulesets/codesize.xml/TooManyFields">
+        <properties>
+            <property name="maxfields" description="The field count reporting threshold " value="20"/>
+        </properties>
+    </rule>
+    <rule ref="rulesets/codesize.xml/ExcessiveClassComplexity">
+
+    </rule>
+    <rule ref="rulesets/codesize.xml/TooManyMethods">
+        <properties>
+            <property name="maxmethods" description="The method count reporting threshold " value="30"/>
+        </properties>
+    </rule>
+
+    <!--DESIGN RULE-->
+    <rule ref="rulesets/design.xml/DepthOfInheritance">
+    </rule>
+    <rule ref="rulesets/design.xml/CouplingBetweenObjects">
+    </rule>
+    <!--NAMING RULE-->
+    <rule ref="rulesets/naming.xml/ShortVariable">
+    </rule>
+    <rule ref="rulesets/naming.xml/BooleanGetMethodName">
+    </rule>
+    <rule ref="rulesets/naming.xml/ShortMethodName">
+    </rule>
+    <rule ref="rulesets/naming.xml/ConstructorWithNameAsEnclosingClass">
+    </rule>
+    <rule ref="rulesets/naming.xml/ConstantNamingConventions">
+    </rule>
+    <rule ref="rulesets/naming.xml/LongVariable">
+        <properties>
+            <property name="maximum" description="The variable length reporting threshold" value="30"/>
+        </properties>
+    </rule>
+</ruleset>

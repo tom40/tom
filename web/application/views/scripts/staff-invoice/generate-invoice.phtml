@@ -1,0 +1,176 @@
+<h1>Generate Invoice</h1>
+
+<form method="POST" action="/en/default/staff-invoice/generate-invoice">
+
+    <table id="generate-invoice">
+        <?php
+        if ( $this->isAdmin )
+        {
+            ?>
+            <tr>
+                <td class="field">
+                    <label for="staff_user_search">Staff User Search</label>
+                </td>
+                <td class="value">
+                    <span class="view"><input type="text" name="staff_user_search" id="search" value="<?php echo $this->form->getElement( 'staff_user_search' )->getValue(); ?>" /></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                    <label for="staff_user">Staff User<span class="required">*</span></label>
+                </td>
+                <td class="value">
+                    <?php
+                    foreach ( $this->staffUsers as $user )
+                    {
+                        $checked = '';
+                        if ( $this->form->getElement( 'staff_user' )->getValue() == $user['key'] )
+                        {
+                            $checked = ' checked="checked"';
+                        }
+                        ?>
+                        <p class="operative-search">
+                            <input type="radio" name="staff_user" value="<?php echo $user['key'];?>"<?php echo $checked; ?> />
+                            <?php echo $user['value']; ?>
+                        </p>
+                    <?php
+                    }
+                    ?>
+                </td>
+            </tr>
+        <?php
+        }
+        ?>
+        <tr>
+            <td class="field">
+                <label for="start_date">Start date:<span class="required">*</span></label>
+            </td>
+            <td class="value">
+                <span class="view"><input type="text" name="start_date" id="start_date" value="<?php echo $this->form->getElement( 'start_date' )->getValue(); ?>" /></span>
+                <div style="color:#A3A3A3;padding:5px 0 0;">(Please insert the start date for this invoice)</div>
+            </td>
+        </tr>
+        <tr>
+            <td class="field">
+                <label for="end_date">End date:<span class="required">*</span></label>
+            </td>
+            <td class="value">
+                <span class="view"><input type="text" name="end_date" id="end_date" value="<?php echo $this->form->getElement( 'end_date' )->getValue(); ?>" /></span>
+                <br />
+                <div style="color:#A3A3A3;padding:5px 0 0;">(Please enter the end date for this invoice)</div>
+            </td>
+        </tr>
+        <?php
+        if ( $this->isAdmin || true !== $this->proofReaderOnly )
+        {
+            $checked = '';
+            if ( $this->form->getElement( 'empty_invoice' )->isChecked() )
+            {
+                $checked = ' checked="checked"';
+            }
+        ?>
+        <tr>
+            <td class="field">
+                <label for="empty_invoice">Generate empty invoice</label>
+            </td>
+            <td class="value">
+                <span class="view">
+                    <input type="checkbox" name="empty_invoice" id="empty_invoice" value="1"<?php echo $checked;?> />
+                </span>
+            </td>
+        </tr>
+        <?php
+        }
+        else
+        {
+        ?>
+            <input type="hidden" name="empty_invoice" value="1" />
+        <?php
+        }
+        ?>
+    </table>
+    <input type="submit" id="generateInvoice" class="submit btn" value="Generate Invoice" />
+
+</form>
+
+
+<script>
+
+$( document).ready( function()
+{
+
+    <?php
+    if ( $this->isAdmin )
+    {
+    ?>
+    if( $( 'input[name="staff_user"]' ).filter(':checked').length == 0)
+    {
+        $( '#generateInvoice').attr( 'disabled', true );
+    }
+    $( 'input[name="staff_user"]' ).change( function()
+    {
+        $( '#generateInvoice').attr( 'disabled', false );
+    });
+    <?php
+    }
+    ?>
+
+    searchOperative();
+
+    $('#search').keyup(function( e )
+    {
+        searchOperative();
+        var code = (e.keyCode ? e.keyCode : e.which);
+        if(code == 13)
+        {
+            e.preventDefault();
+        }
+        return false;
+    });
+
+})
+
+
+$("#start_date").AnyTime_picker(
+{
+    format:"%Y-%m-%d",
+    placement: "popup",
+    hideInput: false,
+    earliest: "2013-07-30"
+});
+
+$("#end_date").AnyTime_picker(
+{
+    format:"%Y-%m-%d",
+    placement: "popup",
+    hideInput: false,
+    earliest: "2013-07-30"
+});
+
+function searchOperative()
+{
+    var searchValue = $('#search').val();
+    if ('' == searchValue)
+    {
+        $('.operative-search').show();
+    }
+    else
+    {
+        $('.operative-search').each(function(index, element)
+        {
+
+            var operativeName = $(element).html();
+            if ( operativeName.toLowerCase().indexOf( searchValue.toLowerCase() ) >= 0 )
+            {
+                $( element ).show();
+            }
+            else
+            {
+                $( element ).hide();
+            }
+        })
+    }
+    return false;
+}
+
+</script>

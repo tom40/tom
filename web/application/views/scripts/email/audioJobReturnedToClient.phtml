@@ -1,0 +1,44 @@
+<?php echo $this->partial('/_partials/email/_defaultHeader.phtml',
+    array(
+            'appName' => $this->appName,
+            'title'   => 'Completed transcript'
+         )
+    );
+?>
+Dear <?php echo $this->addressee; ?>
+<br /><br />
+
+
+We are pleased to inform you that your transcript has now been completed and is attached to this email. The details are listed below. You can also login to the Take Note Portal at any point to download your transcripts using the below link.
+<br /><br />
+LINK: <?php echo $this->appUrl; ?><br />
+
+ 	<table class="data" style="font-family:helvetica, arial, sans-serif;color:#333;font-size:12px;line-height:18px;margin:0 0 15px;">
+ 		<tr class="first">
+        	<td class="field">
+            	<label for="name">Your audio file name:</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php echo $this->data['audio_job_file_name']; ?></span>
+            </td>
+		</tr>
+		<tr>
+        	<td class="field">
+            	<label for="name">Transcript file name:</label>
+			</td>
+            <td class="value">
+            	<span class="view"><?php echo $this->data['file_name'] ?>s</span>
+            </td>
+		</tr>
+	</table>
+As always if you come across any inaccuracy or are not completely satisfied please do not hesitate to let us know, amendments or additional checks will always be made free of charge.
+<br />
+<?php echo $this->partial('/_partials/email/_defaultFooter.phtml',
+    array(
+            'appName' => $this->appName,
+            'appUrl' => $this->appUrl,
+            'showThanksMessage' => true,
+            'customThankYouMessage' => 'Thanks for using Take Note and we look forward to working with you again soon.'
+        )
+    );
+?>

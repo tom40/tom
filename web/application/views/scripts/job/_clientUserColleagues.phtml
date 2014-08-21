@@ -1,0 +1,15 @@
+<?php if (!empty($this->clientUsers) && count($this->clientUsers) > 1): ?>
+            <div><input type="checkbox" id="select-all-users" /> Select All </div>
+            <?php foreach ($this->clientUsers as $user):
+                $userId = $user['user_id'];
+            ?>
+                <div <?php if (isset($this->primaryUserId) && $userId == $this->primaryUserId):?>style="display:none;" <?php endif; ?> id="client-user-<?php echo $userId; ?>">
+                    <?php if (isset($this->isEditAction)  && (true == $this->isEditAction)): ?>
+                        <input class="client-user" data="<?php echo $user['email']; ?>" type="checkbox" name="shareaccess[]" value="<?php echo $userId; ?>" <?php if ($this->userHasJobAccess($userId, $this->jobId)): ?>checked="checked"<?php endif; ?>/>
+                    <?php else: ?>
+                        <input class="client-user" data="<?php echo $user['email']; ?>" type="checkbox" name="shareaccess[]" value="<?php echo $userId; ?>" <?php if (is_array($this->selectedClientUsers) && in_array($userId, $this->selectedClientUsers)): ?>checked="checked"<?php endif; ?>/>
+                    <?php endif; ?>
+                    <?php echo $user['name']; ?>
+                </div>
+            <?php endforeach; ?>
+<?php endif; ?>

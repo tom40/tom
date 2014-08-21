@@ -1,0 +1,100 @@
+<div class="shift-book-search">
+    <h2>Search</h2>
+    <form id="formCreateJob" name="formCreateGroup" method="<?php echo $this->form->getMethod(); ?>" action="<?php echo $this->form->getAction(); ?>" class="shiftbooker-search-form">
+        <?php echo $this->form->id; ?>
+        <table class="data email-team">
+            <tr class="first">
+                <td class="field search-title">
+                    <label for="title"><?php echo $this->form->user_type->renderLabel(); ?></label>
+                </td>
+                <td class="value search-content">
+                    <span class="view"><?php echo $this->form->user_type->renderViewHelper(); ?></span>
+                    <br />
+                    <div class="element-error error-inner"><?php echo array_shift($this->form->user_type->getMessages()); ?></div>
+                </td>
+                <td class="field search-title">
+                    <label for="title"><?php echo $this->form->shift_date->renderLabel(); ?></label>
+                </td>
+                <td class="value search-content shift-date">
+                    <?php echo $this->form->shift_date->renderViewHelper(); ?>
+                    <?php echo $this->form->week_view->renderViewHelper(); ?>
+					<label for="title"><?php echo $this->form->week_view->renderLabel(); ?></label>
+                </td>
+            </tr>
+            <tr id="shift-times-container">
+                <td colspan="2"></td>
+                <td class="field search-title">Shift:</td>
+                <td class="value checkboxes view">
+                    <div style="display:none;" id="shift-times-selector">
+                        <select id="date-shift-select" name="date-shift-select"></select>
+                    </div>
+                </td>
+            </tr>
+            <tr class="first">
+                <td class="field">
+                    <label for="title"><?php echo $this->form->name->renderLabel(); ?></label>
+                </td>
+                <td class="value shift-name">
+                    <span class="view"><?php echo $this->form->name->renderViewHelper(); ?></span>
+                    <div class="element-error error-inner"><?php echo array_shift($this->form->name->getMessages()); ?></div>
+                </td>
+                <td class="field">
+                    <label for="title"><?php echo $this->form->shift_status->renderLabel(); ?></label>
+                </td>
+                <td class="value checkboxes view">
+                    <?php echo $this->form->shift_status->renderViewHelper(); ?>
+                    <div class="element-error error-inner"><?php echo array_shift($this->form->shift_status->getMessages()); ?></div>
+                </td>
+            </tr>
+
+            <tr class="first">
+                <td class="field user-ability" <?php if (!$this->canFilterByAbility): ?>style="display:none"<?php endif; ?>>
+                    <label for="title"><?php echo $this->form->ability->renderLabel(); ?></label>
+                </td>
+                <td class="value checkboxes user-ability view fixed-label" <?php if (!$this->canFilterByAbility): ?>style="display:none"<?php endif; ?> colspan="3">
+                    <?php echo $this->form->ability->renderViewHelper(); ?>
+                    <br />
+                    <div class="element-error error-inner"><?php echo array_shift($this->form->ability->getMessages()); ?></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="field user-grade" <?php if (!$this->canFilterByAbility): ?>style="display:none"<?php endif; ?>>
+                    <label for="title"><?php echo $this->form->grade->renderLabel(); ?></label>
+                </td>
+                <td class="value checkboxes user-ability view fixed-label" <?php if (!$this->canFilterByAbility): ?>style="display:none"<?php endif; ?> colspan="3">
+                        <?php echo $this->form->grade->renderViewHelper(); ?>
+                    <div class="element-error error-inner"><?php echo array_shift($this->form->grade->getMessages()); ?></div>
+                </td>
+            </tr>
+            <tr>
+                <td class="field">
+                </td>
+                <td class="search-field-submit" colspan="3">
+                	<input id="submit" class="reg_input_btn" type="image" src="/images/search_button.png" alt="Search" name="submit">
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script language="javascript">
+    $(document).ready(function()
+    {
+        $("#user_type").change(function()
+        {
+            var userType = $(this).val();
+            if (userType == 'typist') {
+                $('.user-ability').show();
+                $('.user-grade').show();
+                $('.search-field-submit').removeAttr('colspan');
+                $('.search-field-submit input').removeAttr('align');
+            }
+            else
+            {
+                $('.user-ability').hide();
+                $('.user-grade').hide();
+                $('.search-field-submit').attr('colspan', '3');
+            }
+            loadShiftDateTimesDropdown();
+        });
+    });
+</script>

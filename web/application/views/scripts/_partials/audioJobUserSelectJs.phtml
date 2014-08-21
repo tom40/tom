@@ -1,0 +1,89 @@
+     <script type="text/javascript">
+           $(function() {
+               changeDate();
+
+               $('#shift_day').change(function(){
+                   // Fetch shift times
+                   fetchShiftDayTimes( $('#shift_day').val());
+               });
+
+               $('#shift_time').change(function(){
+                   filterUsers();
+               });
+
+               $('#search').keyup(function( e )
+               {
+                   var code = (e.keyCode ? e.keyCode : e.which);
+                   if(code == 13)
+                   {
+                       filterUsers();
+                   }
+               });
+
+               $('.toggle-filter').click(function()
+               {
+                   var onText  = 'Apply training filter';
+                   var offText = 'Remove training filter';
+                   var text = $(this).html();
+
+                   if ( offText === text )
+                   {
+                       filterUsers( 'off' );
+                       $(this).html( onText );
+                   }
+                   else
+                   {
+                       filterUsers( 'on' );
+                       $(this).html( offText );
+                   }
+               })
+
+                function fetchShiftDayTimes(shiftNumber)
+                {
+                    var url = "<?php echo $this->url(array('controller' => 'audio-job', 'action' => $this->shiftDayTimesAction), null, true); ?>";
+
+                    $.ajax({
+                        type: "GET",
+                        url:  url,
+                        data: {selected_day_number: shiftNumber},
+                        cache: false,
+                        dataType: "json",
+                        async: false
+                    }).success(function( shiftTimes ) {
+                        var items = '';
+                        $.each(shiftTimes,function(index, item)
+                        {
+                          items += "<option value='"+item.key+"'>"+item.value+"</option>";
+                        });
+                        $("#shift_time").html(items);
+                        filterUsers();
+                    });
+                }
+
+                function filterUsers( toggleDirection )
+                {
+                    var url      = "<?php echo $this->url(array('controller' => 'audio-job', 'action' => $this->filterUsersAction, 'audioJobIds' => implode('-', $this->audioJobIds)), null, true); ?>";
+                    var formData = $('#<?php echo $this->formId; ?>').serializeArray();
+
+                    if ( 'undefined' != toggleDirection )
+                    {
+                        formData.push( { name : 'toggle_direction', value : toggleDirection } );
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        url:  url,
+                        data: formData,
+                        cache: false,
+                        dataType: "json"
+                    }).success(function( output ) {
+                        $('#job-users-list').html(output.html);
+                    });
+                }
+           });
+           $('#selectDueDateBtn').click(
+            function(e) {
+                $('#due_date_select').AnyTime_noPicker().AnyTime_picker({format: "%Y-%m-%d %H:%i:00"}).focus();
+                e.preventDefault();
+            });
+       </script>

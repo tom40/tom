@@ -1,0 +1,140 @@
+<div class="ui-state-default ui-widget-content ui-widget-header">
+    <h3 style="padding:5px">Apply Discount to Audio Job ID: <?php echo $this->job['id']?>
+        <span style="color: #A8A8A8; font-size: 75%">
+		<?php if (strlen($this->job['file_name']) > 50) {
+            echo substr($this->job['file_name'], 0, 50) . '...';
+        } else {
+            echo $this->job['file_name'];
+        }?>
+		</span>
+    </h3>
+</div>
+
+<div>
+    <table class="data">
+        <tr>
+            <td colspan="3"><div id="audio_job_discount_error"></div></td>
+        </tr>
+        <tr>
+            <td class="field">
+                <label for="discount">Discount (%):</label>
+            </td>
+            <td class="value" width="200">
+                <span class="view">
+
+                    <input type="text" name="audio_job_discount" id="audio_job_discount" value="<?php echo $this->discountForm->getValue( 'audio_job_discount' ) ?>" />
+                </span>
+            </td>
+            <td>
+                <a href="#" onclick="processAudioJobDiscount('<?php echo $this->job['id']; ?>');return false;" class="button-img">
+                    <img src="<?php echo $this->baseUrl() .'/images/add_button.png'?>" title="Save discount">
+                </a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="ui-state-default ui-widget-content ui-widget-header">
+	<h3 style="padding:5px">Adding Extra Services to Audio Job ID: <?php echo $this->job['id']?>
+		<span style="color: #A8A8A8; font-size: 75%">
+		<?php if (strlen($this->job['file_name']) > 50) {
+			echo substr($this->job['file_name'], 0, 50) . '...';
+		} else {
+			echo $this->job['file_name'];
+		}?>
+		</span>
+	</h3>
+</div>
+
+<div>
+    <table class="data">
+        <tr>
+            <td class="field">
+                <label for="service">Service:</label>
+            </td>
+            <td class="value" width="200">
+                <span class="view">
+                    <?php
+                    if (count($this->services) > 0)
+                    {
+                    ?>
+                    <select id="es-services">
+                        <?php
+                        foreach ($this->services as $service)
+                        {
+                        ?>
+                        <option value="<?php echo $service['key']; ?>"><?php echo $service['value']; ?>: &pound;<?php echo number_format($service['price'], 2); ?></option>
+                        <?php
+                        }
+                        ?>
+                    </select>
+                    <?php
+                    }
+                    else
+                    {
+                        ?>
+                        <p>There are no extra services to add</p>
+                        <?php
+                    }
+                    ?>
+                </span>
+            </td>
+            <td>
+                <a href="#" onclick="processExtraServices('<?php echo $this->job['id']; ?>');return false;" class="button-img">
+                    <img src="<?php echo $this->baseUrl() .'/images/add_button.png'?>" title="Save job">
+                </a>
+            </td>
+        </tr>
+    </table>
+</div>
+    <div class="ui-state-default ui-widget-content ui-widget-header">
+        <h3 style="padding:5px">Current Extra Service for Audio Job ID: <?php echo $this->job['id']?>
+            <span style="color: #A8A8A8; font-size: 75%">
+            <?php if (strlen($this->job['file_name']) > 50) {
+                echo substr($this->job['file_name'], 0, 50) . '...';
+            } else {
+                echo $this->job['file_name'];
+            }?>
+            </span>
+        </h3>
+    </div>
+    <table class="data">
+    <?php
+    if (count($this->current) > 0)
+    {
+    ?>
+        <?php
+        foreach ($this->current as $service)
+        {
+            ?>
+            <tr id="es<?php echo $service['id'];?>">
+                <td>
+                    <?php echo $service['description']; ?>
+                </td>
+                <td>
+                    &pound;<?php echo number_format($service['price'], 2); ?>
+                </td>
+                <td>
+                    <a href="#" onclick="deleteExtraService('<?php echo $this->job['id']; ?>', '<?php echo $service['id'] ;?>')">
+                        <img src="/images/icons/delete.png" alt="Remove service" />
+                    </a>
+                </td>
+            </tr>
+            <?php
+        }
+        ?>
+    <?php
+    }
+    else
+    {
+    ?>
+    <tr><td><p>This audio job has no additional services</td></tr>
+    <?php
+    }
+    ?>
+    </table>
+<script>
+	$(function() {
+		$( "#btn_save" ).button();
+	});
+</script>
