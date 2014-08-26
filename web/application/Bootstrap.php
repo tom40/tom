@@ -48,7 +48,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         	// Add firebug output to prove it works
         	$writer = new Zend_Log_Writer_Firebug();
         	$log->addWriter($writer);
-        	$log->log('FireBug logging is enabled!', Zend_Log::INFO);
         }
 
         return $log;
