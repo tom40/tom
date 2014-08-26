@@ -42,6 +42,14 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $writer1 = new Zend_Log_Writer_Stream(APPLICATION_PATH . '/../' . $config->app->errors->log);
         $writer1->setFormatter($formatter);
         $log->addWriter($writer1);
+        
+        if (in_array(APPLICATION_ENV, array('testing','development')))
+        {
+        	// Add firebug output to prove it works
+        	$writer = new Zend_Log_Writer_Firebug();
+        	$log->addWriter($writer);
+        	$log->log('FireBug logging is enabled!', Zend_Log::INFO);
+        }
 
         return $log;
     }
@@ -127,6 +135,15 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $db = Zend_Db::factory($config->db);
         Zend_Db_Table_Abstract::setDefaultAdapter($db);
         Zend_Registry::set('db', $db);
+        
+        if (in_array(APPLICATION_ENV, array('testing','development')))
+        {       
+        	// Enable db profiling to firebug
+        	$profiler = new Zend_Db_Profiler_Firebug('All DB Queries');
+        	$profiler->setEnabled(true);
+        	$db->setProfiler($profiler);
+        }        
+        
         return $db;
 	}
 

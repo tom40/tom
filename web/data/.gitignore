@@ -1,0 +1,7 @@
+*
+!.gitignore
+!/support
+!/tmp
+!/tmp_support
+!/tmp_transcription
+!/transcription
