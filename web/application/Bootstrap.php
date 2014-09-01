@@ -187,8 +187,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         // Generate the mail transport.
         switch (APPLICATION_ENV)
         {
+            case 'testing':
             case 'production':
-                $transport = new Zend_Mail_Transport_Sendmail();
+            	$transport = new Zend_Mail_Transport_Sendmail();
                 break;
             default:
                 $transport = new Zend_Mail_Transport_File(array(
