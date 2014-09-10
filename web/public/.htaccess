@@ -4,10 +4,8 @@ php_value memory_limit 128M
 
 RewriteEngine On
 
-# TEMPORARY FIX - START: Until certificates added to test servers 
-#RewriteCond %{HTTPS} !=on
-#RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
-# TEMPORARY FIX - END
+RewriteCond %{HTTPS} !=on
+RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 RewriteCond %{REQUEST_FILENAME} -s [OR]
 RewriteCond %{REQUEST_FILENAME} -l [OR]
 RewriteCond %{REQUEST_FILENAME} -d
