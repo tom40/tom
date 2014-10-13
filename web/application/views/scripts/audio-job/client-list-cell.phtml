@@ -32,27 +32,6 @@ if( !empty( $this->data['client_overall_comments'] ) || !empty( $this->data['use
 <?php
 }
 ?>
-<script>
-
-    (function($) {
-        $.fn.showClientComments = function()
-        {
-            $(this).hover(function()
-            {
-                $(this).next('span').children('span').eq(0).fadeIn(300);
-            }, function()
-            {
-                $(this).next('span').children('span').eq(0).stop(true, false).fadeOut(300);
-            });
-        };
-    })(jQuery);
-
-    $(function(){
-        $('img.client-comments').showClientComments();
-    });
-
-</script>
-
 <p>
     <?php echo $this->data['client_name']; ?> -<br />
     <?php echo $this->data['job_primary_user']; ?>

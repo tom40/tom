@@ -25,16 +25,22 @@ class App_AudioJob_PriceCalculator
     protected $_rate;
 
     /**
-     * Number of quarter hours
+     * Number of quarter hours calculated with rules that round up with some allowances 
      * @var int
      */
     protected $_quarterHours;
 
     /**
-     * Length in minutes
+     * Length in minutes rounded up to the nearest whole minute
      * @var int
      */
     protected $_lengthMinutes;
+    
+    /**
+     * Length in seconds based on the rounded up number of minutes
+     * @var int
+     */
+    protected $_lengthSeconds;    
 
     /**
      * Interval modifier rate
@@ -100,9 +106,31 @@ class App_AudioJob_PriceCalculator
     public function setLengthMinutes( $lengthMinutes )
     {
         $this->_lengthMinutes = $lengthMinutes;
+        $this->_lengthSeconds = $lengthMinutes * 60;
         return $this;
     }
 
+    /**
+     * Function to call to set the length in seconds and have it converted in
+     * the standard way into minutes. This must be the total length for the 
+     * audio file and any children.
+     */
+    public function setLengthSeconds($lengthSeconds)
+    {
+        $minutes = 0;
+        
+        // If we receive seconds then round up to the next minute. This uses a
+        // simpler method to
+        // achieve this than is used in the AudioRow object
+        if (!empty($lengthSeconds))
+        {
+            $minutes = ceil($lengthSeconds / 60);
+        }
+        
+        $this->_lengthMinutes = $minutes;
+        $this->_lengthSeconds = $minutes * 60;
+    }
+    
     /**
      * Set quarter hours
      *
@@ -128,7 +156,62 @@ class App_AudioJob_PriceCalculator
         $this->_audioJobDiscount = $audioJobDiscount;
         return $this;
     }
+    
+    /**
+     * Set additional services total
+     *
+     * @param float $additionalServicesTotal
+     *
+     * @return App_AudioJob_PriceCalculator
+     */
+    public function setAdditionalServicesTotal($additionalServicesTotal)
+    {
+    	$this->_additionalServicesTotal = $additionalServicesTotal;
+    	return $this;
+    }
 
+    /**
+     * Set additional services total price.
+     * This can only be called if the length in seconds or
+     * minutes has already been set.
+     *
+     * @param float $additionalServicesPrice            
+     *
+     * @return App_AudioJob_PriceCalculator
+     */
+    public function setAdditionalServicesPrice($additionalServicesPrice)
+    {
+        $return = false;
+        
+        if (isset($this->_lengthSeconds))
+        {
+            $this->_additionalServicesTotal = ceil(
+                $this->_lengthSeconds / (15 * 60)) * $additionalServicesPrice;
+        }
+        
+        return $this;
+    }
+        
+    /**
+     * Get the number of seconds after they have been rounded to the nearest minute
+     *
+     * @return int
+     */
+    public function getLengthSeconds()
+    {
+    	return $this->_lengthSeconds;
+    }
+        
+    /**
+     * Return the number of quarter hours used in the calculation 
+     *
+     * @return int
+     */
+    public function getQuarterHours()
+    {
+    	return $this->_quarterHours;
+    }
+    
     /**
      * Calculate rate
      *

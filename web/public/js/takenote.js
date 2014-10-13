@@ -16,4 +16,24 @@ $(document).ready(function()
         });
 
     }
+    
+    // client-list-cell.phtml
+    $('img.client-comments').hover(function()
+    {
+    	$(this).next('span').children('span').eq(0).fadeIn(300);
+    }, function()
+    {
+        $(this).next('span').children('span').eq(0).stop(true, false).fadeOut(300);
+    });
+    
+
+    // file-name-list-cell.phtml
+	$('.job-comments img').hover(function()
+	{
+		$(this).next('span').fadeIn(300);
+	},
+    function()
+    {
+		$(this).next('span').stop(true, false).fadeOut(300);
+    });
 });

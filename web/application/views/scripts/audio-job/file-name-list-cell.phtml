@@ -28,27 +28,3 @@
 <a href="#" onclick="showEdit(<?php echo $this->escape($this->data['id']); ?>);return false;">
 	<?php echo wordwrap($this->data['file_name'], 35, '<br />', true);?>
 </a>
-
-<script>
-
-	(function($)
-    {
-		$.fn.showComments = function()
-        {
-			$(this).hover(function()
-            {
-				$(this).next('span').fadeIn(300);
-			},
-            function()
-            {
-				$(this).next('span').stop(true, false).fadeOut(300);
-			});
-		};
-	})(jQuery);	
-		
-	$(function()
-    {
-		$('.job-comments img').showComments();
-	});
-	
-</script>
