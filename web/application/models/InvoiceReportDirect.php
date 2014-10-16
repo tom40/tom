@@ -264,8 +264,8 @@ class Application_Model_InvoiceReportDirect extends App_Db_Direct
                 // more descriptions
                 if ($row["_price_modifier_count"] > 1)
                 {
-                    // PENDING FIX: Check original code as if there is more than
-                    // one price modifier this should be a csv
+                    $csvRow["additional"] = $this->get_multi_price_modifier_names(
+                            $row["audio_job_id"]);
                 }
                 
                 // Push the row into the temporary data store
@@ -342,9 +342,8 @@ class Application_Model_InvoiceReportDirect extends App_Db_Direct
             else if (!empty($subTotalColVal) &&
                      strpos($subTotalColVal, $subTotalText) !== false)
             {
-                // This is a sub total row so take the total of all sub
-                // totals and
-                // set
+                // This is a sub total row so take the total of all sub totals 
+                // and set
                 $tempRow[$totalCol] = "£" . number_format($runningSubTotal, 2);
                 $runningSubTotal = 0;
             }
@@ -435,10 +434,6 @@ class Application_Model_InvoiceReportDirect extends App_Db_Direct
             $returnData[] = array_values($tempRow);
         }
         
-        // Add a final grand total row
-        $tempRow[$subTotalCol] = "Report Total";
-        $tempRow[$totalCol] = "£" . number_format($runningGrandTotal, 2);
-        
         return $returnData;
     }
 
@@ -481,8 +476,7 @@ class Application_Model_InvoiceReportDirect extends App_Db_Direct
         $db = $this->getAdaptor();
         $stmt = null;
         $names = array();
-        $args = array(
-                $client_id);
+        $args = array($client_id);
         
         $sql = "SELECT ssg.name name
 				FROM s_client_service_group AS scsg
@@ -500,5 +494,40 @@ class Application_Model_InvoiceReportDirect extends App_Db_Direct
         
         return implode(", ", $names);
     }
+    
+    /**
+     * Return a comma separated list of additional service names.
+     * 
+     * Only called for audio jobs with multiple price modifiers
+     *
+     * @param int $audio_job_id
+     *            The ID of the audio job with multiple service modifiers
+     *
+     * @return string comma separated list of names
+     */
+    protected function get_multi_price_modifier_names ($audio_job_id)
+    {
+    	$db = $this->getAdaptor();
+    	$stmt = null;
+    	$names = array();
+    	$args = array($audio_job_id);
+    
+    	$sql = "SELECT spm.name
+                FROM audio_jobs_price_modifiers ajpm
+                INNER JOIN s_service_price_modifier AS sspm ON sspm.id = ajpm.service_price_modifier_id
+                INNER JOIN s_price_modifier AS spm ON spm.id = sspm.price_modifier_id
+                WHERE audio_job_id = ?";
+    
+    	$stmt = new Zend_Db_Statement_Mysqli($db, $sql);
+    	$stmt->execute($args);
+    
+    	// Loop through the rows to get the names
+    	while ($row = $stmt->fetch())
+    	{
+    		$names[] = $row["name"];
+    	}
+    
+    	return implode(", ", $names);
+    }    
 }
 
