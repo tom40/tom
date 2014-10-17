@@ -15,6 +15,7 @@ php_value memory_limit 128M
 
 RewriteEngine On
 
+RewriteCond %{HTTP_HOST} ^portal\.takenotetyping\.com$ [NC]
 RewriteCond %{HTTPS} !=on
 RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 RewriteCond %{REQUEST_FILENAME} -s [OR]
