@@ -120,8 +120,7 @@ class App_AudioJob_PriceCalculator
         $minutes = 0;
         
         // If we receive seconds then round up to the next minute. This uses a
-        // simpler method to
-        // achieve this than is used in the AudioRow object
+        // simpler method to achieve this than is used in the AudioRow object
         if (!empty($lengthSeconds))
         {
             $minutes = ceil($lengthSeconds / 60);

@@ -225,6 +225,7 @@ class Application_Model_InvoiceReportDirect extends App_Db_Direct
                 $nextJobId = (!$isLastRow ? $mainData[$i + 1]["_job_id"] : -1);
                 $csvRow = $row;
                 $parentId = $row["_audio_or_lead_id"];
+                $secondsRounded = 0;
                 
                 // Remove the unwanted columns to create the correct result size
                 foreach ($csvRow as $csvKey => $csvVal)
@@ -313,8 +314,15 @@ class Application_Model_InvoiceReportDirect extends App_Db_Direct
                             "_client_discount" => $row["_client_discount"]);
                 }
                 
+                // Round seconds up to the nearest minute (done here so each 
+                // individual child record is rounded before being added in)
+                if (!empty($row["_length_seconds"]))
+                {
+                	$secondsRounded = ceil($row["_length_seconds"] / 60) * 60;
+                }
+                
                 // Add all seconds to itself or if a child record add to parent
-                $billingData[$parentId]["_length_seconds"] += $row["_length_seconds"];
+                $billingData[$parentId]["_length_seconds"] += $secondsRounded;
                 
                 // Store for next row
                 $prevRow = $row;
