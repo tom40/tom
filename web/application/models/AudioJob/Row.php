@@ -490,6 +490,7 @@ class Application_Model_AudioJob_Row extends Zend_Db_Table_Row
         {
             $additionalServiceModel = new Application_Model_AdditionalServicesMapper();
             $additionalServices     = $additionalServiceModel->getTotalPriceByAudioJob( $this->id, $this->getTotalLengthSeconds() );
+            $jobDiscountPct = 0;
 
             if ( empty( $this->rate ) )
             {
@@ -512,15 +513,18 @@ class Application_Model_AudioJob_Row extends Zend_Db_Table_Row
             {
                 $price = $price * $this->poor_audio;
             }
-
-            if ( $jobDiscount )
+            
+            if ($jobDiscount)
             {
-                if ( $this->getJob()->getDiscount() > 0 )
+                $jobDiscountPct = $this->getJob()->getDiscount();
+                
+                if ($jobDiscountPct > 0)
                 {
-                    $price = $price - ( ( $price / 100 ) * $jobDiscount );
+                    $price = $price - (($price / 100) * $jobDiscountPct);
                 }
             }
         }
+        
         return $price;
     }
 
