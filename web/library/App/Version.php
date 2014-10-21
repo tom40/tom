@@ -13,9 +13,9 @@ final class App_Version
     /**
      * Application version identification
      */
-    const VERSION       = '1.5';
-    const VERSION_STAGE = '1.5';
-    const VERSION_DEV   = '1.5';
+    const VERSION       = '1.5.1';
+    const VERSION_STAGE = '1.5.1';
+    const VERSION_DEV   = '1.5.1';
     
     /**
      * Return the version string.
